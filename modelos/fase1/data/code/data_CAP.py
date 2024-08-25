@@ -30,7 +30,7 @@ pd.set_option('display.float_format', lambda x: '%.2f' % x)
 
 
 # Cargar el archivo CSV
-ruta_archivo = r"..\Input\CAP.SN.csv"
+ruta_archivo = r".\..\Input\CAP.SN.csv"
 df = pd.read_csv(ruta_archivo)
 
 # Seleccionar solo las columnas especificadas
@@ -184,18 +184,6 @@ report = classification_report(y_test, y_pred, target_names=['Baja', 'Mantiene',
 
 print(f"Precisión del modelo: {accuracy:.2f}")
 print("Reporte de clasificación para arbol de decisión:\n", report)
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 #%%
