@@ -18,13 +18,18 @@ from sklearn.tree import DecisionTreeClassifier
 from xgboost import XGBClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.naive_bayes import GaussianNB
-from sklearn.metrics import classification_report, accuracy_score
+from sklearn.metrics import classification_report, accuracy_score, confusion_matrix
+from sklearn.neural_network import MLPClassifier
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import LSTM, Dense, Dropout
+from tensorflow.keras.preprocessing.sequence import TimeseriesGenerator
+from tensorflow.keras.optimizers import Adam
 pd.set_option('display.float_format', lambda x: '%.2f' % x)
 #%%
 
 
 # Cargar el archivo CSV
-ruta_archivo = r'C:\Users\benja\Desktop\Metodologia_tesis\tesis-magister-udp\modelos\fase1\data\Input\AGUAS-A.SN.csv'
+ruta_archivo = r'.\..\Input\AGUAS-A.SN.csv'
 df = pd.read_csv(ruta_archivo)
 
 # Seleccionar solo las columnas especificadas
@@ -42,7 +47,7 @@ df['RSI'] = ta.rsi(df['Close'], length=14)
 df.fillna(0, inplace=True)
 
 # Ruta para guardar el archivo con el nombre deseado
-nueva_ruta_archivo = r'C:\Users\benja\Desktop\Metodologia_tesis\tesis-magister-udp\modelos\fase1\data\output\AGUAS-A.SN.csv'
+nueva_ruta_archivo = r'.\..\output\AGUAS-A.SN.csv'
 
 # Guardar el DataFrame modificado en un nuevo archivo CSV
 df.to_csv(nueva_ruta_archivo, index=False)
@@ -52,7 +57,7 @@ print(f"Archivo guardado en: {nueva_ruta_archivo}")
 #%%
 
 
-ruta_archivo = r"C:\Users\benja\Desktop\Metodologia_tesis\tesis-magister-udp\modelos\fase1\data\output\AGUAS-A.SN.csv"
+ruta_archivo = r".\..\output\AGUAS-A.SN.csv"
 
 data_aguas_SNN = pd.read_csv(ruta_archivo)
 
@@ -185,18 +190,6 @@ print(f"Precisión del modelo: {accuracy:.2f}")
 print("Reporte de clasificación para arbol de decisión:\n", report)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 #%%
 
 
@@ -259,3 +252,183 @@ print("Reporte de clasificación para XGBoost:\n", report)
 
 #%%
 
+
+# Random Forest
+
+# Selección de características y etiqueta
+features = ['Open', 'High', 'Low', 'Close', 'Volume', 'MACD_12_26_9', 'MACDh_12_26_9', 'MACDs_12_26_9', 'RSI']
+X = data_aguas_SNN[features]
+y = data_aguas_SNN['Tendencia']
+
+# Codificación de las etiquetas
+label_encoder = LabelEncoder()
+y_encoded = label_encoder.fit_transform(y)
+
+# Normalización de los datos
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# División de los datos en entrenamiento y prueba
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y_encoded, test_size=0.2, random_state=42)
+
+# Construcción del modelo Random Forest
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+
+# Entrenamiento del modelo
+model.fit(X_train, y_train)
+
+# Predicciones
+y_pred = model.predict(X_test)
+
+# Evaluación del modelo
+accuracy = accuracy_score(y_test, y_pred)
+
+# Asegúrate de que los nombres de las clases sean cadenas
+class_names = [str(cls) for cls in label_encoder.classes_]
+
+# Generar el reporte de clasificación
+report = classification_report(y_test, y_pred, target_names=class_names)
+
+print(f"Precisión del modelo: {accuracy:.2f}")
+print("Reporte de clasificación para Random Forest:\n", report)
+
+#%%
+
+# Naive Bayes
+
+# Selección de características y etiqueta
+features = ['Open', 'High', 'Low', 'Close', 'Volume', 'MACD_12_26_9', 'MACDh_12_26_9', 'MACDs_12_26_9', 'RSI']
+X = data_aguas_SNN[features]
+y = data_aguas_SNN['Tendencia']
+
+# Codificación de las etiquetas
+label_encoder = LabelEncoder()
+y_encoded = label_encoder.fit_transform(y)
+
+# Normalización de los datos
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# División de los datos en entrenamiento y prueba
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y_encoded, test_size=0.2, random_state=42)
+
+# Construcción del modelo Naive Bayes
+model = GaussianNB()
+
+# Entrenamiento del modelo
+model.fit(X_train, y_train)
+
+# Predicciones
+y_pred = model.predict(X_test)
+
+# Evaluación del modelo
+accuracy = accuracy_score(y_test, y_pred)
+
+# Asegúrate de que los nombres de las clases sean cadenas
+class_names = [str(cls) for cls in label_encoder.classes_]
+
+# Generar el reporte de clasificación
+report = classification_report(y_test, y_pred, target_names=class_names)
+
+print(f"Precisión del modelo: {accuracy:.2f}")
+print("Reporte de clasificación para Naive Bayes:\n", report)
+
+#%%
+
+# MLP (Multi-Layer Perceptron)
+
+# Selección de características y etiqueta
+features = ['Open', 'High', 'Low', 'Close', 'Volume', 'MACD_12_26_9', 'MACDh_12_26_9', 'MACDs_12_26_9', 'RSI']
+X = data_aguas_SNN[features]
+y = data_aguas_SNN['Tendencia']
+
+# Codificación de las etiquetas
+label_encoder = LabelEncoder()
+y_encoded = label_encoder.fit_transform(y)
+
+# Normalización de los datos
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# División de los datos en entrenamiento y prueba
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y_encoded, test_size=0.2, random_state=42)
+
+# Construcción del modelo MLP
+model = MLPClassifier(hidden_layer_sizes=(100, 50), max_iter=300, random_state=42)
+
+# Entrenamiento del modelo
+model.fit(X_train, y_train)
+
+# Predicciones
+y_pred = model.predict(X_test)
+
+# Evaluación del modelo
+accuracy = accuracy_score(y_test, y_pred)
+
+# Asegúrate de que los nombres de las clases sean cadenas
+class_names = [str(cls) for cls in label_encoder.classes_]
+
+# Generar el reporte de clasificación
+report = classification_report(y_test, y_pred, target_names=class_names)
+
+print(f"Precisión del modelo: {accuracy:.2f}")
+print("Reporte de clasificación para MLP:\n", report)
+
+
+#%%
+
+# LSTM (Long Short-Term Memory)
+
+# Selección de características y etiqueta
+features = ['Open', 'High', 'Low', 'Close', 'Volume', 'MACD_12_26_9', 'MACDh_12_26_9', 'MACDs_12_26_9', 'RSI']
+X = data_aguas_SNN[features]
+y = data_aguas_SNN['Tendencia']
+
+# Codificación de las etiquetas
+label_encoder = LabelEncoder()
+y_encoded = label_encoder.fit_transform(y)
+
+# Normalización de los datos
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Conversión de datos a formato secuencial para LSTM
+n_input = 5  # Número de pasos de tiempo
+n_features = X.shape[1]
+
+# Crear el generador de secuencias para el entrenamiento
+train_generator = TimeseriesGenerator(X_scaled, y_encoded, length=n_input, batch_size=32)
+
+# Construcción del modelo LSTM
+model = Sequential()
+model.add(LSTM(50, activation='tanh', return_sequences=False, input_shape=(n_input, n_features)))
+model.add(Dropout(0.2))
+model.add(Dense(50, activation='relu'))
+model.add(Dense(1, activation='sigmoid'))  # Asumiendo un problema binario
+model.compile(optimizer=Adam(learning_rate=0.001), loss='binary_crossentropy', metrics=['accuracy'])
+
+# Entrenamiento del modelo
+model.fit(train_generator, epochs=50)
+
+# Crear el generador de secuencias para la prueba
+test_generator = TimeseriesGenerator(X_scaled[-(len(X_test) + n_input):], y_encoded[-(len(X_test) + n_input):], length=n_input, batch_size=1)
+
+# Predicción
+y_pred = model.predict(test_generator)
+
+# Convertir las predicciones a clases (umbral de 0.5)
+y_pred_classes = (y_pred > 0.5).astype(int)
+
+# Asegurar que y_test esté alineado con y_pred_classes
+y_test_aligned = y_test[-len(y_pred_classes):]
+
+# Evaluación del modelo
+accuracy = accuracy_score(y_test_aligned, y_pred_classes)
+report = classification_report(y_test_aligned, y_pred_classes, target_names=[str(cls) for cls in label_encoder.classes_])
+conf_matrix = confusion_matrix(y_test_aligned, y_pred_classes)
+
+print(f"Precisión del modelo: {accuracy:.2f}")
+print("Reporte de clasificación para LSTM:\n", report)
+print("Matriz de confusión:\n", conf_matrix)
+
+# %%
