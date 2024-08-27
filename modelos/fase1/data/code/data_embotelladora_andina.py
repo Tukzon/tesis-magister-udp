@@ -391,28 +391,31 @@ features = ['Open', 'High', 'Low', 'Close', 'Volume', 'MACD_12_26_9', 'MACDh_12_
 X = data_Andina_BSN[features]
 y = data_Andina_BSN['Tendencia']
 
-# Codificación de las etiquetas
+# Codificación de las etiquetas para un problema multicategoría
 label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
+y_encoded = np.eye(len(label_encoder.classes_))[y_encoded]  # One-hot encoding
 
 # Normalización de los datos
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
 # Conversión de datos a formato secuencial para LSTM
-n_input = 5  # Número de pasos de tiempo
+n_input = 20  # Aumentamos los pasos de tiempo a 20
 n_features = X.shape[1]
 
 # Crear el generador de secuencias para el entrenamiento
 train_generator = TimeseriesGenerator(X_scaled, y_encoded, length=n_input, batch_size=32)
 
-# Construcción del modelo LSTM
+# Construcción del modelo LSTM mejorado
 model = Sequential()
-model.add(LSTM(50, activation='tanh', return_sequences=False, input_shape=(n_input, n_features)))
+model.add(LSTM(100, activation='tanh', return_sequences=True, input_shape=(n_input, n_features)))
+model.add(Dropout(0.2))
+model.add(LSTM(50, activation='tanh'))
 model.add(Dropout(0.2))
 model.add(Dense(50, activation='relu'))
-model.add(Dense(1, activation='sigmoid'))  # Asumiendo un problema binario
-model.compile(optimizer=Adam(learning_rate=0.001), loss='binary_crossentropy', metrics=['accuracy'])
+model.add(Dense(len(label_encoder.classes_), activation='softmax'))  # Cambiado a softmax para clasificación multicategoría
+model.compile(optimizer=Adam(learning_rate=0.001), loss='categorical_crossentropy', metrics=['accuracy'])
 
 # Entrenamiento del modelo
 model.fit(train_generator, epochs=50)
@@ -423,15 +426,16 @@ test_generator = TimeseriesGenerator(X_scaled[-(len(X_test) + n_input):], y_enco
 # Predicción
 y_pred = model.predict(test_generator)
 
-# Convertir las predicciones a clases (umbral de 0.5)
-y_pred_classes = (y_pred > 0.5).astype(int)
+# Convertir las predicciones a clases
+y_pred_classes = np.argmax(y_pred, axis=1)
+y_test_aligned = np.argmax(y_encoded[-len(y_pred_classes):], axis=1)
 
-# Asegurar que y_test esté alineado con y_pred_classes
-y_test_aligned = y_test[-len(y_pred_classes):]
+# Convertir las clases a strings
+target_names = [str(cls) for cls in label_encoder.classes_]
 
 # Evaluación del modelo
 accuracy = accuracy_score(y_test_aligned, y_pred_classes)
-report = classification_report(y_test_aligned, y_pred_classes, target_names=[str(cls) for cls in label_encoder.classes_])
+report = classification_report(y_test_aligned, y_pred_classes, target_names=target_names)
 conf_matrix = confusion_matrix(y_test_aligned, y_pred_classes)
 
 print(f"Precisión del modelo: {accuracy:.2f}")

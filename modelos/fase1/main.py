@@ -48,7 +48,7 @@ if __name__ == "__main__":
         print("Data cargada - "+empresa)
         print("-" * 40)
         print("Calculando tendencia")
-        df = calculate_trend(df)
+        df = calculate_trend(df, delta=0.005)
         
         macd_df = ta.macd(df['Close'])
         
