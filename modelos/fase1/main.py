@@ -23,16 +23,20 @@ def export_data(df, csv_path):
     '''
     df.to_csv(csv_path)
 
-def calculate_trend(df):
+def calculate_trend(df, delta=0.01):
     '''
     Calcula la tendencia de los precios de cierre de un DataFrame de Pandas.
     La tendencia será:
-    -1 si el precio actual es menor que el del periodo anterior,
-    0 si es igual,
-    1 si es mayor.
+    -1 si el precio actual es menor que el del periodo anterior fuera del delta,
+    0 si es igual o dentro del delta porcentual,
+    1 si es mayor fuera del delta.
+    
+    Parámetros:
+    df (DataFrame): El DataFrame de Pandas que contiene los datos.
+    delta (float): El delta porcentual para considerar los precios como iguales. Por defecto es 1% (0.01).
     '''
-    # Calcula la diferencia entre el precio actual y el precio del periodo anterior
-    df['Tendencia'] = df['Close'].diff().apply(lambda x: 1 if x > 0 else (-1 if x < 0 else 0))
+    # Calcula la diferencia porcentual entre el precio actual y el del periodo anterior
+    df['Tendencia'] = df['Close'].pct_change().apply(lambda x: 1 if x > delta else (-1 if x < -delta else 0))
 
     return df
 
@@ -55,6 +59,6 @@ if __name__ == "__main__":
         print("Tendencia calculada")
         print("-" * 40)
         print("Exportando data")
-        export_data(df, f"./data/{empresa}.csv")
+        export_data(df, f"./data/Input/{empresa}.csv")
         print("Data exportada")
         print("*" * 40)
