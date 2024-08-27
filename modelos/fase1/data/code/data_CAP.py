@@ -252,8 +252,8 @@ print("Reporte de clasificación:\n", report)
 
 # Selección de características y etiqueta
 features = ['Open', 'High', 'Low', 'Close', 'Volume', 'MACD_12_26_9', 'MACDh_12_26_9', 'MACDs_12_26_9', 'RSI']
-X = data_aguas_SNN[features]
-y = data_aguas_SNN['Tendencia']
+X = data_CAP_SN[features]
+y = data_CAP_SN['Tendencia']
 
 # Codificación de las etiquetas
 label_encoder = LabelEncoder()
@@ -293,8 +293,8 @@ print("Reporte de clasificación para Random Forest:\n", report)
 
 # Selección de características y etiqueta
 features = ['Open', 'High', 'Low', 'Close', 'Volume', 'MACD_12_26_9', 'MACDh_12_26_9', 'MACDs_12_26_9', 'RSI']
-X = data_aguas_SNN[features]
-y = data_aguas_SNN['Tendencia']
+X = data_CAP_SN[features]
+y = data_CAP_SN['Tendencia']
 
 # Codificación de las etiquetas
 label_encoder = LabelEncoder()
@@ -334,8 +334,8 @@ print("Reporte de clasificación para Naive Bayes:\n", report)
 
 # Selección de características y etiqueta
 features = ['Open', 'High', 'Low', 'Close', 'Volume', 'MACD_12_26_9', 'MACDh_12_26_9', 'MACDs_12_26_9', 'RSI']
-X = data_aguas_SNN[features]
-y = data_aguas_SNN['Tendencia']
+X = data_CAP_SN[features]
+y = data_CAP_SN['Tendencia']
 
 # Codificación de las etiquetas
 label_encoder = LabelEncoder()
@@ -376,8 +376,8 @@ print("Reporte de clasificación para MLP:\n", report)
 
 # Selección de características y etiqueta
 features = ['Open', 'High', 'Low', 'Close', 'Volume', 'MACD_12_26_9', 'MACDh_12_26_9', 'MACDs_12_26_9', 'RSI']
-X = data_aguas_SNN[features]
-y = data_aguas_SNN['Tendencia']
+X = data_CAP_SN[features]
+y = data_CAP_SN['Tendencia']
 
 # Codificación de las etiquetas
 label_encoder = LabelEncoder()
