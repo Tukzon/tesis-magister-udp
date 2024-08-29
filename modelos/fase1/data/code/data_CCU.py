@@ -1,66 +1,37 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Aug 23 22:44:04 2024
-
-@author: benja
-"""
-
 #%%
 import pandas as pd
 import pandas_ta as ta
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+from datetime import datetime, timedelta
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.preprocessing import StandardScaler, LabelEncoder, MinMaxScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.feature_selection import RFE
 from xgboost import XGBClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.naive_bayes import GaussianNB
-from sklearn.metrics import classification_report, accuracy_score, confusion_matrix
+from sklearn.metrics import classification_report, accuracy_score, confusion_matrix, precision_score, recall_score, f1_score
 from sklearn.neural_network import MLPClassifier
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout
 from tensorflow.keras.preprocessing.sequence import TimeseriesGenerator
 from tensorflow.keras.optimizers import Adam
+from collections import Counter
+import warnings
+warnings.filterwarnings("ignore", category=FutureWarning)
 pd.set_option('display.float_format', lambda x: '%.2f' % x)
-
 #%%
 
 
 # Cargar el archivo CSV
 ruta_archivo = r".\..\Input\CCU.SN.csv"
 df = pd.read_csv(ruta_archivo)
-
-# Seleccionar solo las columnas especificadas
-columnas_requeridas = ['Date', 'Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Tendencia']
-df = df[columnas_requeridas]
-
-# Calcular el MACD
-macd = ta.macd(df['Close'], fast=12, slow=26, signal=9)
-df = df.join(macd)
-
-# Calcular el RSI
-df['RSI'] = ta.rsi(df['Close'], length=14)
-
-# Reemplazar NaN con 0, esto es unicamente para trabajar la estadistica descriptiva
-df.fillna(0, inplace=True)
-
-# Ruta para guardar el archivo con el nombre deseado
-nueva_ruta_archivo = r'.\..\output\CCU.SN.csv'
-
-# Guardar el DataFrame modificado en un nuevo archivo CSV
-df.to_csv(nueva_ruta_archivo, index=False)
-
-print(f"Archivo guardado en: {nueva_ruta_archivo}")
+data_CCU_SN = df.copy()
 
 #%%
-
-
-ruta_archivo = r".\..\output\CCU.SN.csv"
-
-data_CCU_SN = pd.read_csv(ruta_archivo)
 
 data_CCU_SN.head()
 data_CCU_SN.columns
@@ -115,41 +86,85 @@ plt.show()
 
 #%%
 
-#Lo que haremos ahora será ejecutar los distintos algoritmos de clasificación, sin hiperparametros y sin validación cruzada de los datos para 
-#tener una visión apriori de lo que tenemos
-
-
 #Regresión logistica
 
 
-# Selección de características y etiqueta
-# Aquí seleccionamos las características relevantes y la etiqueta 'Tendencia'
-features = ['Open', 'High', 'Low', 'Close', 'Volume', 'MACD_12_26_9', 'MACDh_12_26_9', 'MACDs_12_26_9', 'RSI']
+# Selección de todas las características excepto 'Date' y 'Tendencia'
+features = [col for col in data_CCU_SN.columns if col not in ['Date', 'Tendencia']]
 X = data_CCU_SN[features]
 y = data_CCU_SN['Tendencia']
 
 # Normalización de los datos
-scaler = StandardScaler()
+scaler = MinMaxScaler()
 X_scaled = scaler.fit_transform(X)
 
-# División de los datos en entrenamiento y prueba
-X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
+# Aplicar RFE para seleccionar las mejores características
+model_rfe = LogisticRegression(multi_class='ovr', max_iter=1000)
+rfe = RFE(model_rfe, n_features_to_select=5)
+X_rfe = rfe.fit_transform(X_scaled, y)
 
-# Construcción del modelo de regresión logística (multiclase)
-model = LogisticRegression(multi_class='ovr', max_iter=1000)
+print("Características seleccionadas por RFE:", np.array(features)[rfe.support_])
 
-# Entrenamiento del modelo
-model.fit(X_train, y_train)
+# Implementación de la ventana rodante con la columna 'Date'
+window_size = 3  # Ajusta el tamaño de la ventana según tus necesidades
 
-# Predicciones
-y_pred = model.predict(X_test)
+dates = pd.to_datetime(data_CCU_SN['Date'])
+results = []
 
-# Evaluación del modelo
-accuracy = accuracy_score(y_test, y_pred)
-report = classification_report(y_test, y_pred, target_names=['Baja', 'Mantiene', 'Sube'])
+# Acumular todas las predicciones y etiquetas verdaderas
+all_y_true = []
+all_y_pred = []
 
-print(f"Precisión del modelo: {accuracy:.2f}")
-print("Reporte de clasificación para regresión logistica:\n", report)
+hora_de_inicio = datetime.now()
+
+for start in range(len(dates) - window_size):
+    test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
+    train_indices = dates < dates.iloc[start]
+
+    X_train, X_test = X_rfe[train_indices], X_rfe[test_indices]
+    y_train, y_test = y[train_indices], y[test_indices]
+
+    # Verificar que haya suficientes clases en el conjunto de entrenamiento
+    if len(np.unique(y_train)) < 2:
+        continue  # Si solo hay una clase, pasa a la siguiente iteración
+
+    if len(X_train) == 0 or len(X_test) == 0:
+        continue
+
+    model = LogisticRegression(multi_class='ovr', max_iter=1000)
+    model.fit(X_train, y_train)
+
+    y_pred = model.predict(X_test)
+
+    # Acumular las predicciones y etiquetas verdaderas
+    all_y_true.extend(y_test)
+    all_y_pred.extend(y_pred)
+
+hora_de_fin = datetime.now()
+
+# Convertir las listas acumuladas a arrays de NumPy
+all_y_true = np.array(all_y_true)
+all_y_pred = np.array(all_y_pred)
+
+# Calcular las métricas globales
+overall_accuracy = accuracy_score(all_y_true, all_y_pred)
+overall_precision = precision_score(all_y_true, all_y_pred, average='weighted')
+overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
+overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
+overall_report = classification_report(all_y_true, all_y_pred)
+
+print(f"Accuracy general del modelo: {overall_accuracy:.2f}")
+print(f"Precision global (ponderada): {overall_precision:.2f}")
+print(f"Recall global (ponderado): {overall_recall:.2f}")
+print(f"F1-score global (ponderado): {overall_f1:.2f}")
+print(f"Reporte de clasificación general:\n {overall_report}")
+print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
+
+
+
+
+
+
 
 
 
@@ -157,45 +172,77 @@ print("Reporte de clasificación para regresión logistica:\n", report)
 
 
 #Arbol de decisión
-# Selección de características y etiqueta
-features = ['Open', 'High', 'Low', 'Close', 'Volume', 'MACD_12_26_9', 'MACDh_12_26_9', 'MACDs_12_26_9', 'RSI']
+
+# Selección de todas las características excepto 'Date' y 'Tendencia'
+features = [col for col in data_CCU_SN.columns if col not in ['Date', 'Tendencia']]
 X = data_CCU_SN[features]
 y = data_CCU_SN['Tendencia']
 
 # Normalización de los datos
-scaler = StandardScaler()
+scaler = MinMaxScaler()
 X_scaled = scaler.fit_transform(X)
 
-# División de los datos en entrenamiento y prueba
-X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
+# Aplicar RFE para seleccionar las mejores características utilizando un Árbol de Decisión
+model_rfe = DecisionTreeClassifier(random_state=42)
+rfe = RFE(model_rfe, n_features_to_select=5)  # Ajusta n_features_to_select según lo desees
+X_rfe = rfe.fit_transform(X_scaled, y)
 
-# Construcción del modelo de árbol de decisión
-model = DecisionTreeClassifier(random_state=42)
+print("Características seleccionadas por RFE:", np.array(features)[rfe.support_])
 
-# Entrenamiento del modelo
-model.fit(X_train, y_train)
+# Implementación de la ventana rodante con la columna 'Date'
+window_size = 3  # Ajusta el tamaño de la ventana según tus necesidades
 
-# Predicciones
-y_pred = model.predict(X_test)
+dates = pd.to_datetime(data_CCU_SN['Date'])
+results = []
 
-# Evaluación del modelo
-accuracy = accuracy_score(y_test, y_pred)
-report = classification_report(y_test, y_pred, target_names=['Baja', 'Mantiene', 'Sube'])
+# Acumular todas las predicciones y etiquetas verdaderas
+all_y_true = []
+all_y_pred = []
 
-print(f"Precisión del modelo: {accuracy:.2f}")
-print("Reporte de clasificación para arbol de decisión:\n", report)
+hora_de_inicio = datetime.now()
 
+for start in range(len(dates) - window_size):
+    test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
+    train_indices = dates < dates.iloc[start]
 
+    X_train, X_test = X_rfe[train_indices], X_rfe[test_indices]
+    y_train, y_test = y[train_indices], y[test_indices]
 
+    # Verificar que haya suficientes clases en el conjunto de entrenamiento
+    if len(np.unique(y_train)) < 2:
+        continue  # Si solo hay una clase, pasa a la siguiente iteración
 
+    if len(X_train) == 0 or len(X_test) == 0:
+        continue
 
+    model = DecisionTreeClassifier(random_state=42)
+    model.fit(X_train, y_train)
 
+    y_pred = model.predict(X_test)
 
+    # Acumular las predicciones y etiquetas verdaderas
+    all_y_true.extend(y_test)
+    all_y_pred.extend(y_pred)
 
+hora_de_fin = datetime.now()
 
+# Convertir las listas acumuladas a arrays de NumPy
+all_y_true = np.array(all_y_true)
+all_y_pred = np.array(all_y_pred)
 
+# Calcular las métricas globales
+overall_accuracy = accuracy_score(all_y_true, all_y_pred)
+overall_precision = precision_score(all_y_true, all_y_pred, average='weighted')
+overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
+overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
+overall_report = classification_report(all_y_true, all_y_pred)
 
-
+print(f"Accuracy general del modelo: {overall_accuracy:.2f}")
+print(f"Precision global (ponderada): {overall_precision:.2f}")
+print(f"Recall global (ponderado): {overall_recall:.2f}")
+print(f"F1-score global (ponderado): {overall_f1:.2f}")
+print(f"Reporte de clasificación general:\n {overall_report}")
+print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
 
 
 #%%
@@ -203,67 +250,90 @@ print("Reporte de clasificación para arbol de decisión:\n", report)
 
 # XGBoost
 
-#Generalmente, XGBoost espera que las etiquetas sean enteros no negativos, por lo que [-1, 0, 1] debe ser transformado a [0, 1, 2].
-
-# Selección de características y etiqueta
-features = ['Open', 'High', 'Low', 'Close', 'Volume', 'MACD_12_26_9', 'MACDh_12_26_9', 'MACDs_12_26_9', 'RSI']
+# Selección de todas las características excepto 'Date' y 'Tendencia'
+features = [col for col in data_CCU_SN.columns if col not in ['Date', 'Tendencia']]
 X = data_CCU_SN[features]
 y = data_CCU_SN['Tendencia']
 
-# Codificación de las etiquetas
+# Codificación de las etiquetas (transformación de [-1, 0, 1] a [0, 1, 2])
 label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
 
-# Verifica los valores únicos en las etiquetas transformadas
-print("Valores únicos en 'y_encoded':", np.unique(y_encoded))
-print("Nombres de las clases:", label_encoder.classes_)
-
 # Normalización de los datos
-scaler = StandardScaler()
+scaler = MinMaxScaler()
 X_scaled = scaler.fit_transform(X)
 
-# División de los datos en entrenamiento y prueba
-X_train, X_test, y_train, y_test = train_test_split(X_scaled, y_encoded, test_size=0.2, random_state=42)
+# Aplicar RFE para seleccionar las mejores características utilizando XGBoost
+model_rfe = XGBClassifier(use_label_encoder=False, eval_metric='mlogloss', random_state=42)
+rfe = RFE(model_rfe, n_features_to_select=5)  # Ajusta n_features_to_select según lo desees
+X_rfe = rfe.fit_transform(X_scaled, y_encoded)
 
-# Verificar tamaños de las divisiones
-print("Tamaño de X_train:", X_train.shape)
-print("Tamaño de y_train:", y_train.shape)
-print("Tamaño de X_test:", X_test.shape)
-print("Tamaño de y_test:", y_test.shape)
+print("Características seleccionadas por RFE:", np.array(features)[rfe.support_])
 
-# Construcción del modelo XGBoost
-model = XGBClassifier(use_label_encoder=False, eval_metric='mlogloss', random_state=42)
+# Implementación de la ventana rodante con la columna 'Date'
+window_size = 3  # Ajusta el tamaño de la ventana según tus necesidades
 
-# Entrenamiento del modelo
-model.fit(X_train, y_train)
+dates = pd.to_datetime(data_CCU_SN['Date'])
+results = []
 
-# Predicciones
-y_pred = model.predict(X_test)
+# Acumular todas las predicciones y etiquetas verdaderas
+all_y_true = []
+all_y_pred = []
 
-# Verifica los primeros valores de y_test y y_pred
-print("Primeros valores de y_test:", y_test[:10])
-print("Primeros valores de y_pred:", y_pred[:10])
+hora_de_inicio = datetime.now()
 
-# Evaluación del modelo
-accuracy = accuracy_score(y_test, y_pred)
+for start in range(len(dates) - window_size):
+    test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
+    train_indices = dates < dates.iloc[start]
 
-# Obtener nombres de clases desde el LabelEncoder
-class_names = label_encoder.classes_
+    X_train, X_test = X_rfe[train_indices], X_rfe[test_indices]
+    y_train, y_test = y_encoded[train_indices], y_encoded[test_indices]
 
-# Generar el reporte de clasificación
-report = classification_report(y_test, y_pred, target_names=[str(cls) for cls in class_names])
+    # Verificar que haya suficientes clases en el conjunto de entrenamiento
+    if len(np.unique(y_train)) < 2:
+        continue  # Si solo hay una clase, pasa a la siguiente iteración
 
-print(f"Precisión del modelo: {accuracy:.2f}")
-print("Reporte de clasificación:\n", report)
+    if len(X_train) == 0 or len(X_test) == 0:
+        continue
+
+    model = XGBClassifier(use_label_encoder=False, eval_metric='mlogloss', random_state=42)
+    model.fit(X_train, y_train)
+
+    y_pred = model.predict(X_test)
+
+    # Acumular las predicciones y etiquetas verdaderas
+    all_y_true.extend(y_test)
+    all_y_pred.extend(y_pred)
+
+hora_de_fin = datetime.now()
+
+# Convertir las listas acumuladas a arrays de NumPy
+all_y_true = np.array(all_y_true)
+all_y_pred = np.array(all_y_pred)
+
+# Calcular las métricas globales
+overall_accuracy = accuracy_score(all_y_true, all_y_pred)
+overall_precision = precision_score(all_y_true, all_y_pred, average='weighted')
+overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
+overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
+overall_report = classification_report(all_y_true, all_y_pred, target_names=[str(cls) for cls in label_encoder.classes_])
+
+print(f"Precisión general del modelo: {overall_accuracy:.2f}")
+print(f"Precision global (ponderada): {overall_precision:.2f}")
+print(f"Recall global (ponderado): {overall_recall:.2f}")
+print(f"F1-score global (ponderado): {overall_f1:.2f}")
+print(f"Reporte de clasificación general:\n {overall_report}")
+print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
 
 
 
 #%%
 
+
 # Random Forest
 
-# Selección de características y etiqueta
-features = ['Open', 'High', 'Low', 'Close', 'Volume', 'MACD_12_26_9', 'MACDh_12_26_9', 'MACDs_12_26_9', 'RSI']
+# Selección de todas las características excepto 'Date' y 'Tendencia'
+features = [col for col in data_CCU_SN.columns if col not in ['Date', 'Tendencia']]
 X = data_CCU_SN[features]
 y = data_CCU_SN['Tendencia']
 
@@ -272,39 +342,77 @@ label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
 
 # Normalización de los datos
-scaler = StandardScaler()
+scaler = MinMaxScaler()
 X_scaled = scaler.fit_transform(X)
 
-# División de los datos en entrenamiento y prueba
-X_train, X_test, y_train, y_test = train_test_split(X_scaled, y_encoded, test_size=0.2, random_state=42)
+# Aplicar RFE para seleccionar las mejores características utilizando Random Forest
+model_rfe = RandomForestClassifier(n_estimators=100, random_state=42)
+rfe = RFE(model_rfe, n_features_to_select=5)  # Ajusta n_features_to_select según lo desees
+X_rfe = rfe.fit_transform(X_scaled, y_encoded)
 
-# Construcción del modelo Random Forest
-model = RandomForestClassifier(n_estimators=100, random_state=42)
+print("Características seleccionadas por RFE:", np.array(features)[rfe.support_])
 
-# Entrenamiento del modelo
-model.fit(X_train, y_train)
+# Implementación de la ventana rodante con la columna 'Date'
+window_size = 3  # Ajusta el tamaño de la ventana según tus necesidades
 
-# Predicciones
-y_pred = model.predict(X_test)
+dates = pd.to_datetime(data_CCU_SN['Date'])
+results = []
 
-# Evaluación del modelo
-accuracy = accuracy_score(y_test, y_pred)
+# Acumular todas las predicciones y etiquetas verdaderas
+all_y_true = []
+all_y_pred = []
 
-# Asegúrate de que los nombres de las clases sean cadenas
-class_names = [str(cls) for cls in label_encoder.classes_]
+hora_de_inicio = datetime.now()
 
-# Generar el reporte de clasificación
-report = classification_report(y_test, y_pred, target_names=class_names)
+for start in range(len(dates) - window_size):
+    test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
+    train_indices = dates < dates.iloc[start]
 
-print(f"Precisión del modelo: {accuracy:.2f}")
-print("Reporte de clasificación para Random Forest:\n", report)
+    X_train, X_test = X_rfe[train_indices], X_rfe[test_indices]
+    y_train, y_test = y_encoded[train_indices], y_encoded[test_indices]
+
+    # Verificar que haya suficientes clases en el conjunto de entrenamiento
+    if len(np.unique(y_train)) < 2:
+        continue  # Si solo hay una clase, pasa a la siguiente iteración
+
+    if len(X_train) == 0 or len(X_test) == 0:
+        continue
+
+    model = RandomForestClassifier(n_estimators=100, random_state=42)
+    model.fit(X_train, y_train)
+
+    y_pred = model.predict(X_test)
+
+    # Acumular las predicciones y etiquetas verdaderas
+    all_y_true.extend(y_test)
+    all_y_pred.extend(y_pred)
+
+hora_de_fin = datetime.now()
+
+# Convertir las listas acumuladas a arrays de NumPy
+all_y_true = np.array(all_y_true)
+all_y_pred = np.array(all_y_pred)
+
+# Calcular las métricas globales
+overall_accuracy = accuracy_score(all_y_true, all_y_pred)
+overall_precision = precision_score(all_y_true, all_y_pred, average='weighted')
+overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
+overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
+overall_report = classification_report(all_y_true, all_y_pred, target_names=[str(cls) for cls in label_encoder.classes_])
+
+print(f"Precisión general del modelo: {overall_accuracy:.2f}")
+print(f"Precision global (ponderada): {overall_precision:.2f}")
+print(f"Recall global (ponderado): {overall_recall:.2f}")
+print(f"F1-score global (ponderado): {overall_f1:.2f}")
+print(f"Reporte de clasificación general:\n {overall_report}")
+print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
 
 #%%
 
 # Naive Bayes
 
-# Selección de características y etiqueta
-features = ['Open', 'High', 'Low', 'Close', 'Volume', 'MACD_12_26_9', 'MACDh_12_26_9', 'MACDs_12_26_9', 'RSI']
+# Selección de todas las características excepto 'Date' y 'Tendencia'
+features = [col for col in data_CCU_SN.columns if col not in ['Date', 'Tendencia']]
 X = data_CCU_SN[features]
 y = data_CCU_SN['Tendencia']
 
@@ -313,39 +421,78 @@ label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
 
 # Normalización de los datos
-scaler = StandardScaler()
+scaler = MinMaxScaler()
 X_scaled = scaler.fit_transform(X)
 
-# División de los datos en entrenamiento y prueba
-X_train, X_test, y_train, y_test = train_test_split(X_scaled, y_encoded, test_size=0.2, random_state=42)
+# Utilizar un estimador como Random Forest para la selección de características con RFE
+model_rfe = RandomForestClassifier(n_estimators=100, random_state=42)
+rfe = RFE(model_rfe, n_features_to_select=5)  # Ajusta n_features_to_select según lo desees
+X_rfe = rfe.fit_transform(X_scaled, y_encoded)
 
-# Construcción del modelo Naive Bayes
-model = GaussianNB()
+print("Características seleccionadas por RFE:", np.array(features)[rfe.support_])
 
-# Entrenamiento del modelo
-model.fit(X_train, y_train)
+# Implementación de la ventana rodante con la columna 'Date'
+window_size = 3  # Ajusta el tamaño de la ventana según tus necesidades
 
-# Predicciones
-y_pred = model.predict(X_test)
+dates = pd.to_datetime(data_CCU_SN['Date'])
+results = []
 
-# Evaluación del modelo
-accuracy = accuracy_score(y_test, y_pred)
+# Acumular todas las predicciones y etiquetas verdaderas
+all_y_true = []
+all_y_pred = []
 
-# Asegúrate de que los nombres de las clases sean cadenas
-class_names = [str(cls) for cls in label_encoder.classes_]
+hora_de_inicio = datetime.now()
 
-# Generar el reporte de clasificación
-report = classification_report(y_test, y_pred, target_names=class_names)
+for start in range(len(dates) - window_size):
+    test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
+    train_indices = dates < dates.iloc[start]
 
-print(f"Precisión del modelo: {accuracy:.2f}")
-print("Reporte de clasificación para Naive Bayes:\n", report)
+    X_train, X_test = X_rfe[train_indices], X_rfe[test_indices]
+    y_train, y_test = y_encoded[train_indices], y_encoded[test_indices]
+
+    # Verificar que haya suficientes clases en el conjunto de entrenamiento
+    if len(np.unique(y_train)) < 2:
+        continue  # Si solo hay una clase, pasa a la siguiente iteración
+
+    if len(X_train) == 0 or len(X_test) == 0:
+        continue
+
+    # Ahora usamos Naive Bayes para el entrenamiento y predicción
+    model = GaussianNB()
+    model.fit(X_train, y_train)
+
+    y_pred = model.predict(X_test)
+
+    # Acumular las predicciones y etiquetas verdaderas
+    all_y_true.extend(y_test)
+    all_y_pred.extend(y_pred)
+
+hora_de_fin = datetime.now()
+
+# Convertir las listas acumuladas a arrays de NumPy
+all_y_true = np.array(all_y_true)
+all_y_pred = np.array(all_y_pred)
+
+# Calcular las métricas globales
+overall_accuracy = accuracy_score(all_y_true, all_y_pred)
+overall_precision = precision_score(all_y_true, all_y_pred, average='weighted')
+overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
+overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
+overall_report = classification_report(all_y_true, all_y_pred, target_names=[str(cls) for cls in label_encoder.classes_])
+
+print(f"Precisión general del modelo: {overall_accuracy:.2f}")
+print(f"Precision global (ponderada): {overall_precision:.2f}")
+print(f"Recall global (ponderado): {overall_recall:.2f}")
+print(f"F1-score global (ponderado): {overall_f1:.2f}")
+print(f"Reporte de clasificación general:\n {overall_report}")
+print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
 
 #%%
 
 # MLP (Multi-Layer Perceptron)
 
-# Selección de características y etiqueta
-features = ['Open', 'High', 'Low', 'Close', 'Volume', 'MACD_12_26_9', 'MACDh_12_26_9', 'MACDs_12_26_9', 'RSI']
+# Selección de todas las características excepto 'Date' y 'Tendencia'
+features = [col for col in data_CCU_SN.columns if col not in ['Date', 'Tendencia']]
 X = data_CCU_SN[features]
 y = data_CCU_SN['Tendencia']
 
@@ -354,32 +501,71 @@ label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
 
 # Normalización de los datos
-scaler = StandardScaler()
+scaler = MinMaxScaler()
 X_scaled = scaler.fit_transform(X)
 
-# División de los datos en entrenamiento y prueba
-X_train, X_test, y_train, y_test = train_test_split(X_scaled, y_encoded, test_size=0.2, random_state=42)
+# Utilizar un estimador compatible con RFE (RandomForestClassifier) para la selección de características
+model_rfe = RandomForestClassifier(n_estimators=100, random_state=42)
+rfe = RFE(model_rfe, n_features_to_select=5)  # Ajusta n_features_to_select según lo desees
+X_rfe = rfe.fit_transform(X_scaled, y_encoded)
 
-# Construcción del modelo MLP
-model = MLPClassifier(hidden_layer_sizes=(100, 50), max_iter=300, random_state=42)
+print("Características seleccionadas por RFE:", np.array(features)[rfe.support_])
 
-# Entrenamiento del modelo
-model.fit(X_train, y_train)
+# Implementación de la ventana rodante con la columna 'Date'
+window_size = 3  # Ajusta el tamaño de la ventana según tus necesidades
 
-# Predicciones
-y_pred = model.predict(X_test)
+dates = pd.to_datetime(data_CCU_SN['Date'])
+results = []
 
-# Evaluación del modelo
-accuracy = accuracy_score(y_test, y_pred)
+# Acumular todas las predicciones y etiquetas verdaderas
+all_y_true = []
+all_y_pred = []
 
-# Asegúrate de que los nombres de las clases sean cadenas
-class_names = [str(cls) for cls in label_encoder.classes_]
+hora_de_inicio = datetime.now()
 
-# Generar el reporte de clasificación
-report = classification_report(y_test, y_pred, target_names=class_names)
+for start in range(len(dates) - window_size):
+    test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
+    train_indices = dates < dates.iloc[start]
 
-print(f"Precisión del modelo: {accuracy:.2f}")
-print("Reporte de clasificación para MLP:\n", report)
+    X_train, X_test = X_rfe[train_indices], X_rfe[test_indices]
+    y_train, y_test = y_encoded[train_indices], y_encoded[test_indices]
+
+    # Verificar que haya suficientes clases en el conjunto de entrenamiento
+    if len(np.unique(y_train)) < 2:
+        continue  # Si solo hay una clase, pasa a la siguiente iteración
+
+    if len(X_train) == 0 or len(X_test) == 0:
+        continue
+
+    # Ahora usamos MLP para el entrenamiento y predicción
+    model = MLPClassifier(hidden_layer_sizes=(100, 50), max_iter=300, random_state=42)
+    model.fit(X_train, y_train)
+
+    y_pred = model.predict(X_test)
+
+    # Acumular las predicciones y etiquetas verdaderas
+    all_y_true.extend(y_test)
+    all_y_pred.extend(y_pred)
+
+hora_de_fin = datetime.now()
+
+# Convertir las listas acumuladas a arrays de NumPy
+all_y_true = np.array(all_y_true)
+all_y_pred = np.array(all_y_pred)
+
+# Calcular las métricas globales
+overall_accuracy = accuracy_score(all_y_true, all_y_pred)
+overall_precision = precision_score(all_y_true, all_y_pred, average='weighted')
+overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
+overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
+overall_report = classification_report(all_y_true, all_y_pred, target_names=[str(cls) for cls in label_encoder.classes_])
+
+print(f"Precisión general del modelo: {overall_accuracy:.2f}")
+print(f"Precision global (ponderada): {overall_precision:.2f}")
+print(f"Recall global (ponderado): {overall_recall:.2f}")
+print(f"F1-score global (ponderado): {overall_f1:.2f}")
+print(f"Reporte de clasificación general:\n {overall_report}")
+print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
 
 
 #%%
@@ -387,7 +573,7 @@ print("Reporte de clasificación para MLP:\n", report)
 # LSTM (Long Short-Term Memory)
 
 # Selección de características y etiqueta
-features = ['Open', 'High', 'Low', 'Close', 'Volume', 'MACD_12_26_9', 'MACDh_12_26_9', 'MACDs_12_26_9', 'RSI']
+features = [col for col in data_CCU_SN.columns if col not in ['Date', 'Tendencia']]
 X = data_CCU_SN[features]
 y = data_CCU_SN['Tendencia']
 
@@ -396,8 +582,13 @@ label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
 y_encoded = np.eye(len(label_encoder.classes_))[y_encoded]  # One-hot encoding
 
+print("Clases originales:", label_encoder.classes_)
+print("Valores codificados:", list(label_encoder.transform(label_encoder.classes_)))
+
+print("Distribución de clases en el conjunto de entrenamiento:", Counter(np.argmax(y_encoded, axis=1)))
+
 # Normalización de los datos
-scaler = StandardScaler()
+scaler = MinMaxScaler()
 X_scaled = scaler.fit_transform(X)
 
 # Conversión de datos a formato secuencial para LSTM
@@ -409,19 +600,19 @@ train_generator = TimeseriesGenerator(X_scaled, y_encoded, length=n_input, batch
 
 # Construcción del modelo LSTM mejorado
 model = Sequential()
-model.add(LSTM(100, activation='tanh', return_sequences=True, input_shape=(n_input, n_features)))
-model.add(Dropout(0.2))
-model.add(LSTM(50, activation='tanh'))
-model.add(Dropout(0.2))
-model.add(Dense(50, activation='relu'))
-model.add(Dense(len(label_encoder.classes_), activation='softmax'))  # Cambiado a softmax para clasificación multicategoría
+model.add(LSTM(150, activation='tanh', return_sequences=True, input_shape=(n_input, n_features)))
+model.add(Dropout(0.3))
+model.add(LSTM(100, activation='tanh'))
+model.add(Dropout(0.3))
+model.add(Dense(100, activation='relu'))
+model.add(Dense(len(label_encoder.classes_), activation='softmax'))
 model.compile(optimizer=Adam(learning_rate=0.001), loss='categorical_crossentropy', metrics=['accuracy'])
 
 # Entrenamiento del modelo
 model.fit(train_generator, epochs=50)
 
 # Crear el generador de secuencias para la prueba
-test_generator = TimeseriesGenerator(X_scaled[-(len(X_test) + n_input):], y_encoded[-(len(X_test) + n_input):], length=n_input, batch_size=1)
+test_generator = TimeseriesGenerator(X_scaled[-(len(X_scaled) + n_input):], y_encoded[-(len(X_scaled) + n_input):], length=n_input, batch_size=1)
 
 # Predicción
 y_pred = model.predict(test_generator)
@@ -430,13 +621,28 @@ y_pred = model.predict(test_generator)
 y_pred_classes = np.argmax(y_pred, axis=1)
 y_test_aligned = np.argmax(y_encoded[-len(y_pred_classes):], axis=1)
 
+# Decodificar las predicciones para interpretarlas en términos de las clases originales
+y_pred_classes_decoded = label_encoder.inverse_transform(y_pred_classes)
+y_test_aligned_decoded = label_encoder.inverse_transform(y_test_aligned)
+
+print("Clases decodificadas en las predicciones:", np.unique(y_pred_classes_decoded))
+print("Clases decodificadas en y_test_aligned:", np.unique(y_test_aligned_decoded))
+
+# Verificar las clases únicas en las predicciones
+unique_pred_classes = np.unique(y_pred_classes_decoded)
+print("Clases únicas en las predicciones:", unique_pred_classes)
+
+# Verificar las clases únicas en y_test_aligned
+unique_test_classes = np.unique(y_test_aligned_decoded)
+print("Clases únicas en y_test_aligned:", unique_test_classes)
+
 # Convertir las clases a strings
 target_names = [str(cls) for cls in label_encoder.classes_]
 
 # Evaluación del modelo
-accuracy = accuracy_score(y_test_aligned, y_pred_classes)
-report = classification_report(y_test_aligned, y_pred_classes, target_names=target_names)
-conf_matrix = confusion_matrix(y_test_aligned, y_pred_classes)
+accuracy = accuracy_score(y_test_aligned_decoded, y_pred_classes_decoded)
+report = classification_report(y_test_aligned_decoded, y_pred_classes_decoded, target_names=target_names)
+conf_matrix = confusion_matrix(y_test_aligned_decoded, y_pred_classes_decoded)
 
 print(f"Precisión del modelo: {accuracy:.2f}")
 print("Reporte de clasificación para LSTM:\n", report)
