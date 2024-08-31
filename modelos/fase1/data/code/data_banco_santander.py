@@ -21,7 +21,7 @@ from tensorflow.keras.preprocessing.sequence import TimeseriesGenerator
 from tensorflow.keras.optimizers import Adam
 from collections import Counter
 import warnings
-warnings.filterwarnings("ignore", category=FutureWarning)
+warnings.filterwarnings("ignore")
 pd.set_option('display.float_format', lambda x: '%.2f' % x)
 
 #%%
@@ -31,6 +31,10 @@ pd.set_option('display.float_format', lambda x: '%.2f' % x)
 ruta_archivo = r".\..\Input\BSANTANDER.SN.csv"
 df = pd.read_csv(ruta_archivo)
 data_BSantander_SN = df.copy()
+if 'Unnamed: 0' in df.columns:
+    data_BSantander_SN.drop(columns=['Unnamed: 0'], inplace=True)
+print("columnas totales:", len(data_BSantander_SN.columns))
+
 #%%
 
 data_BSantander_SN.head()
@@ -63,20 +67,19 @@ print("Estadísticas descriptivas para 'MACDh_12_26_9':\n", macdh_stats, "\n")
 print("Estadísticas descriptivas para 'MACDs_12_26_9':\n", macds_stats, "\n")
 print("Estadísticas descriptivas para 'RSI':\n", rsi_stats, "\n")
 
-
 #%%
 
 
 
 # Libraries to help with data visualization
 
-num_cols = data_BSantander_SN.select_dtypes(include=np.number).columns.tolist()
+num_cols = df.select_dtypes(include=np.number).columns.tolist()
 
 plt.figure(figsize=(15, 15))
 
 for i, variable in enumerate(num_cols):
     plt.subplot(4, 3, i + 1)
-    sns.boxplot(data=data_BSantander_SN, x=variable)
+    sns.boxplot(data=df, x=variable)
     plt.tight_layout(pad=2)
 
 plt.show()
@@ -115,14 +118,26 @@ results = []
 all_y_true = []
 all_y_pred = []
 
+train_size = int(len(dates) * 0.8)
+
 hora_de_inicio = datetime.now()
 
-for start in range(len(dates) - window_size):
+# Usar el 80% inicial como conjunto de entrenamiento
+X_train_initial = X_rfe[:train_size]
+y_train_initial = y[:train_size]
+
+# Contador de iteraciones
+iteration_count = 0
+
+# Iterar sobre el 20% restante usando la ventana rodante
+for start in range(train_size, len(dates) - window_size):
     test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
     train_indices = dates < dates.iloc[start]
 
-    X_train, X_test = X_rfe[train_indices], X_rfe[test_indices]
-    y_train, y_test = y[train_indices], y[test_indices]
+    X_train = X_rfe[train_indices]
+    y_train = y[train_indices]
+    X_test = X_rfe[test_indices]
+    y_test = y[test_indices]
 
     # Verificar que haya suficientes clases en el conjunto de entrenamiento
     if len(np.unique(y_train)) < 2:
@@ -139,6 +154,8 @@ for start in range(len(dates) - window_size):
     # Acumular las predicciones y etiquetas verdaderas
     all_y_true.extend(y_test)
     all_y_pred.extend(y_pred)
+    
+    iteration_count += 1
 
 hora_de_fin = datetime.now()
 
@@ -159,7 +176,7 @@ print(f"Recall global (ponderado): {overall_recall:.2f}")
 print(f"F1-score global (ponderado): {overall_f1:.2f}")
 print(f"Reporte de clasificación general:\n {overall_report}")
 print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
-
+print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 
 
@@ -171,7 +188,7 @@ print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
 #%%
 
 
-#Arbol de decisión
+# Árbol de decisión
 
 # Selección de todas las características excepto 'Date' y 'Tendencia'
 features = [col for col in data_BSantander_SN.columns if col not in ['Date', 'Tendencia']]
@@ -199,12 +216,21 @@ results = []
 all_y_true = []
 all_y_pred = []
 
+# Contador de iteraciones
+iteration_count = 0
+
+# Calcular el índice para el 80% de los datos
+train_size = int(len(dates) * 0.8)
+
 hora_de_inicio = datetime.now()
 
-for start in range(len(dates) - window_size):
+# Iterar sobre el 20% restante usando la ventana rodante
+for start in range(train_size, len(dates) - window_size):
+    # Definir índices de entrenamiento y prueba correctamente
+    train_indices = (dates < dates.iloc[start])
     test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
-    train_indices = dates < dates.iloc[start]
 
+    # Asegurar que no haya intersección entre los conjuntos de entrenamiento y prueba
     X_train, X_test = X_rfe[train_indices], X_rfe[test_indices]
     y_train, y_test = y[train_indices], y[test_indices]
 
@@ -215,7 +241,8 @@ for start in range(len(dates) - window_size):
     if len(X_train) == 0 or len(X_test) == 0:
         continue
 
-    model = DecisionTreeClassifier(random_state=42)
+    # Crear y ajustar el modelo con limitación de profundidad para evitar sobreajuste
+    model = DecisionTreeClassifier(random_state=42, max_depth=5)
     model.fit(X_train, y_train)
 
     y_pred = model.predict(X_test)
@@ -223,6 +250,9 @@ for start in range(len(dates) - window_size):
     # Acumular las predicciones y etiquetas verdaderas
     all_y_true.extend(y_test)
     all_y_pred.extend(y_pred)
+    
+    # Incrementar el contador de iteraciones
+    iteration_count += 1
 
 hora_de_fin = datetime.now()
 
@@ -243,6 +273,7 @@ print(f"Recall global (ponderado): {overall_recall:.2f}")
 print(f"F1-score global (ponderado): {overall_f1:.2f}")
 print(f"Reporte de clasificación general:\n {overall_report}")
 print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
+print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 
 #%%
@@ -280,9 +311,16 @@ results = []
 all_y_true = []
 all_y_pred = []
 
+# Contador de iteraciones
+iteration_count = 0
+
+# Calcular el índice para el 80% de los datos
+train_size = int(len(dates) * 0.8)
+
 hora_de_inicio = datetime.now()
 
-for start in range(len(dates) - window_size):
+# Iterar sobre el 20% restante usando la ventana rodante
+for start in range(train_size, len(dates) - window_size):
     test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
     train_indices = dates < dates.iloc[start]
 
@@ -304,6 +342,9 @@ for start in range(len(dates) - window_size):
     # Acumular las predicciones y etiquetas verdaderas
     all_y_true.extend(y_test)
     all_y_pred.extend(y_pred)
+    
+    # Incrementar el contador de iteraciones
+    iteration_count += 1
 
 hora_de_fin = datetime.now()
 
@@ -324,6 +365,7 @@ print(f"Recall global (ponderado): {overall_recall:.2f}")
 print(f"F1-score global (ponderado): {overall_f1:.2f}")
 print(f"Reporte de clasificación general:\n {overall_report}")
 print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
+print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 
 
@@ -362,9 +404,16 @@ results = []
 all_y_true = []
 all_y_pred = []
 
+# Contador de iteraciones
+iteration_count = 0
+
+# Calcular el índice para el 80% de los datos
+train_size = int(len(dates) * 0.8)
+
 hora_de_inicio = datetime.now()
 
-for start in range(len(dates) - window_size):
+# Iterar sobre el 20% restante usando la ventana rodante
+for start in range(train_size, len(dates) - window_size):
     test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
     train_indices = dates < dates.iloc[start]
 
@@ -386,6 +435,9 @@ for start in range(len(dates) - window_size):
     # Acumular las predicciones y etiquetas verdaderas
     all_y_true.extend(y_test)
     all_y_pred.extend(y_pred)
+    
+    # Incrementar el contador de iteraciones
+    iteration_count += 1
 
 hora_de_fin = datetime.now()
 
@@ -406,6 +458,7 @@ print(f"Recall global (ponderado): {overall_recall:.2f}")
 print(f"F1-score global (ponderado): {overall_f1:.2f}")
 print(f"Reporte de clasificación general:\n {overall_report}")
 print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
+print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 #%%
 
@@ -441,9 +494,16 @@ results = []
 all_y_true = []
 all_y_pred = []
 
+# Contador de iteraciones
+iteration_count = 0
+
+# Calcular el índice para el 80% de los datos
+train_size = int(len(dates) * 0.8)
+
 hora_de_inicio = datetime.now()
 
-for start in range(len(dates) - window_size):
+# Iterar sobre el 20% restante usando la ventana rodante
+for start in range(train_size, len(dates) - window_size):
     test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
     train_indices = dates < dates.iloc[start]
 
@@ -466,6 +526,9 @@ for start in range(len(dates) - window_size):
     # Acumular las predicciones y etiquetas verdaderas
     all_y_true.extend(y_test)
     all_y_pred.extend(y_pred)
+    
+    # Incrementar el contador de iteraciones
+    iteration_count += 1
 
 hora_de_fin = datetime.now()
 
@@ -486,6 +549,7 @@ print(f"Recall global (ponderado): {overall_recall:.2f}")
 print(f"F1-score global (ponderado): {overall_f1:.2f}")
 print(f"Reporte de clasificación general:\n {overall_report}")
 print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
+print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 #%%
 
@@ -521,9 +585,16 @@ results = []
 all_y_true = []
 all_y_pred = []
 
+# Contador de iteraciones
+iteration_count = 0
+
+# Calcular el índice para el 80% de los datos
+train_size = int(len(dates) * 0.8)
+
 hora_de_inicio = datetime.now()
 
-for start in range(len(dates) - window_size):
+# Iterar sobre el 20% restante usando la ventana rodante
+for start in range(train_size, len(dates) - window_size):
     test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
     train_indices = dates < dates.iloc[start]
 
@@ -546,6 +617,9 @@ for start in range(len(dates) - window_size):
     # Acumular las predicciones y etiquetas verdaderas
     all_y_true.extend(y_test)
     all_y_pred.extend(y_pred)
+    
+    # Incrementar el contador de iteraciones
+    iteration_count += 1
 
 hora_de_fin = datetime.now()
 
@@ -566,6 +640,7 @@ print(f"Recall global (ponderado): {overall_recall:.2f}")
 print(f"F1-score global (ponderado): {overall_f1:.2f}")
 print(f"Reporte de clasificación general:\n {overall_report}")
 print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
+print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 
 #%%
@@ -598,7 +673,7 @@ n_features = X.shape[1]
 # Crear el generador de secuencias para el entrenamiento
 train_generator = TimeseriesGenerator(X_scaled, y_encoded, length=n_input, batch_size=32)
 
-# Construcción del modelo LSTM mejorado
+# Construcción del modelo LSTM
 model = Sequential()
 model.add(LSTM(150, activation='tanh', return_sequences=True, input_shape=(n_input, n_features)))
 model.add(Dropout(0.3))
@@ -647,6 +722,7 @@ conf_matrix = confusion_matrix(y_test_aligned_decoded, y_pred_classes_decoded)
 print(f"Precisión del modelo: {accuracy:.2f}")
 print("Reporte de clasificación para LSTM:\n", report)
 print("Matriz de confusión:\n", conf_matrix)
+
 # %%
 
 

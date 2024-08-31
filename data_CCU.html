@@ -3,7 +3,7 @@
 <html lang="en">
 <head><meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>data_aguas_andina</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>data_CCU</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <style type="text/css">
     pre { line-height: 125%; }
 td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
@@ -7520,7 +7520,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=56f25f66-7ea8-4e39-81f5-681c1e79307c">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=d57ece18-50db-4128-adee-c1c0f480b7f6">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7550,14 +7550,14 @@ a.anchor-link {
 <span class="kn">from</span> <span class="nn">tensorflow.keras.optimizers</span> <span class="kn">import</span> <span class="n">Adam</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
-<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">"ignore"</span><span class="p">)</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">"ignore"</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">FutureWarning</span><span class="p">)</span>
 <span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">'display.float_format'</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s1">'</span><span class="si">%.2f</span><span class="s1">'</span> <span class="o">%</span> <span class="n">x</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=cb998593-a979-4f05-a1da-aba8bbb762e2">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=88f7d3ba-7259-4fe7-ae49-5968c603efe6">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7566,12 +7566,12 @@ a.anchor-link {
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-python"><pre><span></span><span class="c1"># Cargar el archivo CSV</span>
-<span class="n">ruta_archivo</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">'.\..\Input\AGUAS-A.SN.csv'</span>
+<span class="n">ruta_archivo</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">".\..\Input\CCU.SN.csv"</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">ruta_archivo</span><span class="p">)</span>
-<span class="n">data_aguas_SNN</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">data_CCU_SN</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="k">if</span> <span class="s1">'Unnamed: 0'</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-    <span class="n">data_aguas_SNN</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">'Unnamed: 0'</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"columnas totales:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_aguas_SNN</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span>
+    <span class="n">data_CCU_SN</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">'Unnamed: 0'</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"columnas totales:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_CCU_SN</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -7590,7 +7590,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=bc988684-9307-4711-86ac-363913d3dd28">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=8360e3ae-6906-4a24-8332-6d456c11df59">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7602,9 +7602,9 @@ a.anchor-link {
 
 
 <span class="c1"># Selección de todas las características excepto 'Date' y 'Tendencia'</span>
-<span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">data_aguas_SNN</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'Date'</span><span class="p">,</span> <span class="s1">'Tendencia'</span><span class="p">]]</span>
-<span class="n">X</span> <span class="o">=</span> <span class="n">data_aguas_SNN</span><span class="p">[</span><span class="n">features</span><span class="p">]</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">data_aguas_SNN</span><span class="p">[</span><span class="s1">'Tendencia'</span><span class="p">]</span>
+<span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">data_CCU_SN</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'Date'</span><span class="p">,</span> <span class="s1">'Tendencia'</span><span class="p">]]</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">data_CCU_SN</span><span class="p">[</span><span class="n">features</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">data_CCU_SN</span><span class="p">[</span><span class="s1">'Tendencia'</span><span class="p">]</span>
 
 <span class="c1"># Normalización de los datos</span>
 <span class="n">scaler</span> <span class="o">=</span> <span class="n">MinMaxScaler</span><span class="p">()</span>
@@ -7620,7 +7620,7 @@ a.anchor-link {
 <span class="c1"># Implementación de la ventana rodante con la columna 'Date'</span>
 <span class="n">window_size</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># Ajusta el tamaño de la ventana según tus necesidades</span>
 
-<span class="n">dates</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">data_aguas_SNN</span><span class="p">[</span><span class="s1">'Date'</span><span class="p">])</span>
+<span class="n">dates</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">data_CCU_SN</span><span class="p">[</span><span class="s1">'Date'</span><span class="p">])</span>
 <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
 
 <span class="c1"># Acumular todas las predicciones y etiquetas verdaderas</span>
@@ -7698,30 +7698,30 @@ a.anchor-link {
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Características seleccionadas por RFE: ['RSI_14' 'Histogram' 'ATR_14' 'TSI_13_25_13' 'CMO']
-Accuracy general del modelo: 0.46
-Precision global (ponderada): 0.68
-Recall global (ponderado): 0.46
-F1-score global (ponderado): 0.45
+<pre>Características seleccionadas por RFE: ['RSI_14' 'Histogram' 'WILLR_14' 'TSI_13_25_13' 'CMO']
+Accuracy general del modelo: 0.57
+Precision global (ponderada): 0.52
+Recall global (ponderado): 0.57
+F1-score global (ponderado): 0.48
 Reporte de clasificación general:
                precision    recall  f1-score   support
 
-          -1       0.84      0.33      0.47       466
-           0       0.32      0.86      0.47       368
-           1       0.79      0.28      0.41       504
+          -1       0.58      0.76      0.66       473
+           0       0.40      0.02      0.03       363
+           1       0.55      0.78      0.65       502
 
-    accuracy                           0.46      1338
-   macro avg       0.65      0.49      0.45      1338
-weighted avg       0.68      0.46      0.45      1338
+    accuracy                           0.57      1338
+   macro avg       0.51      0.52      0.45      1338
+weighted avg       0.52      0.57      0.48      1338
 
-Tiempo de ejecución: 0:00:19.379188
+Tiempo de ejecución: 0:00:16.904632
 Número total de iteraciones realizadas: 446
 </pre>
 </div>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=8eebf4bc-5f8d-40e2-9677-d536924cd625">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=87caa6fb-a317-47bc-aa9a-70abc188bb42">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7732,9 +7732,9 @@ Número total de iteraciones realizadas: 446
 <div class="highlight hl-python"><pre><span></span><span class="c1"># Árbol de decisión</span>
 
 <span class="c1"># Selección de todas las características excepto 'Date' y 'Tendencia'</span>
-<span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">data_aguas_SNN</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'Date'</span><span class="p">,</span> <span class="s1">'Tendencia'</span><span class="p">]]</span>
-<span class="n">X</span> <span class="o">=</span> <span class="n">data_aguas_SNN</span><span class="p">[</span><span class="n">features</span><span class="p">]</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">data_aguas_SNN</span><span class="p">[</span><span class="s1">'Tendencia'</span><span class="p">]</span>
+<span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">data_CCU_SN</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'Date'</span><span class="p">,</span> <span class="s1">'Tendencia'</span><span class="p">]]</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">data_CCU_SN</span><span class="p">[</span><span class="n">features</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">data_CCU_SN</span><span class="p">[</span><span class="s1">'Tendencia'</span><span class="p">]</span>
 
 <span class="c1"># Normalización de los datos</span>
 <span class="n">scaler</span> <span class="o">=</span> <span class="n">MinMaxScaler</span><span class="p">()</span>
@@ -7750,7 +7750,7 @@ Número total de iteraciones realizadas: 446
 <span class="c1"># Implementación de la ventana rodante con la columna 'Date'</span>
 <span class="n">window_size</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># Ajusta el tamaño de la ventana según tus necesidades</span>
 
-<span class="n">dates</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">data_aguas_SNN</span><span class="p">[</span><span class="s1">'Date'</span><span class="p">])</span>
+<span class="n">dates</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">data_CCU_SN</span><span class="p">[</span><span class="s1">'Date'</span><span class="p">])</span>
 <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
 
 <span class="c1"># Acumular todas las predicciones y etiquetas verdaderas</span>
@@ -7827,30 +7827,30 @@ Número total de iteraciones realizadas: 446
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Características seleccionadas por RFE: ['RSI_14' 'BBANDS_lower' 'CCI_14' 'WILLR_14' 'COPP']
-Accuracy general del modelo: 0.51
+<pre>Características seleccionadas por RFE: ['Histogram' 'WILLR_14' 'TSI_13_25_13' 'UO' 'CMO']
+Accuracy general del modelo: 0.46
 Precision global (ponderada): 0.47
-Recall global (ponderado): 0.51
-F1-score global (ponderado): 0.43
+Recall global (ponderado): 0.46
+F1-score global (ponderado): 0.46
 Reporte de clasificación general:
                precision    recall  f1-score   support
 
-          -1       0.62      0.50      0.55       466
-           0       0.30      0.02      0.04       368
-           1       0.47      0.87      0.61       504
+          -1       0.56      0.51      0.53       473
+           0       0.28      0.31      0.29       363
+           1       0.52      0.53      0.52       502
 
-    accuracy                           0.51      1338
-   macro avg       0.46      0.46      0.40      1338
-weighted avg       0.47      0.51      0.43      1338
+    accuracy                           0.46      1338
+   macro avg       0.45      0.45      0.45      1338
+weighted avg       0.47      0.46      0.46      1338
 
-Tiempo de ejecución: 0:00:02.466823
+Tiempo de ejecución: 0:00:04.464091
 Número total de iteraciones realizadas: 446
 </pre>
 </div>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=d8bc21fc-af38-4a6f-b9c2-ff5988d94e0f">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=c5eefd71-03dc-487d-aec5-bf9c972e14ed">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7861,9 +7861,9 @@ Número total de iteraciones realizadas: 446
 <div class="highlight hl-python"><pre><span></span><span class="c1"># XGBoost</span>
 
 <span class="c1"># Selección de todas las características excepto 'Date' y 'Tendencia'</span>
-<span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">data_aguas_SNN</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'Date'</span><span class="p">,</span> <span class="s1">'Tendencia'</span><span class="p">]]</span>
-<span class="n">X</span> <span class="o">=</span> <span class="n">data_aguas_SNN</span><span class="p">[</span><span class="n">features</span><span class="p">]</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">data_aguas_SNN</span><span class="p">[</span><span class="s1">'Tendencia'</span><span class="p">]</span>
+<span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">data_CCU_SN</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'Date'</span><span class="p">,</span> <span class="s1">'Tendencia'</span><span class="p">]]</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">data_CCU_SN</span><span class="p">[</span><span class="n">features</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">data_CCU_SN</span><span class="p">[</span><span class="s1">'Tendencia'</span><span class="p">]</span>
 
 <span class="c1"># Codificación de las etiquetas (transformación de [-1, 0, 1] a [0, 1, 2])</span>
 <span class="n">label_encoder</span> <span class="o">=</span> <span class="n">LabelEncoder</span><span class="p">()</span>
@@ -7883,7 +7883,7 @@ Número total de iteraciones realizadas: 446
 <span class="c1"># Implementación de la ventana rodante con la columna 'Date'</span>
 <span class="n">window_size</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># Ajusta el tamaño de la ventana según tus necesidades</span>
 
-<span class="n">dates</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">data_aguas_SNN</span><span class="p">[</span><span class="s1">'Date'</span><span class="p">])</span>
+<span class="n">dates</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">data_CCU_SN</span><span class="p">[</span><span class="s1">'Date'</span><span class="p">])</span>
 <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
 
 <span class="c1"># Acumular todas las predicciones y etiquetas verdaderas</span>
@@ -7956,31 +7956,1641 @@ Número total de iteraciones realizadas: 446
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:02:06] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:02:08] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:02:09] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:02:11] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:02:12] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:02:16] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:02:19] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:02:21] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:02:23] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:02:26] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:02:29] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:02:31] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:02:33] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:02:35] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:02:37] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:02:39] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:02:40] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:02:42] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:02:44] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:02:45] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:02:47] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:02:48] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:02:52] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:02:53] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:02:55] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:02:56] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:02:57] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:02:59] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:00] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:01] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:03] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:04] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:06] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:07] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:08] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:09] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:10] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:12] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:13] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:14] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:15] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:16] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:17] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:18] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:19] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Características seleccionadas por RFE: ['CCI_14' 'WILLR_14' 'TSI_13_25_13' 'CMO' 'COPP']
-Precisión general del modelo: 0.56
-Precision global (ponderada): 0.57
+<pre>Características seleccionadas por RFE: ['RSI_14' 'Histogram' 'WILLR_14' 'TSI_13_25_13' 'CMO']
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:20] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:21] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:22] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:23] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:25] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:26] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:27] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:28] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:29] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:30] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:31] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:32] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:33] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:34] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:35] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:36] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:37] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:38] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:39] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:40] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:41] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:42] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:43] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:44] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:45] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:46] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:47] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:48] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:49] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:50] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:51] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:52] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:53] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:54] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:55] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:56] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:57] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:58] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:03:59] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:00] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:01] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:02] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:03] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:04] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:05] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:06] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:07] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:08] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:09] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:10] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:11] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:12] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:13] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:14] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:15] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:16] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:17] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:18] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:19] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:20] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:21] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:22] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:23] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:24] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:25] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:26] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:27] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:28] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:29] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:30] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:32] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:33] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:34] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:35] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:36] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:37] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:38] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:39] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:40] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:41] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:42] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:43] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:44] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:45] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:46] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:47] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:48] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:49] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:50] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:51] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:52] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:53] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:54] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:55] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:56] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:57] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:58] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:04:59] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:00] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:01] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:02] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:03] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:04] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:05] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:06] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:07] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:08] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:09] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:10] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:11] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:12] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:13] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:14] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:15] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:16] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:17] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:18] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:19] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:20] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:21] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:22] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:23] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:24] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:25] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:26] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:27] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:28] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:29] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:30] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:31] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:32] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:33] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:34] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:35] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:36] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:37] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:38] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:39] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:40] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:41] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:42] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:43] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:44] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:45] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:46] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:47] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:48] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:49] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:50] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:51] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:52] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:53] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:54] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:55] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:56] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:57] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:58] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:05:59] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:00] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:01] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:02] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:03] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:04] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:05] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:06] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:07] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:08] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:09] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:10] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:11] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:12] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:13] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:14] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:15] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:16] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:17] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:18] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:19] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:20] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:21] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:22] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:23] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:24] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:25] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:26] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:27] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:28] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:29] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:30] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:31] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:32] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:33] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:34] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:35] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:36] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:37] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:38] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:39] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:40] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:41] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:42] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:44] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:45] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:46] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:47] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:48] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:49] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:50] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:51] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:52] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:53] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:54] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:55] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:56] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:57] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:58] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:06:59] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:00] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:01] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:02] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:03] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:04] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:05] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:06] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:07] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:08] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:09] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:10] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:11] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:12] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:13] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:14] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:15] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:16] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:17] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:18] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:19] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:20] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:21] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:22] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:24] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:25] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:26] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:27] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:28] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:29] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:30] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:31] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:32] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:33] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:34] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:35] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:36] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:37] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:38] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:39] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:40] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:41] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:42] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:43] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:44] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:45] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:46] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:47] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:48] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:50] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:51] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:53] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:54] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:55] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:56] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:57] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:58] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:07:59] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:00] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:01] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:02] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:03] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:04] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:05] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:06] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:07] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:08] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:09] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:10] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:11] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:12] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:13] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:14] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:15] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:16] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:17] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:18] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:19] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:20] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:21] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:23] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:25] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:26] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:27] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:28] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:30] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:32] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:34] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:35] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:37] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:38] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:39] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:40] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:42] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:43] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:45] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:46] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:47] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:49] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:51] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:53] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:54] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:57] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:58] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:08:59] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:09:00] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:09:01] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:09:02] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:09:03] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:09:04] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:09:05] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:09:06] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:09:07] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:09:08] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:09:09] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:09:10] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:09:11] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:09:12] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:09:15] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:09:17] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:09:19] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:09:21] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:09:23] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:09:25] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:09:28] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:09:35] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:09:37] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:09:40] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:09:42] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:09:44] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:09:47] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:09:49] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:09:51] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:09:53] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:09:57] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:09:59] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\xgboost\core.py:158: UserWarning: [00:10:01] WARNING: C:\buildkite-agent\builds\buildkite-windows-cpu-autoscaling-group-i-0015a694724fa8361-1\xgboost\xgboost-ci-windows\src\learner.cc:740: 
+Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Precisión general del modelo: 0.56
+Precision global (ponderada): 0.56
 Recall global (ponderado): 0.56
-F1-score global (ponderado): 0.56
+F1-score global (ponderado): 0.55
 Reporte de clasificación general:
                precision    recall  f1-score   support
 
-          -1       0.62      0.63      0.62       466
-           0       0.40      0.47      0.43       368
-           1       0.66      0.55      0.60       504
+          -1       0.62      0.70      0.66       473
+           0       0.34      0.33      0.34       363
+           1       0.64      0.58      0.61       502
 
     accuracy                           0.56      1338
-   macro avg       0.56      0.55      0.55      1338
-weighted avg       0.57      0.56      0.56      1338
+   macro avg       0.54      0.54      0.54      1338
+weighted avg       0.56      0.56      0.55      1338
 
-Tiempo de ejecución: 0:01:18.055748
+Tiempo de ejecución: 0:06:48.625120
 Número total de iteraciones realizadas: 446
 </pre>
 </div>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=6a112c73-bc94-40f8-ab47-bad5371f9ff1">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=19dfbc00-d8fd-4986-acb4-ed69410e7e72">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7991,9 +9601,9 @@ Número total de iteraciones realizadas: 446
 <div class="highlight hl-python"><pre><span></span><span class="c1"># Random Forest</span>
 
 <span class="c1"># Selección de todas las características excepto 'Date' y 'Tendencia'</span>
-<span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">data_aguas_SNN</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'Date'</span><span class="p">,</span> <span class="s1">'Tendencia'</span><span class="p">]]</span>
-<span class="n">X</span> <span class="o">=</span> <span class="n">data_aguas_SNN</span><span class="p">[</span><span class="n">features</span><span class="p">]</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">data_aguas_SNN</span><span class="p">[</span><span class="s1">'Tendencia'</span><span class="p">]</span>
+<span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">data_CCU_SN</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'Date'</span><span class="p">,</span> <span class="s1">'Tendencia'</span><span class="p">]]</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">data_CCU_SN</span><span class="p">[</span><span class="n">features</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">data_CCU_SN</span><span class="p">[</span><span class="s1">'Tendencia'</span><span class="p">]</span>
 
 <span class="c1"># Codificación de las etiquetas</span>
 <span class="n">label_encoder</span> <span class="o">=</span> <span class="n">LabelEncoder</span><span class="p">()</span>
@@ -8013,7 +9623,7 @@ Número total de iteraciones realizadas: 446
 <span class="c1"># Implementación de la ventana rodante con la columna 'Date'</span>
 <span class="n">window_size</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># Ajusta el tamaño de la ventana según tus necesidades</span>
 
-<span class="n">dates</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">data_aguas_SNN</span><span class="p">[</span><span class="s1">'Date'</span><span class="p">])</span>
+<span class="n">dates</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">data_CCU_SN</span><span class="p">[</span><span class="s1">'Date'</span><span class="p">])</span>
 <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
 
 <span class="c1"># Acumular todas las predicciones y etiquetas verdaderas</span>
@@ -8087,30 +9697,30 @@ Número total de iteraciones realizadas: 446
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Características seleccionadas por RFE: ['BBANDS_lower' 'CCI_14' 'OBV' 'WILLR_14' 'COPP']
-Precisión general del modelo: 0.54
-Precision global (ponderada): 0.52
-Recall global (ponderado): 0.54
-F1-score global (ponderado): 0.53
+<pre>Características seleccionadas por RFE: ['Histogram' 'CCI_14' 'WILLR_14' 'TSI_13_25_13' 'CMO']
+Precisión general del modelo: 0.58
+Precision global (ponderada): 0.57
+Recall global (ponderado): 0.58
+F1-score global (ponderado): 0.58
 Reporte de clasificación general:
                precision    recall  f1-score   support
 
-          -1       0.57      0.62      0.59       466
-           0       0.40      0.27      0.32       368
-           1       0.57      0.66      0.61       504
+          -1       0.65      0.70      0.67       473
+           0       0.38      0.36      0.37       363
+           1       0.64      0.63      0.63       502
 
-    accuracy                           0.54      1338
-   macro avg       0.51      0.52      0.51      1338
-weighted avg       0.52      0.54      0.53      1338
+    accuracy                           0.58      1338
+   macro avg       0.56      0.56      0.56      1338
+weighted avg       0.57      0.58      0.58      1338
 
-Tiempo de ejecución: 0:02:44.414450
+Tiempo de ejecución: 0:03:57.150564
 Número total de iteraciones realizadas: 446
 </pre>
 </div>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=34474dcc-d3aa-427c-a7db-b5239234caf1">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=eb3a1492-0a5c-4236-902e-3b5cd710d974">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8121,9 +9731,9 @@ Número total de iteraciones realizadas: 446
 <div class="highlight hl-python"><pre><span></span><span class="c1"># Naive Bayes</span>
 
 <span class="c1"># Selección de todas las características excepto 'Date' y 'Tendencia'</span>
-<span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">data_aguas_SNN</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'Date'</span><span class="p">,</span> <span class="s1">'Tendencia'</span><span class="p">]]</span>
-<span class="n">X</span> <span class="o">=</span> <span class="n">data_aguas_SNN</span><span class="p">[</span><span class="n">features</span><span class="p">]</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">data_aguas_SNN</span><span class="p">[</span><span class="s1">'Tendencia'</span><span class="p">]</span>
+<span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">data_CCU_SN</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'Date'</span><span class="p">,</span> <span class="s1">'Tendencia'</span><span class="p">]]</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">data_CCU_SN</span><span class="p">[</span><span class="n">features</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">data_CCU_SN</span><span class="p">[</span><span class="s1">'Tendencia'</span><span class="p">]</span>
 
 <span class="c1"># Codificación de las etiquetas</span>
 <span class="n">label_encoder</span> <span class="o">=</span> <span class="n">LabelEncoder</span><span class="p">()</span>
@@ -8143,7 +9753,7 @@ Número total de iteraciones realizadas: 446
 <span class="c1"># Implementación de la ventana rodante con la columna 'Date'</span>
 <span class="n">window_size</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># Ajusta el tamaño de la ventana según tus necesidades</span>
 
-<span class="n">dates</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">data_aguas_SNN</span><span class="p">[</span><span class="s1">'Date'</span><span class="p">])</span>
+<span class="n">dates</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">data_CCU_SN</span><span class="p">[</span><span class="s1">'Date'</span><span class="p">])</span>
 <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
 
 <span class="c1"># Acumular todas las predicciones y etiquetas verdaderas</span>
@@ -8218,30 +9828,30 @@ Número total de iteraciones realizadas: 446
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Características seleccionadas por RFE: ['BBANDS_lower' 'CCI_14' 'OBV' 'WILLR_14' 'COPP']
-Precisión general del modelo: 0.48
-Precision global (ponderada): 0.55
-Recall global (ponderado): 0.48
-F1-score global (ponderado): 0.41
+<pre>Características seleccionadas por RFE: ['Histogram' 'CCI_14' 'WILLR_14' 'TSI_13_25_13' 'CMO']
+Precisión general del modelo: 0.46
+Precision global (ponderada): 0.44
+Recall global (ponderado): 0.46
+F1-score global (ponderado): 0.44
 Reporte de clasificación general:
                precision    recall  f1-score   support
 
-          -1       0.50      0.56      0.53       466
-           0       0.75      0.02      0.05       368
-           1       0.46      0.74      0.57       504
+          -1       0.48      0.58      0.52       473
+           0       0.32      0.20      0.25       363
+           1       0.49      0.53      0.51       502
 
-    accuracy                           0.48      1338
-   macro avg       0.57      0.44      0.38      1338
-weighted avg       0.55      0.48      0.41      1338
+    accuracy                           0.46      1338
+   macro avg       0.43      0.43      0.43      1338
+weighted avg       0.44      0.46      0.44      1338
 
-Tiempo de ejecución: 0:00:00.561118
+Tiempo de ejecución: 0:00:00.896935
 Número total de iteraciones realizadas: 446
 </pre>
 </div>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=2296d88d-373b-4564-bc9a-c0a2bd56eaf5">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=2d30da58-2ad1-46f5-b447-bb6fef2a5401">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8252,9 +9862,9 @@ Número total de iteraciones realizadas: 446
 <div class="highlight hl-python"><pre><span></span><span class="c1"># MLP (Multi-Layer Perceptron)</span>
 
 <span class="c1"># Selección de todas las características excepto 'Date' y 'Tendencia'</span>
-<span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">data_aguas_SNN</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'Date'</span><span class="p">,</span> <span class="s1">'Tendencia'</span><span class="p">]]</span>
-<span class="n">X</span> <span class="o">=</span> <span class="n">data_aguas_SNN</span><span class="p">[</span><span class="n">features</span><span class="p">]</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">data_aguas_SNN</span><span class="p">[</span><span class="s1">'Tendencia'</span><span class="p">]</span>
+<span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">data_CCU_SN</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'Date'</span><span class="p">,</span> <span class="s1">'Tendencia'</span><span class="p">]]</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">data_CCU_SN</span><span class="p">[</span><span class="n">features</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">data_CCU_SN</span><span class="p">[</span><span class="s1">'Tendencia'</span><span class="p">]</span>
 
 <span class="c1"># Codificación de las etiquetas</span>
 <span class="n">label_encoder</span> <span class="o">=</span> <span class="n">LabelEncoder</span><span class="p">()</span>
@@ -8274,7 +9884,7 @@ Número total de iteraciones realizadas: 446
 <span class="c1"># Implementación de la ventana rodante con la columna 'Date'</span>
 <span class="n">window_size</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># Ajusta el tamaño de la ventana según tus necesidades</span>
 
-<span class="n">dates</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">data_aguas_SNN</span><span class="p">[</span><span class="s1">'Date'</span><span class="p">])</span>
+<span class="n">dates</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">data_CCU_SN</span><span class="p">[</span><span class="s1">'Date'</span><span class="p">])</span>
 <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
 
 <span class="c1"># Acumular todas las predicciones y etiquetas verdaderas</span>
@@ -8349,30 +9959,44 @@ Número total de iteraciones realizadas: 446
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Características seleccionadas por RFE: ['BBANDS_lower' 'CCI_14' 'OBV' 'WILLR_14' 'COPP']
-Precisión general del modelo: 0.54
-Precision global (ponderada): 0.51
-Recall global (ponderado): 0.54
-F1-score global (ponderado): 0.52
+<pre>Características seleccionadas por RFE: ['Histogram' 'CCI_14' 'WILLR_14' 'TSI_13_25_13' 'CMO']
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\sklearn\neural_network\_multilayer_perceptron.py:690: ConvergenceWarning: Stochastic Optimizer: Maximum iterations (300) reached and the optimization hasn't converged yet.
+  warnings.warn(
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Precisión general del modelo: 0.62
+Precision global (ponderada): 0.61
+Recall global (ponderado): 0.62
+F1-score global (ponderado): 0.62
 Reporte de clasificación general:
                precision    recall  f1-score   support
 
-          -1       0.61      0.65      0.63       466
-           0       0.34      0.17      0.23       368
-           1       0.55      0.71      0.62       504
+          -1       0.70      0.73      0.71       473
+           0       0.37      0.35      0.36       363
+           1       0.71      0.71      0.71       502
 
-    accuracy                           0.54      1338
-   macro avg       0.50      0.51      0.49      1338
-weighted avg       0.51      0.54      0.52      1338
+    accuracy                           0.62      1338
+   macro avg       0.59      0.60      0.59      1338
+weighted avg       0.61      0.62      0.62      1338
 
-Tiempo de ejecución: 0:16:05.667149
+Tiempo de ejecución: 0:12:12.642950
 Número total de iteraciones realizadas: 446
 </pre>
 </div>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=a556975d-031c-4eee-82f0-484c175706de">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=8c9b5a97-3d6b-4d2d-b7da-3dd2b3d98648">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8383,9 +10007,9 @@ Número total de iteraciones realizadas: 446
 <div class="highlight hl-python"><pre><span></span><span class="c1"># LSTM (Long Short-Term Memory)</span>
 
 <span class="c1"># Selección de características y etiqueta</span>
-<span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">data_aguas_SNN</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'Date'</span><span class="p">,</span> <span class="s1">'Tendencia'</span><span class="p">]]</span>
-<span class="n">X</span> <span class="o">=</span> <span class="n">data_aguas_SNN</span><span class="p">[</span><span class="n">features</span><span class="p">]</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">data_aguas_SNN</span><span class="p">[</span><span class="s1">'Tendencia'</span><span class="p">]</span>
+<span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">data_CCU_SN</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'Date'</span><span class="p">,</span> <span class="s1">'Tendencia'</span><span class="p">]]</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">data_CCU_SN</span><span class="p">[</span><span class="n">features</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">data_CCU_SN</span><span class="p">[</span><span class="s1">'Tendencia'</span><span class="p">]</span>
 
 <span class="c1"># Codificación de las etiquetas para un problema multicategoría</span>
 <span class="n">label_encoder</span> <span class="o">=</span> <span class="n">LabelEncoder</span><span class="p">()</span>
@@ -8471,108 +10095,136 @@ Número total de iteraciones realizadas: 446
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>Clases originales: [-1  0  1]
 Valores codificados: [0, 1, 2]
-Distribución de clases en el conjunto de entrenamiento: Counter({1: 894, 2: 681, 0: 666})
+Distribución de clases en el conjunto de entrenamiento: Counter({2: 799, 0: 765, 1: 677})
 Epoch 1/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">3s</span> 13ms/step - accuracy: 0.3888 - loss: 1.1076
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\keras\src\layers\rnn\rnn.py:204: UserWarning: Do not pass an `input_shape`/`input_dim` argument to a layer. When using Sequential models, prefer using an `Input(shape)` object as the first layer in the model instead.
+  super().__init__(**kwargs)
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre><span class="ansi-bold"> 8/70</span> <span class="ansi-green-fg">━━</span><span class="ansi-white-fg">━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">0s</span> 16ms/step - accuracy: 0.3529 - loss: 1.1268</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>C:\Users\chali\AppData\Roaming\Python\Python310\site-packages\keras\src\trainers\data_adapters\py_dataset_adapter.py:122: UserWarning: Your `PyDataset` class should call `super().__init__(**kwargs)` in its constructor. `**kwargs` can include `workers`, `use_multiprocessing`, `max_queue_size`. Do not pass these arguments to `fit()`, as they will be ignored.
+  self._warn_if_super_not_called()
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre><span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">5s</span> 16ms/step - accuracy: 0.3485 - loss: 1.1144
 Epoch 2/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.4459 - loss: 1.0639
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 15ms/step - accuracy: 0.3444 - loss: 1.1050
 Epoch 3/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.4329 - loss: 1.0699
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 15ms/step - accuracy: 0.3415 - loss: 1.0989
 Epoch 4/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.4378 - loss: 1.0627
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 15ms/step - accuracy: 0.3642 - loss: 1.0960
 Epoch 5/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.4239 - loss: 1.0677
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 15ms/step - accuracy: 0.3544 - loss: 1.0948
 Epoch 6/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.4487 - loss: 1.0661
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 15ms/step - accuracy: 0.3435 - loss: 1.1016
 Epoch 7/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.4657 - loss: 1.0521
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 15ms/step - accuracy: 0.3331 - loss: 1.0919
 Epoch 8/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.4600 - loss: 1.0612
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 15ms/step - accuracy: 0.3654 - loss: 1.0954
 Epoch 9/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.4648 - loss: 1.0523
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 15ms/step - accuracy: 0.3618 - loss: 1.0876
 Epoch 10/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 13ms/step - accuracy: 0.4538 - loss: 1.0550
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 15ms/step - accuracy: 0.3536 - loss: 1.0970
 Epoch 11/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 14ms/step - accuracy: 0.4492 - loss: 1.0523
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 15ms/step - accuracy: 0.3557 - loss: 1.0990
 Epoch 12/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 13ms/step - accuracy: 0.4626 - loss: 1.0457
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 15ms/step - accuracy: 0.3852 - loss: 1.0917
 Epoch 13/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.4454 - loss: 1.0574
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 15ms/step - accuracy: 0.3921 - loss: 1.0914
 Epoch 14/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.4499 - loss: 1.0618
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 15ms/step - accuracy: 0.3732 - loss: 1.0886
 Epoch 15/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.4566 - loss: 1.0496
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 15ms/step - accuracy: 0.3631 - loss: 1.0909
 Epoch 16/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 13ms/step - accuracy: 0.4555 - loss: 1.0488
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 15ms/step - accuracy: 0.3720 - loss: 1.0939
 Epoch 17/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.4730 - loss: 1.0485
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 15ms/step - accuracy: 0.3986 - loss: 1.0816
 Epoch 18/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 13ms/step - accuracy: 0.4529 - loss: 1.0656
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 15ms/step - accuracy: 0.3711 - loss: 1.0882
 Epoch 19/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.4424 - loss: 1.0615
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 15ms/step - accuracy: 0.3767 - loss: 1.0865
 Epoch 20/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 14ms/step - accuracy: 0.4699 - loss: 1.0467
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 16ms/step - accuracy: 0.3923 - loss: 1.0822
 Epoch 21/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 13ms/step - accuracy: 0.4947 - loss: 1.0348
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 15ms/step - accuracy: 0.4212 - loss: 1.0712
 Epoch 22/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.4535 - loss: 1.0480
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 15ms/step - accuracy: 0.4106 - loss: 1.0628
 Epoch 23/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.4822 - loss: 1.0433
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 15ms/step - accuracy: 0.4726 - loss: 1.0305
 Epoch 24/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 13ms/step - accuracy: 0.4855 - loss: 1.0385
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 15ms/step - accuracy: 0.4565 - loss: 1.0466
 Epoch 25/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.4788 - loss: 1.0455
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 15ms/step - accuracy: 0.5044 - loss: 1.0137
 Epoch 26/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.4647 - loss: 1.0458
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 15ms/step - accuracy: 0.4809 - loss: 1.0269
 Epoch 27/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.4787 - loss: 1.0431
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 15ms/step - accuracy: 0.4709 - loss: 1.0321
 Epoch 28/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.4805 - loss: 1.0443
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 15ms/step - accuracy: 0.4753 - loss: 1.0198
 Epoch 29/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.4900 - loss: 1.0257
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 15ms/step - accuracy: 0.5064 - loss: 1.0094
 Epoch 30/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.4937 - loss: 1.0243
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 15ms/step - accuracy: 0.4925 - loss: 1.0136
 Epoch 31/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.4687 - loss: 1.0349
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 16ms/step - accuracy: 0.5065 - loss: 0.9907
 Epoch 32/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.5154 - loss: 1.0228
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 16ms/step - accuracy: 0.4914 - loss: 1.0032
 Epoch 33/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.5026 - loss: 1.0224
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 16ms/step - accuracy: 0.5040 - loss: 0.9838
 Epoch 34/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.5225 - loss: 1.0000
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 16ms/step - accuracy: 0.5258 - loss: 0.9642
 Epoch 35/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 13ms/step - accuracy: 0.5175 - loss: 1.0159
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 17ms/step - accuracy: 0.5155 - loss: 0.9828
 Epoch 36/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.5002 - loss: 1.0018
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 16ms/step - accuracy: 0.5173 - loss: 0.9784
 Epoch 37/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 13ms/step - accuracy: 0.5108 - loss: 1.0057
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 16ms/step - accuracy: 0.5051 - loss: 0.9895
 Epoch 38/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.5072 - loss: 1.0107
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 17ms/step - accuracy: 0.5186 - loss: 0.9563
 Epoch 39/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.5346 - loss: 0.9976
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 16ms/step - accuracy: 0.5077 - loss: 0.9743
 Epoch 40/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 13ms/step - accuracy: 0.4933 - loss: 1.0140
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 16ms/step - accuracy: 0.5202 - loss: 0.9750
 Epoch 41/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.5487 - loss: 0.9728
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 17ms/step - accuracy: 0.5303 - loss: 0.9694
 Epoch 42/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.5164 - loss: 1.0081
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 17ms/step - accuracy: 0.5182 - loss: 0.9587
 Epoch 43/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.5006 - loss: 1.0145
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 16ms/step - accuracy: 0.5061 - loss: 0.9787
 Epoch 44/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 13ms/step - accuracy: 0.5246 - loss: 0.9905
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 16ms/step - accuracy: 0.5318 - loss: 0.9380
 Epoch 45/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.5405 - loss: 0.9657
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 16ms/step - accuracy: 0.5087 - loss: 0.9731
 Epoch 46/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.5482 - loss: 0.9639
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 16ms/step - accuracy: 0.5445 - loss: 0.9538
 Epoch 47/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.5289 - loss: 0.9840
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 16ms/step - accuracy: 0.5386 - loss: 0.9632
 Epoch 48/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.5351 - loss: 0.9671
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 16ms/step - accuracy: 0.5282 - loss: 0.9625
 Epoch 49/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.5323 - loss: 0.9657
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 16ms/step - accuracy: 0.5335 - loss: 0.9631
 Epoch 50/50
-<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 12ms/step - accuracy: 0.5316 - loss: 0.9665
-<span class="ansi-bold">2221/2221</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">5s</span> 2ms/step
+<span class="ansi-bold">70/70</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">1s</span> 16ms/step - accuracy: 0.5088 - loss: 0.9832
+<span class="ansi-bold">2221/2221</span> <span class="ansi-green-fg">━━━━━━━━━━━━━━━━━━━━</span> <span class="ansi-bold">8s</span> 3ms/step
 Clases decodificadas en las predicciones: [-1  0  1]
 Clases decodificadas en y_test_aligned: [-1  0  1]
 Clases únicas en las predicciones: [-1  0  1]
@@ -8581,18 +10233,18 @@ Precisión del modelo: 0.55
 Reporte de clasificación para LSTM:
                precision    recall  f1-score   support
 
-          -1       0.52      0.52      0.52       662
-           0       0.56      0.69      0.62       885
-           1       0.57      0.39      0.46       674
+          -1       0.58      0.65      0.61       760
+           0       0.47      0.29      0.36       671
+           1       0.56      0.68      0.62       790
 
     accuracy                           0.55      2221
-   macro avg       0.55      0.53      0.53      2221
-weighted avg       0.55      0.55      0.54      2221
+   macro avg       0.54      0.54      0.53      2221
+weighted avg       0.54      0.55      0.54      2221
 
 Matriz de confusión:
- [[344 234  84]
- [162 608 115]
- [161 250 263]]
+ [[494 130 136]
+ [197 194 280]
+ [159  91 540]]
 </pre>
 </div>
 </div>

@@ -6,7 +6,10 @@ Fase 1: Indicadores técnicos
 import os
 import sys
 import pandas as pd
+import numpy as np
 import pandas_ta as ta
+import warnings
+warnings.filterwarnings("ignore")
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
 from scraper.yahoo import empresas
@@ -36,7 +39,7 @@ def calculate_trend(df, delta=0.01):
     delta (float): El delta porcentual para considerar los precios como iguales. Por defecto es 1% (0.01).
     '''
     # Calcula la diferencia porcentual entre el precio actual y el del periodo anterior
-    df['Tendencia'] = df['Close'].pct_change().apply(lambda x: 1 if x > delta else (-1 if x < -delta else 0))
+    df['Tendencia'] = df['Adj Close'].pct_change().apply(lambda x: 1 if x > delta else (-1 if x < -delta else 0))
 
     return df
 
@@ -47,9 +50,14 @@ if __name__ == "__main__":
         df = load_data(f"../../scraper/data/{empresa}.csv")
         print("Data cargada - "+empresa)
         print("-" * 40)
+        if 'Unnamed: 0' in df.columns:
+            print("Eliminando la columna 'Unnamed: 0'")
+            df.drop(columns=['Unnamed: 0'], inplace=True)
         print("Calculando tendencia")
-        df = calculate_trend(df, delta=0.005)
-        
+        df = calculate_trend(df, delta=0.005)  
+        print("Tendencia calculada")
+        print("-" * 40)
+        print("Calculando indicadores técnicos")
         # Calcular múltiples indicadores técnicos
         df['SMA_10'] = ta.sma(df['Close'], length=10)
         df['SMA_50'] = ta.sma(df['Close'], length=50)
@@ -97,11 +105,12 @@ if __name__ == "__main__":
         df['HMA'] = ta.hma(df['Close'])
         df['VWMA'] = ta.vwma(df['Close'], df['Volume'])
         df['VWMA'] = ta.vwma(df['Close'], df['Volume'])
-        df['ZLEMA'] = ta.zlma(df['Close'])  
-        
-        df.fillna(0, inplace=True) 
-        
-        print("Tendencia calculada")
+        df['ZLEMA'] = ta.zlma(df['Close'])
+        print("Indicadores técnicos calculados")
+        print("-" * 40)
+        print("Limpiando data")
+        df.replace([np.inf, -np.inf], np.nan, inplace=True)
+        df.fillna(0, inplace=True)
         print("-" * 40)
         print("Exportando data")
         export_data(df, f"./data/Input/{empresa}.csv")
