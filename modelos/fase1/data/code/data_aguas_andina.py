@@ -34,57 +34,6 @@ if 'Unnamed: 0' in df.columns:
     data_aguas_SNN.drop(columns=['Unnamed: 0'], inplace=True)
 print("columnas totales:", len(data_aguas_SNN.columns))
 
-#%%
-
-data_aguas_SNN.head()
-data_aguas_SNN.columns
-#Ahora a este archivo le haremos la estadistica descriptiva: 
-    
-# Estadísticas descriptivas por columnas
-open_stats = data_aguas_SNN['Open'].describe()
-high_stats = data_aguas_SNN['High'].describe()
-low_stats = data_aguas_SNN['Low'].describe()
-close_stats = data_aguas_SNN['Close'].describe()
-adj_close_stats = data_aguas_SNN['Adj Close'].describe()
-volume_stats = data_aguas_SNN['Volume'].describe()
-tendencia_stats = data_aguas_SNN['Tendencia'].describe()
-macd_stats = data_aguas_SNN['MACD_12_26_9'].describe()
-macdh_stats = data_aguas_SNN['MACDh_12_26_9'].describe()
-macds_stats = data_aguas_SNN['MACDs_12_26_9'].describe()
-rsi_stats = data_aguas_SNN['RSI'].describe()
-
-# Mostramos las estadísticas descriptivas para cada columna
-print("Estadísticas descriptivas para 'Open':\n", open_stats, "\n")
-print("Estadísticas descriptivas para 'High':\n", high_stats, "\n")
-print("Estadísticas descriptivas para 'Low':\n", low_stats, "\n")
-print("Estadísticas descriptivas para 'Close':\n", close_stats, "\n")
-print("Estadísticas descriptivas para 'Adj Close':\n", adj_close_stats, "\n")
-print("Estadísticas descriptivas para 'Volume':\n", volume_stats, "\n")
-print("Estadísticas descriptivas para 'Tendencia':\n", tendencia_stats, "\n")
-print("Estadísticas descriptivas para 'MACD_12_26_9':\n", macd_stats, "\n")
-print("Estadísticas descriptivas para 'MACDh_12_26_9':\n", macdh_stats, "\n")
-print("Estadísticas descriptivas para 'MACDs_12_26_9':\n", macds_stats, "\n")
-print("Estadísticas descriptivas para 'RSI':\n", rsi_stats, "\n")
-
-#%%
-
-
-
-# Libraries to help with data visualization
-
-num_cols = df.select_dtypes(include=np.number).columns.tolist()
-
-plt.figure(figsize=(15, 15))
-
-for i, variable in enumerate(num_cols):
-    plt.subplot(4, 3, i + 1)
-    sns.boxplot(data=df, x=variable)
-    plt.tight_layout(pad=2)
-
-plt.show()
-
-#Es importante saber como vamos a manejar los datos atipicos existentes en los indicadores tecnicos y en el volumen
-
 
 #%%
 
@@ -104,6 +53,8 @@ X_scaled = scaler.fit_transform(X)
 model_rfe = LogisticRegression(multi_class='ovr', max_iter=1000)
 rfe = RFE(model_rfe, n_features_to_select=5)
 X_rfe = rfe.fit_transform(X_scaled, y)
+
+
 
 print("Características seleccionadas por RFE:", np.array(features)[rfe.support_])
 
@@ -154,7 +105,7 @@ for start in range(train_size, len(dates) - window_size):
     all_y_true.extend(y_test)
     all_y_pred.extend(y_pred)
     
-    iteration_count += 1
+    iteration_count += 1    
 
 hora_de_fin = datetime.now()
 
@@ -186,6 +137,93 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 #%%
 
+
+# Cargar los datos (asegúrate de tener el DataFrame 'data_aguas_SNN' cargado previamente)
+# data_aguas_SNN = pd.read_csv('ruta_al_archivo.csv')  # Descomenta si necesitas cargar los datos desde un archivo
+
+# Seleccionar las columnas de interés
+selected_columns = data_aguas_SNN[['Date', 'Adj Close']]
+
+# Asegurarse de que la columna de fecha esté en el formato datetime
+selected_columns['Date'] = pd.to_datetime(selected_columns['Date'])
+
+# Configurar la columna 'Date' como el índice del DataFrame
+selected_columns.set_index('Date', inplace=True)
+
+# Graficar las variaciones del precio de cierre ajustado a lo largo del tiempo
+plt.figure(figsize=(10, 6))
+plt.plot(selected_columns.index, selected_columns['Adj Close'], color='blue', label='Precio de Cierre Ajustado')
+plt.title('Variaciones del Precio de Cierre Ajustado a lo largo del Tiempo para Aguas Andina')
+plt.xlabel('Fecha')
+plt.ylabel('Precio de Cierre Ajustado')
+plt.grid(True)
+plt.legend()
+plt.show()
+
+
+# Obtener los nombres de las características seleccionadas por RFE
+selected_features = np.array(features)[rfe.support_]
+
+# Crear un nuevo DataFrame con solo las características seleccionadas
+df_selected_features = pd.DataFrame(X_rfe, columns=selected_features)
+
+# Mostrar las primeras filas del nuevo DataFrame para verificar
+print("Características seleccionadas:", selected_features)
+print(df_selected_features.head())
+
+
+
+#Ahora se puede empezar hacer el EDA de los 5 indicadores tecnicos seleccionados por el RFE, cabe destacar
+#que se debe hacer un analisis de la distribución normalizada de los precios, así que igual se debe manejar este codigo
+
+
+df_selected_features.describe()
+
+df_selected_features.columns
+
+# Histograma de cada característica
+df_selected_features.hist(bins=20, figsize=(12, 10))  # Aumenta el tamaño de la figura
+plt.suptitle("Histogramas de Indicadores Técnicos Seleccionados por RFE", y=1.02)  # Ajusta la posición del título
+
+# Iterar sobre cada gráfico para nombrar los ejes
+for ax in plt.gcf().axes:
+    ax.set_xlabel('Valor del Indicador Técnico')
+    ax.set_ylabel('Frecuencia')
+
+# Ajustar el espaciado entre subgráficos y los márgenes
+plt.tight_layout(rect=[0, 0.03, 1, 0.95])  # Ajusta los márgenes para más espacio
+
+plt.show()
+   
+ 
+# Matriz de correlación
+corr_matrix = df_selected_features.corr()
+
+# Heatmap de la matriz de correlación
+plt.figure(figsize=(8, 6))
+sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', linewidths=0.5)
+plt.title("Matriz de correlación entre características")
+plt.show()   
+
+
+
+# Boxplots para identificar outliers
+df_selected_features.plot(kind='box', subplots=True, layout=(2, 3), figsize=(12, 8), sharex=False, sharey=False)
+plt.suptitle("Boxplots de las características seleccionadas")
+plt.show()
+
+# Suponiendo que 'Tendencia' está en tu DataFrame original
+df_selected_features_with_target = data_aguas_SNN[['Tendencia']].join(df_selected_features)
+
+# Pairplot para ver la relación entre las características y la tendencia
+sns.pairplot(df_selected_features_with_target, hue='Tendencia')
+plt.suptitle("Relación entre características y Tendencia", y=1.02)
+plt.show()
+
+
+
+
+#%%
 
 # Árbol de decisión
 
