@@ -6,11 +6,13 @@ En este archivo se encuentran las funciones necesarias para obtener la data de l
 
 import yfinance as yf
 
+#Empresas removidas
+#'ANDINA-B.SN',
+#'BSANTANDER.SN',
+
 empresas = [
     'AGUAS-A.SN',
     'BCI.SN',
-    'ANDINA-B.SN',
-    'BSANTANDER.SN',
     'CAP.SN',
     'CCU.SN',
     'CENCOSUD.SN'
