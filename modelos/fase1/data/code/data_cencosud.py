@@ -9,7 +9,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, LabelEncoder, MinMaxScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.feature_selection import RFE
+from sklearn.feature_selection import RFE, SelectKBest, f_classif
 from xgboost import XGBClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.naive_bayes import GaussianNB
@@ -476,13 +476,10 @@ y_encoded = label_encoder.fit_transform(y)
 scaler = MinMaxScaler()
 X_scaled = scaler.fit_transform(X)
 
-# Utilizar un estimador como Random Forest para la selección de características con RFE
-model_rfe = RandomForestClassifier(n_estimators=100, random_state=42)
-rfe = RFE(model_rfe, n_features_to_select=5)  # Ajusta n_features_to_select según lo desees
-X_rfe = rfe.fit_transform(X_scaled, y_encoded)
-
-print("Características seleccionadas por RFE:", np.array(features)[rfe.support_])
-
+selector = SelectKBest(score_func=f_classif, k=5)
+X_selected = selector.fit_transform(X_scaled, y_encoded)
+selected_features = np.array(features)[selector.get_support()]
+print("Características seleccionadas:", selected_features)
 # Implementación de la ventana rodante con la columna 'Date'
 window_size = 3  # Ajusta el tamaño de la ventana según tus necesidades
 
@@ -506,7 +503,7 @@ for start in range(train_size, len(dates) - window_size):
     test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
     train_indices = dates < dates.iloc[start]
 
-    X_train, X_test = X_rfe[train_indices], X_rfe[test_indices]
+    X_train, X_test = X_selected[train_indices], X_selected[test_indices]
     y_train, y_test = y_encoded[train_indices], y_encoded[test_indices]
 
     # Verificar que haya suficientes clases en el conjunto de entrenamiento
@@ -567,13 +564,10 @@ y_encoded = label_encoder.fit_transform(y)
 scaler = MinMaxScaler()
 X_scaled = scaler.fit_transform(X)
 
-# Utilizar un estimador compatible con RFE (RandomForestClassifier) para la selección de características
-model_rfe = RandomForestClassifier(n_estimators=100, random_state=42)
-rfe = RFE(model_rfe, n_features_to_select=5)  # Ajusta n_features_to_select según lo desees
-X_rfe = rfe.fit_transform(X_scaled, y_encoded)
-
-print("Características seleccionadas por RFE:", np.array(features)[rfe.support_])
-
+selector = SelectKBest(score_func=f_classif, k=5)
+X_selected = selector.fit_transform(X_scaled, y_encoded)
+selected_features = np.array(features)[selector.get_support()]
+print("Características seleccionadas:", selected_features)
 # Implementación de la ventana rodante con la columna 'Date'
 window_size = 3  # Ajusta el tamaño de la ventana según tus necesidades
 
@@ -597,7 +591,7 @@ for start in range(train_size, len(dates) - window_size):
     test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
     train_indices = dates < dates.iloc[start]
 
-    X_train, X_test = X_rfe[train_indices], X_rfe[test_indices]
+    X_train, X_test = X_selected[train_indices], X_selected[test_indices]
     y_train, y_test = y_encoded[train_indices], y_encoded[test_indices]
 
     # Verificar que haya suficientes clases en el conjunto de entrenamiento
