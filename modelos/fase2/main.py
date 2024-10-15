@@ -69,7 +69,7 @@ def calculate_sentiment_df(df, analyzer):
     analyzer (SentimentAnalyzer): El analizador de sentimientos.
     '''
     # Calcula el sentimiento de cada noticia
-    df['Sentimiento'] = df['Noticia'].apply(lambda x: calculate_sentiment(analyzer, x))
+    df['Sentimiento'] = df['cuerpo_limpio'].apply(lambda x: calculate_sentiment(analyzer, x))
 
     return df
 
@@ -81,7 +81,7 @@ def sentimiento_promedio_diario(df):
     df (DataFrame): El DataFrame de Pandas que contiene los datos.
     '''
     # Agrupa las noticias por fecha y calcula el promedio del sentimiento
-    return df.groupby('date')['Sentimiento'].mean()
+    return df.groupby('fecha')['Sentimiento'].mean()
 
 def sentimiento_maximo_diario(df):
     '''
@@ -91,7 +91,7 @@ def sentimiento_maximo_diario(df):
     df (DataFrame): El DataFrame de Pandas que contiene los datos.
     '''
     # Agrupa las noticias por fecha y calcula el sentimiento máximo
-    return df.groupby('date')['Sentimiento'].max()
+    return df.groupby('fecha')['Sentimiento'].max()
 
 def sentimiento_minimo_diario(df):
     '''
@@ -101,9 +101,23 @@ def sentimiento_minimo_diario(df):
     df (DataFrame): El DataFrame de Pandas que contiene los datos.
     '''
     # Agrupa las noticias por fecha y calcula el sentimiento mínimo
-    return df.groupby('date')['Sentimiento'].min()
+    return df.groupby('fecha')['Sentimiento'].min()
 
 if __name__ == "__main__":
+    print("*" * 40)
+    print("Analizando sentimiento")
+    df_noticias = load_data("../../scraper/noticias/noticias_filtradas.csv")
+    analyzer = pysentimiento.SentimentAnalyzer(lang="es")
+    df_sentimiento = calculate_sentiment_df(df_noticias, analyzer)
+    print("Sentimiento analizado")
+    print("*" * 40)
+    print("-" * 40)
+    print("Calculando sentimiento promedio diario")
+    sentimiento_promedio = sentimiento_promedio_diario(df_sentimiento)
+    print("Calculando sentimiento máximo diario")
+    sentimiento_maximo = sentimiento_maximo_diario(df_sentimiento)
+    print("Calculando sentimiento mínimo diario")
+    sentimiento_minimo = sentimiento_minimo_diario(df_sentimiento)
     print("*" * 40)
     print("Cargando data")
     for empresa in empresas:
@@ -116,21 +130,6 @@ if __name__ == "__main__":
         print("Calculando tendencia")
         df = calculate_trend(df, delta=0.005)  
         print("Tendencia calculada")
-        print("-" * 40)
-        print("Analizando sentimiento")
-        data_noticias = []
-        df_noticias = data_to_df(data_noticias)
-        analyzer = pysentimiento.SentimentAnalyzer(lang="es")
-        df = calculate_sentiment_df(df_noticias, analyzer)
-        print("Sentimiento analizado")
-        print("*" * 40)
-        print("Calculando sentimiento promedio diario")
-        sentimiento_promedio = sentimiento_promedio_diario(df)
-        print("Calculando sentimiento máximo diario")
-        sentimiento_maximo = sentimiento_maximo_diario(df)
-        print("Calculando sentimiento mínimo diario")
-        sentimiento_minimo = sentimiento_minimo_diario(df)
-        print("*" * 40)
         print("Uniendo dataframes")
         '''
         TODO: Hacer función que maneje el merge de los DataFrames de sentimientos. sin errores.
