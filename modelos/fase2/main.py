@@ -25,7 +25,7 @@ def export_data(df, csv_path):
     '''
     Exporta los datos de un DataFrame de Pandas a un archivo CSV.
     '''
-    df.to_csv(csv_path)
+    df.to_csv(csv_path, index=False)
 
 def calculate_trend(df, delta=0.01):
     '''
