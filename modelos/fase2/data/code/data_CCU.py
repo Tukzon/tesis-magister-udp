@@ -9,7 +9,6 @@ from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import StandardScaler, LabelEncoder, MinMaxScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.feature_selection import RFE, SelectKBest, f_classif, RFECV
 from xgboost import XGBClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.naive_bayes import GaussianNB
@@ -27,18 +26,17 @@ pd.set_option('display.float_format', lambda x: '%.2f' % x)
 
 
 # Cargar el archivo CSV
-ruta_archivo = r'.\..\Input\AGUAS-A.SN.csv'
+ruta_archivo = r'.\..\Input\CCU.SN.csv'
 df = pd.read_csv(ruta_archivo)
 data_aguas_SNN = df.copy()
 if 'Unnamed: 0' in df.columns:
     data_aguas_SNN.drop(columns=['Unnamed: 0'], inplace=True)
 print("columnas totales:", len(data_aguas_SNN.columns))
 
-
 #%%
 
-# Selección de carácterísticas
-features = [col for col in data_aguas_SNN.columns if col not in ['Date', 'Tendencia']]
+# Selección de todas las características excepto 'Date' y 'Tendencia'
+features = [col for col in data_aguas_SNN.columns if col not in ['Date', 'Tendencia', 'Sentimiento Máximo', 'Sentimiento Mínimo']]
 X = data_aguas_SNN[features]
 y = data_aguas_SNN['Tendencia']
 
@@ -54,12 +52,7 @@ train_size = int(len(dates) * 0.8)
 
 #Regresión logistica
 
-# Aplicar RFE para seleccionar las mejores características
-model_rfe = LogisticRegression(multi_class='ovr', max_iter=1000)
-rfe = RFE(model_rfe, n_features_to_select=5)
-X_rfe = rfe.fit_transform(X_scaled, y)
-
-print("Características seleccionadas por RFE:", np.array(features)[rfe.support_])
+model = LogisticRegression(multi_class='ovr', max_iter=1000)
 
 results = []
 
@@ -70,7 +63,7 @@ all_y_pred = []
 hora_de_inicio = datetime.now()
 
 # Usar el 80% inicial como conjunto de entrenamiento
-X_train_initial = X_rfe[:train_size]
+X_train_initial = X[:train_size]
 y_train_initial = y[:train_size]
 
 # Contador de iteraciones
@@ -81,9 +74,9 @@ for start in range(train_size, len(dates) - window_size):
     test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
     train_indices = dates < dates.iloc[start]
 
-    X_train = X_rfe[train_indices]
+    X_train = X[train_indices]
     y_train = y[train_indices]
-    X_test = X_rfe[test_indices]
+    X_test = X[test_indices]
     y_test = y[test_indices]
 
     # Verificar que haya suficientes clases en el conjunto de entrenamiento
@@ -126,16 +119,13 @@ print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
 print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 
+
+
 #%%
 
 # Árbol de decisión
 
-# Aplicar RFE para seleccionar las mejores características utilizando un Árbol de Decisión
-model_rfe = DecisionTreeClassifier(random_state=42)
-rfe = RFE(model_rfe, n_features_to_select=5)  # Ajusta n_features_to_select según lo desees
-X_rfe = rfe.fit_transform(X_scaled, y)
-
-print("Características seleccionadas por RFE:", np.array(features)[rfe.support_])
+model = DecisionTreeClassifier(random_state=42)
 
 results = []
 
@@ -155,7 +145,7 @@ for start in range(train_size, len(dates) - window_size):
     test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
 
     # Asegurar que no haya intersección entre los conjuntos de entrenamiento y prueba
-    X_train, X_test = X_rfe[train_indices], X_rfe[test_indices]
+    X_train, X_test = X_scaled[train_indices], X_scaled[test_indices]
     y_train, y_test = y[train_indices], y[test_indices]
 
     # Verificar que haya suficientes clases en el conjunto de entrenamiento
@@ -205,16 +195,12 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 # XGBoost
 
+
 # Codificación de las etiquetas (transformación de [-1, 0, 1] a [0, 1, 2])
 label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
 
-# Aplicar RFE para seleccionar las mejores características utilizando XGBoost
-model_rfe = XGBClassifier(use_label_encoder=False, eval_metric='mlogloss', random_state=42)
-rfe = RFE(model_rfe, n_features_to_select=5)  # Ajusta n_features_to_select según lo desees
-X_rfe = rfe.fit_transform(X_scaled, y_encoded)
-
-print("Características seleccionadas por RFE:", np.array(features)[rfe.support_])
+model = XGBClassifier(use_label_encoder=False, eval_metric='mlogloss', random_state=42)
 
 results = []
 
@@ -232,7 +218,7 @@ for start in range(train_size, len(dates) - window_size):
     test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
     train_indices = dates < dates.iloc[start]
 
-    X_train, X_test = X_rfe[train_indices], X_rfe[test_indices]
+    X_train, X_test = X_scaled[train_indices], X_scaled[test_indices]
     y_train, y_test = y_encoded[train_indices], y_encoded[test_indices]
 
     # Verificar que haya suficientes clases en el conjunto de entrenamiento
@@ -286,12 +272,7 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
 
-# Aplicar RFE para seleccionar las mejores características utilizando Random Forest
-model_rfe = RandomForestClassifier(n_estimators=100, random_state=42)
-rfe = RFE(model_rfe, n_features_to_select=5)  # Ajusta n_features_to_select según lo desees
-X_rfe = rfe.fit_transform(X_scaled, y_encoded)
-
-print("Características seleccionadas por RFE:", np.array(features)[rfe.support_])
+model = RandomForestClassifier(n_estimators=100, random_state=42)
 
 results = []
 
@@ -302,6 +283,9 @@ all_y_pred = []
 # Contador de iteraciones
 iteration_count = 0
 
+# Calcular el índice para el 80% de los datos
+train_size = int(len(dates) * 0.8)
+
 hora_de_inicio = datetime.now()
 
 # Iterar sobre el 20% restante usando la ventana rodante
@@ -309,7 +293,7 @@ for start in range(train_size, len(dates) - window_size):
     test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
     train_indices = dates < dates.iloc[start]
 
-    X_train, X_test = X_rfe[train_indices], X_rfe[test_indices]
+    X_train, X_test = X_scaled[train_indices], X_scaled[test_indices]
     y_train, y_test = y_encoded[train_indices], y_encoded[test_indices]
 
     # Verificar que haya suficientes clases en el conjunto de entrenamiento
@@ -360,12 +344,6 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
 
-selector = SelectKBest(score_func=f_classif, k=5)
-X_selected = selector.fit_transform(X_scaled, y_encoded)
-selected_features = np.array(features)[selector.get_support()]
-print("Características seleccionadas:", selected_features)
-
-
 results = []
 
 # Acumular todas las predicciones y etiquetas verdaderas
@@ -382,7 +360,7 @@ for start in range(train_size, len(dates) - window_size):
     test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
     train_indices = dates < dates.iloc[start]
 
-    X_train, X_test = X_selected[train_indices], X_selected[test_indices]
+    X_train, X_test = X_scaled[train_indices], X_scaled[test_indices]
     y_train, y_test = y_encoded[train_indices], y_encoded[test_indices]
 
     # Verificar que haya suficientes clases en el conjunto de entrenamiento
@@ -435,11 +413,6 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
 
-selector = SelectKBest(score_func=f_classif, k=5)
-X_selected = selector.fit_transform(X_scaled, y_encoded)
-selected_features = np.array(features)[selector.get_support()]
-print("Características seleccionadas:", selected_features)
-
 results = []
 
 # Acumular todas las predicciones y etiquetas verdaderas
@@ -449,9 +422,6 @@ all_y_pred = []
 # Contador de iteraciones
 iteration_count = 0
 
-# Calcular el índice para el 80% de los datos
-train_size = int(len(dates) * 0.8)
-
 hora_de_inicio = datetime.now()
 
 # Iterar sobre el 20% restante usando la ventana rodante
@@ -459,7 +429,7 @@ for start in range(train_size, len(dates) - window_size):
     test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
     train_indices = dates < dates.iloc[start]
 
-    X_train, X_test = X_selected[train_indices], X_selected[test_indices]
+    X_train, X_test = X_scaled[train_indices], X_scaled[test_indices]
     y_train, y_test = y_encoded[train_indices], y_encoded[test_indices]
 
     # Verificar que haya suficientes clases en el conjunto de entrenamiento
@@ -507,7 +477,6 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 #%%
 
 # LSTM (Long Short-Term Memory)
-
 
 # Codificación de las etiquetas para un problema multicategoría
 label_encoder = LabelEncoder()
@@ -575,3 +544,5 @@ conf_matrix = confusion_matrix(y_test_aligned_decoded, y_pred_classes_decoded)
 print(f"Precisión del modelo: {accuracy:.2f}")
 print("Reporte de clasificación para LSTM:\n", report)
 print("Matriz de confusión:\n", conf_matrix)
+
+# %%

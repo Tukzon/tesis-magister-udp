@@ -57,7 +57,7 @@ def merge_df_by_fecha(df1, df2, columna_fecha_df1, columna_fecha_df2):
     
     
 if __name__ == '__main__':
-    df_sentimiento = load_data('./data/Input/resultados_sentimiento_tendencia.csv')
+    df_sentimiento = load_data('./data/Input/resultados_sentimiento.csv')
     df_sentimiento['fecha'] = pd.to_datetime(df_sentimiento['fecha'])
     df_sentimiento = complete_timeserie(df_sentimiento, '2015-01-02', '2023-12-29', 'fecha')
     for empresa in empresas:

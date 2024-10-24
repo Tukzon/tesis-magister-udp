@@ -33,14 +33,10 @@ if 'Unnamed: 0' in df.columns:
     data_aguas_SNN.drop(columns=['Unnamed: 0'], inplace=True)
 print("columnas totales:", len(data_aguas_SNN.columns))
 
-
 #%%
 
-#Regresión logistica
-
-
 # Selección de todas las características excepto 'Date' y 'Tendencia'
-features = [col for col in data_aguas_SNN.columns if col not in ['Date', 'Tendencia', 'Sentimiento Máximo', 'Sentimiento Mínimo', 'Sentimiento Promedio', 'Tendencia Sentimiento']]
+features = [col for col in data_aguas_SNN.columns if col not in ['Date', 'Tendencia', 'Sentimiento Máximo', 'Sentimiento Mínimo']]
 X = data_aguas_SNN[features]
 y = data_aguas_SNN['Tendencia']
 
@@ -48,25 +44,26 @@ y = data_aguas_SNN['Tendencia']
 scaler = MinMaxScaler()
 X_scaled = scaler.fit_transform(X)
 
+window_size = 3
+dates = pd.to_datetime(data_aguas_SNN['Date'])
+train_size = int(len(dates) * 0.8)
+
+#%%
+
+#Regresión logistica
+
 model = LogisticRegression(multi_class='ovr', max_iter=1000)
 
-
-# Implementación de la ventana rodante con la columna 'Date'
-window_size = 3  # Ajusta el tamaño de la ventana según tus necesidades
-
-dates = pd.to_datetime(data_aguas_SNN['Date'])
 results = []
 
 # Acumular todas las predicciones y etiquetas verdaderas
 all_y_true = []
 all_y_pred = []
 
-train_size = int(len(dates) * 0.8)
-
 hora_de_inicio = datetime.now()
 
 # Usar el 80% inicial como conjunto de entrenamiento
-X_train_initial = X_scaled[:train_size]
+X_train_initial = X[:train_size]
 y_train_initial = y[:train_size]
 
 # Contador de iteraciones
@@ -77,9 +74,9 @@ for start in range(train_size, len(dates) - window_size):
     test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
     train_indices = dates < dates.iloc[start]
 
-    X_train = X_scaled[train_indices]
+    X_train = X[train_indices]
     y_train = y[train_indices]
-    X_test = X_scaled[test_indices]
+    X_test = X[test_indices]
     y_test = y[test_indices]
 
     # Verificar que haya suficientes clases en el conjunto de entrenamiento
@@ -124,122 +121,12 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 
 
-
-
-
-
-#%%
-
-
-# Cargar los datos (asegúrate de tener el DataFrame 'data_aguas_SNN' cargado previamente)
-# data_aguas_SNN = pd.read_csv('ruta_al_archivo.csv')  # Descomenta si necesitas cargar los datos desde un archivo
-
-# Seleccionar las columnas de interés
-selected_columns = data_aguas_SNN[['Date', 'Adj Close']]
-
-# Asegurarse de que la columna de fecha esté en el formato datetime
-selected_columns['Date'] = pd.to_datetime(selected_columns['Date'])
-
-# Configurar la columna 'Date' como el índice del DataFrame
-selected_columns.set_index('Date', inplace=True)
-
-# Graficar las variaciones del precio de cierre ajustado a lo largo del tiempo
-plt.figure(figsize=(10, 6))
-plt.plot(selected_columns.index, selected_columns['Adj Close'], color='blue', label='Precio de Cierre Ajustado')
-plt.title('Variaciones del Precio de Cierre Ajustado a lo largo del Tiempo para Aguas Andina')
-plt.xlabel('Fecha')
-plt.ylabel('Precio de Cierre Ajustado')
-plt.grid(True)
-plt.legend()
-plt.show()
-
-
-# Obtener los nombres de las características seleccionadas por RFE
-selected_features = np.array(features)[rfe.support_]
-
-# Crear un nuevo DataFrame con solo las características seleccionadas
-df_selected_features = pd.DataFrame(X_rfe, columns=selected_features)
-
-# Mostrar las primeras filas del nuevo DataFrame para verificar
-print("Características seleccionadas:", selected_features)
-print(df_selected_features.head())
-
-
-
-#Ahora se puede empezar hacer el EDA de los 5 indicadores tecnicos seleccionados por el RFE, cabe destacar
-#que se debe hacer un analisis de la distribución normalizada de los precios, así que igual se debe manejar este codigo
-
-
-df_selected_features.describe()
-
-df_selected_features.columns
-
-# Histograma de cada característica
-df_selected_features.hist(bins=20, figsize=(12, 10))  # Aumenta el tamaño de la figura
-plt.suptitle("Histogramas de Indicadores Técnicos Seleccionados por RFE", y=1.02)  # Ajusta la posición del título
-
-# Iterar sobre cada gráfico para nombrar los ejes
-for ax in plt.gcf().axes:
-    ax.set_xlabel('Valor del Indicador Técnico')
-    ax.set_ylabel('Frecuencia')
-
-# Ajustar el espaciado entre subgráficos y los márgenes
-plt.tight_layout(rect=[0, 0.03, 1, 0.95])  # Ajusta los márgenes para más espacio
-
-plt.show()
-   
- 
-# Matriz de correlación
-corr_matrix = df_selected_features.corr()
-
-# Heatmap de la matriz de correlación
-plt.figure(figsize=(8, 6))
-sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', linewidths=0.5)
-plt.title("Matriz de correlación entre características")
-plt.show()   
-
-
-
-# Boxplots para identificar outliers
-df_selected_features.plot(kind='box', subplots=True, layout=(2, 3), figsize=(12, 8), sharex=False, sharey=False)
-plt.suptitle("Boxplots de las características seleccionadas")
-plt.show()
-
-# Suponiendo que 'Tendencia' está en tu DataFrame original
-df_selected_features_with_target = data_aguas_SNN[['Tendencia']].join(df_selected_features)
-
-# Pairplot para ver la relación entre las características y la tendencia
-sns.pairplot(df_selected_features_with_target, hue='Tendencia')
-plt.suptitle("Relación entre características y Tendencia", y=1.02)
-plt.show()
-
-
-
-
 #%%
 
 # Árbol de decisión
 
-# Selección de todas las características excepto 'Date' y 'Tendencia'
-features = [col for col in data_aguas_SNN.columns if col not in ['Date', 'Tendencia']]
-X = data_aguas_SNN[features]
-y = data_aguas_SNN['Tendencia']
+model = DecisionTreeClassifier(random_state=42)
 
-# Normalización de los datos
-scaler = MinMaxScaler()
-X_scaled = scaler.fit_transform(X)
-
-# Aplicar RFE para seleccionar las mejores características utilizando un Árbol de Decisión
-model_rfe = DecisionTreeClassifier(random_state=42)
-rfe = RFE(model_rfe, n_features_to_select=5)  # Ajusta n_features_to_select según lo desees
-X_rfe = rfe.fit_transform(X_scaled, y)
-
-print("Características seleccionadas por RFE:", np.array(features)[rfe.support_])
-
-# Implementación de la ventana rodante con la columna 'Date'
-window_size = 3  # Ajusta el tamaño de la ventana según tus necesidades
-
-dates = pd.to_datetime(data_aguas_SNN['Date'])
 results = []
 
 # Acumular todas las predicciones y etiquetas verdaderas
@@ -248,9 +135,6 @@ all_y_pred = []
 
 # Contador de iteraciones
 iteration_count = 0
-
-# Calcular el índice para el 80% de los datos
-train_size = int(len(dates) * 0.8)
 
 hora_de_inicio = datetime.now()
 
@@ -261,7 +145,7 @@ for start in range(train_size, len(dates) - window_size):
     test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
 
     # Asegurar que no haya intersección entre los conjuntos de entrenamiento y prueba
-    X_train, X_test = X_rfe[train_indices], X_rfe[test_indices]
+    X_train, X_test = X_scaled[train_indices], X_scaled[test_indices]
     y_train, y_test = y[train_indices], y[test_indices]
 
     # Verificar que haya suficientes clases en el conjunto de entrenamiento
@@ -311,30 +195,13 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 # XGBoost
 
-# Selección de todas las características excepto 'Date' y 'Tendencia'
-features = [col for col in data_aguas_SNN.columns if col not in ['Date', 'Tendencia']]
-X = data_aguas_SNN[features]
-y = data_aguas_SNN['Tendencia']
 
 # Codificación de las etiquetas (transformación de [-1, 0, 1] a [0, 1, 2])
 label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
 
-# Normalización de los datos
-scaler = MinMaxScaler()
-X_scaled = scaler.fit_transform(X)
+model = XGBClassifier(use_label_encoder=False, eval_metric='mlogloss', random_state=42)
 
-# Aplicar RFE para seleccionar las mejores características utilizando XGBoost
-model_rfe = XGBClassifier(use_label_encoder=False, eval_metric='mlogloss', random_state=42)
-rfe = RFE(model_rfe, n_features_to_select=5)  # Ajusta n_features_to_select según lo desees
-X_rfe = rfe.fit_transform(X_scaled, y_encoded)
-
-print("Características seleccionadas por RFE:", np.array(features)[rfe.support_])
-
-# Implementación de la ventana rodante con la columna 'Date'
-window_size = 3  # Ajusta el tamaño de la ventana según tus necesidades
-
-dates = pd.to_datetime(data_aguas_SNN['Date'])
 results = []
 
 # Acumular todas las predicciones y etiquetas verdaderas
@@ -344,9 +211,6 @@ all_y_pred = []
 # Contador de iteraciones
 iteration_count = 0
 
-# Calcular el índice para el 80% de los datos
-train_size = int(len(dates) * 0.8)
-
 hora_de_inicio = datetime.now()
 
 # Iterar sobre el 20% restante usando la ventana rodante
@@ -354,7 +218,7 @@ for start in range(train_size, len(dates) - window_size):
     test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
     train_indices = dates < dates.iloc[start]
 
-    X_train, X_test = X_rfe[train_indices], X_rfe[test_indices]
+    X_train, X_test = X_scaled[train_indices], X_scaled[test_indices]
     y_train, y_test = y_encoded[train_indices], y_encoded[test_indices]
 
     # Verificar que haya suficientes clases en el conjunto de entrenamiento
@@ -404,30 +268,12 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 # Random Forest
 
-# Selección de todas las características excepto 'Date' y 'Tendencia'
-features = [col for col in data_aguas_SNN.columns if col not in ['Date', 'Tendencia']]
-X = data_aguas_SNN[features]
-y = data_aguas_SNN['Tendencia']
-
 # Codificación de las etiquetas
 label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
 
-# Normalización de los datos
-scaler = MinMaxScaler()
-X_scaled = scaler.fit_transform(X)
+model = RandomForestClassifier(n_estimators=100, random_state=42)
 
-# Aplicar RFE para seleccionar las mejores características utilizando Random Forest
-model_rfe = RandomForestClassifier(n_estimators=100, random_state=42)
-rfe = RFE(model_rfe, n_features_to_select=5)  # Ajusta n_features_to_select según lo desees
-X_rfe = rfe.fit_transform(X_scaled, y_encoded)
-
-print("Características seleccionadas por RFE:", np.array(features)[rfe.support_])
-
-# Implementación de la ventana rodante con la columna 'Date'
-window_size = 3  # Ajusta el tamaño de la ventana según tus necesidades
-
-dates = pd.to_datetime(data_aguas_SNN['Date'])
 results = []
 
 # Acumular todas las predicciones y etiquetas verdaderas
@@ -447,7 +293,7 @@ for start in range(train_size, len(dates) - window_size):
     test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
     train_indices = dates < dates.iloc[start]
 
-    X_train, X_test = X_rfe[train_indices], X_rfe[test_indices]
+    X_train, X_test = X_scaled[train_indices], X_scaled[test_indices]
     y_train, y_test = y_encoded[train_indices], y_encoded[test_indices]
 
     # Verificar que haya suficientes clases en el conjunto de entrenamiento
@@ -494,28 +340,10 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 # Naive Bayes
 
-# Selección de todas las características excepto 'Date' y 'Tendencia'
-features = [col for col in data_aguas_SNN.columns if col not in ['Date', 'Tendencia']]
-X = data_aguas_SNN[features]
-y = data_aguas_SNN['Tendencia']
-
 # Codificación de las etiquetas
 label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
 
-# Normalización de los datos
-scaler = MinMaxScaler()
-X_scaled = scaler.fit_transform(X)
-
-selector = SelectKBest(score_func=f_classif, k=5)
-X_selected = selector.fit_transform(X_scaled, y_encoded)
-selected_features = np.array(features)[selector.get_support()]
-print("Características seleccionadas:", selected_features)
-
-# Implementación de la ventana rodante con la columna 'Date'
-window_size = 3  # Ajusta el tamaño de la ventana según tus necesidades
-
-dates = pd.to_datetime(data_aguas_SNN['Date'])
 results = []
 
 # Acumular todas las predicciones y etiquetas verdaderas
@@ -525,9 +353,6 @@ all_y_pred = []
 # Contador de iteraciones
 iteration_count = 0
 
-# Calcular el índice para el 80% de los datos
-train_size = int(len(dates) * 0.8)
-
 hora_de_inicio = datetime.now()
 
 # Iterar sobre el 20% restante usando la ventana rodante
@@ -535,7 +360,7 @@ for start in range(train_size, len(dates) - window_size):
     test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
     train_indices = dates < dates.iloc[start]
 
-    X_train, X_test = X_selected[train_indices], X_selected[test_indices]
+    X_train, X_test = X_scaled[train_indices], X_scaled[test_indices]
     y_train, y_test = y_encoded[train_indices], y_encoded[test_indices]
 
     # Verificar que haya suficientes clases en el conjunto de entrenamiento
@@ -583,28 +408,11 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 # MLP (Multi-Layer Perceptron)
 
-# Selección de todas las características excepto 'Date' y 'Tendencia'
-features = [col for col in data_aguas_SNN.columns if col not in ['Date', 'Tendencia']]
-X = data_aguas_SNN[features]
-y = data_aguas_SNN['Tendencia']
 
 # Codificación de las etiquetas
 label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
 
-# Normalización de los datos
-scaler = MinMaxScaler()
-X_scaled = scaler.fit_transform(X)
-
-selector = SelectKBest(score_func=f_classif, k=5)
-X_selected = selector.fit_transform(X_scaled, y_encoded)
-selected_features = np.array(features)[selector.get_support()]
-print("Características seleccionadas:", selected_features)
-
-# Implementación de la ventana rodante con la columna 'Date'
-window_size = 3  # Ajusta el tamaño de la ventana según tus necesidades
-
-dates = pd.to_datetime(data_aguas_SNN['Date'])
 results = []
 
 # Acumular todas las predicciones y etiquetas verdaderas
@@ -614,9 +422,6 @@ all_y_pred = []
 # Contador de iteraciones
 iteration_count = 0
 
-# Calcular el índice para el 80% de los datos
-train_size = int(len(dates) * 0.8)
-
 hora_de_inicio = datetime.now()
 
 # Iterar sobre el 20% restante usando la ventana rodante
@@ -624,7 +429,7 @@ for start in range(train_size, len(dates) - window_size):
     test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
     train_indices = dates < dates.iloc[start]
 
-    X_train, X_test = X_selected[train_indices], X_selected[test_indices]
+    X_train, X_test = X_scaled[train_indices], X_scaled[test_indices]
     y_train, y_test = y_encoded[train_indices], y_encoded[test_indices]
 
     # Verificar que haya suficientes clases en el conjunto de entrenamiento
@@ -673,11 +478,6 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 # LSTM (Long Short-Term Memory)
 
-# Selección de características y etiqueta
-features = [col for col in data_aguas_SNN.columns if col not in ['Date', 'Tendencia']]
-X = data_aguas_SNN[features]
-y = data_aguas_SNN['Tendencia']
-
 # Codificación de las etiquetas para un problema multicategoría
 label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
@@ -687,10 +487,6 @@ print("Clases originales:", label_encoder.classes_)
 print("Valores codificados:", list(label_encoder.transform(label_encoder.classes_)))
 
 print("Distribución de clases en el conjunto de entrenamiento:", Counter(np.argmax(y_encoded, axis=1)))
-
-# Normalización de los datos
-scaler = MinMaxScaler()
-X_scaled = scaler.fit_transform(X)
 
 # Conversión de datos a formato secuencial para LSTM
 n_input = 20  # Aumentamos los pasos de tiempo a 20
