@@ -1,0 +1,19 @@
+Características seleccionadas por RFE: ['Histogram' 'CCI_14' 'WILLR_14' 'TSI_13_25_13' 'CMO']
+
+Accuracy general del modelo (test): 0.62
+Precision global (ponderada) (test): 0.61
+Recall global (ponderado) (test): 0.62
+F1-score global (ponderado) (test): 0.62
+Reporte de clasificación general:
+              precision    recall  f1-score   support
+
+          -1       0.70      0.73      0.71       473
+           0       0.37      0.35      0.36       363
+           1       0.71      0.71      0.71       502
+
+    accuracy                           0.62      1338
+   macro avg       0.59      0.60      0.59      1338
+weighted avg       0.61      0.62      0.62      1338
+
+Tiempo de ejecución: 0:15:04.390263
+Número total de iteraciones realizadas: 446

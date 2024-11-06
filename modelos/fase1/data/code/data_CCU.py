@@ -33,65 +33,11 @@ data_CCU_SN = df.copy()
 if 'Unnamed: 0' in df.columns:
     data_CCU_SN.drop(columns=['Unnamed: 0'], inplace=True)
 print("columnas totales:", len(data_CCU_SN.columns))
-
-#%%
-
-data_CCU_SN.head()
-data_CCU_SN.columns
-#Ahora a este archivo le haremos la estadistica descriptiva: 
-    
-# Estadísticas descriptivas por columnas
-open_stats = data_CCU_SN['Open'].describe()
-high_stats = data_CCU_SN['High'].describe()
-low_stats = data_CCU_SN['Low'].describe()
-close_stats = data_CCU_SN['Close'].describe()
-adj_close_stats = data_CCU_SN['Adj Close'].describe()
-volume_stats = data_CCU_SN['Volume'].describe()
-tendencia_stats = data_CCU_SN['Tendencia'].describe()
-macd_stats = data_CCU_SN['MACD_12_26_9'].describe()
-macdh_stats = data_CCU_SN['MACDh_12_26_9'].describe()
-macds_stats = data_CCU_SN['MACDs_12_26_9'].describe()
-rsi_stats = data_CCU_SN['RSI'].describe()
-
-# Mostramos las estadísticas descriptivas para cada columna
-print("Estadísticas descriptivas para 'Open':\n", open_stats, "\n")
-print("Estadísticas descriptivas para 'High':\n", high_stats, "\n")
-print("Estadísticas descriptivas para 'Low':\n", low_stats, "\n")
-print("Estadísticas descriptivas para 'Close':\n", close_stats, "\n")
-print("Estadísticas descriptivas para 'Adj Close':\n", adj_close_stats, "\n")
-print("Estadísticas descriptivas para 'Volume':\n", volume_stats, "\n")
-print("Estadísticas descriptivas para 'Tendencia':\n", tendencia_stats, "\n")
-print("Estadísticas descriptivas para 'MACD_12_26_9':\n", macd_stats, "\n")
-print("Estadísticas descriptivas para 'MACDh_12_26_9':\n", macdh_stats, "\n")
-print("Estadísticas descriptivas para 'MACDs_12_26_9':\n", macds_stats, "\n")
-print("Estadísticas descriptivas para 'RSI':\n", rsi_stats, "\n")
-
 #%%
 
 
 
-# Libraries to help with data visualization
-
-num_cols = df.select_dtypes(include=np.number).columns.tolist()
-
-plt.figure(figsize=(15, 15))
-
-for i, variable in enumerate(num_cols):
-    plt.subplot(4, 3, i + 1)
-    sns.boxplot(data=df, x=variable)
-    plt.tight_layout(pad=2)
-
-plt.show()
-
-#Es importante saber como vamos a manejar los datos atipicos existentes en los indicadores tecnicos y en el volumen
-
-
-#%%
-
-#Regresión logistica
-
-
-# Selección de todas las características excepto 'Date' y 'Tendencia'
+# Selección de carácterísticas
 features = [col for col in data_CCU_SN.columns if col not in ['Date', 'Tendencia']]
 X = data_CCU_SN[features]
 y = data_CCU_SN['Tendencia']
@@ -100,9 +46,18 @@ y = data_CCU_SN['Tendencia']
 scaler = MinMaxScaler()
 X_scaled = scaler.fit_transform(X)
 
+window_size = 3
+dates = pd.to_datetime(data_CCU_SN['Date'])
+train_size = int(len(dates) * 0.8)
+
+#%%
+
+#Regresion logistica
+
+
 # Aplicar RFE para seleccionar las mejores características
 model_rfe = LogisticRegression(multi_class='ovr', max_iter=1000)
-rfe = RFE(model_rfe, n_features_to_select=5)
+rfe = RFE(model_rfe, n_features_to_select=7)
 X_rfe = rfe.fit_transform(X_scaled, y)
 
 print("Características seleccionadas por RFE:", np.array(features)[rfe.support_])
@@ -113,9 +68,11 @@ window_size = 3  # Ajusta el tamaño de la ventana según tus necesidades
 dates = pd.to_datetime(data_CCU_SN['Date'])
 results = []
 
-# Acumular todas las predicciones y etiquetas verdaderas
-all_y_true = []
-all_y_pred = []
+# Acumular todas las predicciones y etiquetas verdaderas para train y test
+all_y_true_train = []
+all_y_pred_train = []
+all_y_true_test = []
+all_y_pred_test = []
 
 train_size = int(len(dates) * 0.8)
 
@@ -137,6 +94,8 @@ for start in range(train_size, len(dates) - window_size):
     y_train = y[train_indices]
     X_test = X_rfe[test_indices]
     y_test = y[test_indices]
+#Necesitamos devolver las predicciones a train con un append. desde una lista a append.
+#Que es support, es una métrica de error, deberia ser parecida a las métricas en entranamiento y testeo.
 
     # Verificar que haya suficientes clases en el conjunto de entrenamiento
     if len(np.unique(y_train)) < 2:
@@ -148,35 +107,57 @@ for start in range(train_size, len(dates) - window_size):
     model = LogisticRegression(multi_class='ovr', max_iter=1000)
     model.fit(X_train, y_train)
 
-    y_pred = model.predict(X_test)
+    # Predicciones para train
+    y_pred_train = model.predict(X_train)
+    all_y_true_train.extend(y_train)
+    all_y_pred_train.extend(y_pred_train)
 
-    # Acumular las predicciones y etiquetas verdaderas
-    all_y_true.extend(y_test)
-    all_y_pred.extend(y_pred)
+    # Predicciones para test
+    y_pred_test = model.predict(X_test)
+    all_y_true_test.extend(y_test)
+    all_y_pred_test.extend(y_pred_test)
     
-    iteration_count += 1
+    iteration_count += 1    
 
 hora_de_fin = datetime.now()
 
-# Convertir las listas acumuladas a arrays de NumPy
-all_y_true = np.array(all_y_true)
-all_y_pred = np.array(all_y_pred)
+# Convertir las listas acumuladas a arrays de NumPy para train y test
+all_y_true_train = np.array(all_y_true_train)
+all_y_pred_train = np.array(all_y_pred_train)
+all_y_true_test = np.array(all_y_true_test)
+all_y_pred_test = np.array(all_y_pred_test)
 
-# Calcular las métricas globales
-overall_accuracy = accuracy_score(all_y_true, all_y_pred)
-overall_precision = precision_score(all_y_true, all_y_pred, average='weighted')
-overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
-overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
-overall_report = classification_report(all_y_true, all_y_pred)
+# Calcular las métricas globales para train
+train_accuracy = accuracy_score(all_y_true_train, all_y_pred_train)
+train_precision = precision_score(all_y_true_train, all_y_pred_train, average='weighted')
+train_recall = recall_score(all_y_true_train, all_y_pred_train, average='weighted')
+train_f1 = f1_score(all_y_true_train, all_y_pred_train, average='weighted')
+train_report = classification_report(all_y_true_train, all_y_pred_train)
 
-print(f"Accuracy general del modelo: {overall_accuracy:.2f}")
-print(f"Precision global (ponderada): {overall_precision:.2f}")
-print(f"Recall global (ponderado): {overall_recall:.2f}")
-print(f"F1-score global (ponderado): {overall_f1:.2f}")
-print(f"Reporte de clasificación general:\n {overall_report}")
+# Calcular las métricas globales para test
+test_accuracy = accuracy_score(all_y_true_test, all_y_pred_test)
+test_precision = precision_score(all_y_true_test, all_y_pred_test, average='weighted')
+test_recall = recall_score(all_y_true_test, all_y_pred_test, average='weighted')
+test_f1 = f1_score(all_y_true_test, all_y_pred_test, average='weighted')
+test_report = classification_report(all_y_true_test, all_y_pred_test)
+
+# Imprimir las métricas del conjunto de entrenamiento
+print(f"Accuracy general del modelo (train): {train_accuracy:.2f}")
+print(f"Precision global (ponderada) (train): {train_precision:.2f}")
+print(f"Recall global (ponderado) (train): {train_recall:.2f}")
+print(f"F1-score global (ponderado) (train): {train_f1:.2f}")
+print(f"Reporte de clasificación (train):\n {train_report}")
+
+# Imprimir las métricas del conjunto de prueba
+print(f"Accuracy general del modelo (test): {test_accuracy:.2f}")
+print(f"Precision global (ponderada) (test): {test_precision:.2f}")
+print(f"Recall global (ponderado) (test): {test_recall:.2f}")
+print(f"F1-score global (ponderado) (test): {test_f1:.2f}")
+print(f"Reporte de clasificación (test):\n {test_report}")
+
+# Tiempo de ejecución
 print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
 print(f"Número total de iteraciones realizadas: {iteration_count}")
-
 
 
 
@@ -187,20 +168,10 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 #%%
 
 
-# Árbol de decisión
-
-# Selección de todas las características excepto 'Date' y 'Tendencia'
-features = [col for col in data_CCU_SN.columns if col not in ['Date', 'Tendencia']]
-X = data_CCU_SN[features]
-y = data_CCU_SN['Tendencia']
-
-# Normalización de los datos
-scaler = MinMaxScaler()
-X_scaled = scaler.fit_transform(X)
 
 # Aplicar RFE para seleccionar las mejores características utilizando un Árbol de Decisión
 model_rfe = DecisionTreeClassifier(random_state=42)
-rfe = RFE(model_rfe, n_features_to_select=5)  # Ajusta n_features_to_select según lo desees
+rfe = RFE(model_rfe, n_features_to_select=10)
 X_rfe = rfe.fit_transform(X_scaled, y)
 
 print("Características seleccionadas por RFE:", np.array(features)[rfe.support_])
@@ -209,19 +180,20 @@ print("Características seleccionadas por RFE:", np.array(features)[rfe.support_
 window_size = 3  # Ajusta el tamaño de la ventana según tus necesidades
 
 dates = pd.to_datetime(data_CCU_SN['Date'])
-results = []
 
-# Acumular todas las predicciones y etiquetas verdaderas
-all_y_true = []
-all_y_pred = []
-
-# Contador de iteraciones
-iteration_count = 0
+# Acumular todas las predicciones y etiquetas verdaderas para train y test
+all_y_true_train = []
+all_y_pred_train = []
+all_y_true_test = []
+all_y_pred_test = []
 
 # Calcular el índice para el 80% de los datos
 train_size = int(len(dates) * 0.8)
 
 hora_de_inicio = datetime.now()
+
+# Contador de iteraciones
+iteration_count = 0
 
 # Iterar sobre el 20% restante usando la ventana rodante
 for start in range(train_size, len(dates) - window_size):
@@ -244,54 +216,68 @@ for start in range(train_size, len(dates) - window_size):
     model = DecisionTreeClassifier(random_state=42, max_depth=5)
     model.fit(X_train, y_train)
 
-    y_pred = model.predict(X_test)
+    # Predicciones para train
+    y_pred_train = model.predict(X_train)
+    all_y_true_train.extend(y_train)
+    all_y_pred_train.extend(y_pred_train)
 
-    # Acumular las predicciones y etiquetas verdaderas
-    all_y_true.extend(y_test)
-    all_y_pred.extend(y_pred)
-    
+    # Predicciones para test
+    y_pred_test = model.predict(X_test)
+    all_y_true_test.extend(y_test)
+    all_y_pred_test.extend(y_pred_test)
+
     # Incrementar el contador de iteraciones
     iteration_count += 1
 
 hora_de_fin = datetime.now()
 
-# Convertir las listas acumuladas a arrays de NumPy
-all_y_true = np.array(all_y_true)
-all_y_pred = np.array(all_y_pred)
+# Convertir las listas acumuladas a arrays de NumPy para train y test
+all_y_true_train = np.array(all_y_true_train)
+all_y_pred_train = np.array(all_y_pred_train)
+all_y_true_test = np.array(all_y_true_test)
+all_y_pred_test = np.array(all_y_pred_test)
 
-# Calcular las métricas globales
-overall_accuracy = accuracy_score(all_y_true, all_y_pred)
-overall_precision = precision_score(all_y_true, all_y_pred, average='weighted')
-overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
-overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
-overall_report = classification_report(all_y_true, all_y_pred)
+# Calcular las métricas globales para train
+train_accuracy = accuracy_score(all_y_true_train, all_y_pred_train)
+train_precision = precision_score(all_y_true_train, all_y_pred_train, average='weighted')
+train_recall = recall_score(all_y_true_train, all_y_pred_train, average='weighted')
+train_f1 = f1_score(all_y_true_train, all_y_pred_train, average='weighted')
+train_report = classification_report(all_y_true_train, all_y_pred_train)
 
-print(f"Accuracy general del modelo: {overall_accuracy:.2f}")
-print(f"Precision global (ponderada): {overall_precision:.2f}")
-print(f"Recall global (ponderado): {overall_recall:.2f}")
-print(f"F1-score global (ponderado): {overall_f1:.2f}")
-print(f"Reporte de clasificación general:\n {overall_report}")
+# Calcular las métricas globales para test
+test_accuracy = accuracy_score(all_y_true_test, all_y_pred_test)
+test_precision = precision_score(all_y_true_test, all_y_pred_test, average='weighted')
+test_recall = recall_score(all_y_true_test, all_y_pred_test, average='weighted')
+test_f1 = f1_score(all_y_true_test, all_y_pred_test, average='weighted')
+test_report = classification_report(all_y_true_test, all_y_pred_test)
+
+# Imprimir las métricas del conjunto de entrenamiento
+print(f"Accuracy general del modelo (train): {train_accuracy:.2f}")
+print(f"Precision global (ponderada) (train): {train_precision:.2f}")
+print(f"Recall global (ponderado) (train): {train_recall:.2f}")
+print(f"F1-score global (ponderado) (train): {train_f1:.2f}")
+print(f"Reporte de clasificación (train):\n {train_report}")
+
+# Imprimir las métricas del conjunto de prueba
+print(f"Accuracy general del modelo (test): {test_accuracy:.2f}")
+print(f"Precision global (ponderada) (test): {test_precision:.2f}")
+print(f"Recall global (ponderado) (test): {test_recall:.2f}")
+print(f"F1-score global (ponderado) (test): {test_f1:.2f}")
+print(f"Reporte de clasificación (test):\n {test_report}")
+
+# Tiempo de ejecución
 print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
 print(f"Número total de iteraciones realizadas: {iteration_count}")
-
 
 #%%
 
 
-# XGBoost
+# XGBoost Prueba
 
-# Selección de todas las características excepto 'Date' y 'Tendencia'
-features = [col for col in data_CCU_SN.columns if col not in ['Date', 'Tendencia']]
-X = data_CCU_SN[features]
-y = data_CCU_SN['Tendencia']
 
 # Codificación de las etiquetas (transformación de [-1, 0, 1] a [0, 1, 2])
 label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
-
-# Normalización de los datos
-scaler = MinMaxScaler()
-X_scaled = scaler.fit_transform(X)
 
 # Aplicar RFE para seleccionar las mejores características utilizando XGBoost
 model_rfe = XGBClassifier(use_label_encoder=False, eval_metric='mlogloss', random_state=42)
@@ -302,13 +288,14 @@ print("Características seleccionadas por RFE:", np.array(features)[rfe.support_
 
 # Implementación de la ventana rodante con la columna 'Date'
 window_size = 3  # Ajusta el tamaño de la ventana según tus necesidades
-
 dates = pd.to_datetime(data_CCU_SN['Date'])
 results = []
 
 # Acumular todas las predicciones y etiquetas verdaderas
-all_y_true = []
-all_y_pred = []
+all_y_true_train = []
+all_y_pred_train = []
+all_y_true_test = []
+all_y_pred_test = []
 
 # Contador de iteraciones
 iteration_count = 0
@@ -336,33 +323,56 @@ for start in range(train_size, len(dates) - window_size):
     model = XGBClassifier(use_label_encoder=False, eval_metric='mlogloss', random_state=42)
     model.fit(X_train, y_train)
 
-    y_pred = model.predict(X_test)
-
-    # Acumular las predicciones y etiquetas verdaderas
-    all_y_true.extend(y_test)
-    all_y_pred.extend(y_pred)
+    # Predicciones para el conjunto de prueba
+    y_pred_test = model.predict(X_test)
+    all_y_true_test.extend(y_test)
+    all_y_pred_test.extend(y_pred_test)
     
+    # Predicciones para el conjunto de entrenamiento
+    y_pred_train = model.predict(X_train)
+    all_y_true_train.extend(y_train)
+    all_y_pred_train.extend(y_pred_train)
+
     # Incrementar el contador de iteraciones
     iteration_count += 1
 
+# Convertir las listas acumuladas a arrays de NumPy
+all_y_true_train = np.array(all_y_true_train)
+all_y_pred_train = np.array(all_y_pred_train)
+all_y_true_test = np.array(all_y_true_test)
+all_y_pred_test = np.array(all_y_pred_test)
+
+# Calcular las métricas para el conjunto de prueba (test)
+test_accuracy = accuracy_score(all_y_true_test, all_y_pred_test)
+test_precision = precision_score(all_y_true_test, all_y_pred_test, average='weighted')
+test_recall = recall_score(all_y_true_test, all_y_pred_test, average='weighted')
+test_f1 = f1_score(all_y_true_test, all_y_pred_test, average='weighted')
+test_report = classification_report(all_y_true_test, all_y_pred_test, target_names=[str(cls) for cls in label_encoder.classes_])
+
+# Calcular las métricas para el conjunto de entrenamiento (train)
+train_accuracy = accuracy_score(all_y_true_train, all_y_pred_train)
+train_precision = precision_score(all_y_true_train, all_y_pred_train, average='weighted')
+train_recall = recall_score(all_y_true_train, all_y_pred_train, average='weighted')
+train_f1 = f1_score(all_y_true_train, all_y_pred_train, average='weighted')
+train_report = classification_report(all_y_true_train, all_y_pred_train, target_names=[str(cls) for cls in label_encoder.classes_])
+
 hora_de_fin = datetime.now()
 
-# Convertir las listas acumuladas a arrays de NumPy
-all_y_true = np.array(all_y_true)
-all_y_pred = np.array(all_y_pred)
+# Imprimir las métricas del conjunto de entrenamiento
+print(f"Accuracy general del modelo (train): {train_accuracy:.2f}")
+print(f"Precision global (ponderada) (train): {train_precision:.2f}")
+print(f"Recall global (ponderado) (train): {train_recall:.2f}")
+print(f"F1-score global (ponderado) (train): {train_f1:.2f}")
+print(f"Reporte de clasificación (train):\n{train_report}")
 
-# Calcular las métricas globales
-overall_accuracy = accuracy_score(all_y_true, all_y_pred)
-overall_precision = precision_score(all_y_true, all_y_pred, average='weighted')
-overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
-overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
-overall_report = classification_report(all_y_true, all_y_pred, target_names=[str(cls) for cls in label_encoder.classes_])
+# Imprimir las métricas del conjunto de prueba
+print(f"Accuracy general del modelo (test): {test_accuracy:.2f}")
+print(f"Precision global (ponderada) (test): {test_precision:.2f}")
+print(f"Recall global (ponderado) (test): {test_recall:.2f}")
+print(f"F1-score global (ponderado) (test): {test_f1:.2f}")
+print(f"Reporte de clasificación (test):\n{test_report}")
 
-print(f"Precisión general del modelo: {overall_accuracy:.2f}")
-print(f"Precision global (ponderada): {overall_precision:.2f}")
-print(f"Recall global (ponderado): {overall_recall:.2f}")
-print(f"F1-score global (ponderado): {overall_f1:.2f}")
-print(f"Reporte de clasificación general:\n {overall_report}")
+# Tiempo de ejecución
 print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
 print(f"Número total de iteraciones realizadas: {iteration_count}")
 
@@ -371,20 +381,13 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 #%%
 
 
-# Random Forest
+# Random Forest con ventana rodante y RFE, funciona, pero esta raro 
 
-# Selección de todas las características excepto 'Date' y 'Tendencia'
-features = [col for col in data_CCU_SN.columns if col not in ['Date', 'Tendencia']]
-X = data_CCU_SN[features]
-y = data_CCU_SN['Tendencia']
 
 # Codificación de las etiquetas
 label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
 
-# Normalización de los datos
-scaler = MinMaxScaler()
-X_scaled = scaler.fit_transform(X)
 
 # Aplicar RFE para seleccionar las mejores características utilizando Random Forest
 model_rfe = RandomForestClassifier(n_estimators=100, random_state=42)
@@ -400,8 +403,10 @@ dates = pd.to_datetime(data_CCU_SN['Date'])
 results = []
 
 # Acumular todas las predicciones y etiquetas verdaderas
-all_y_true = []
-all_y_pred = []
+all_y_true_test = []
+all_y_pred_test = []
+all_y_true_train = []
+all_y_pred_train = []
 
 # Contador de iteraciones
 iteration_count = 0
@@ -410,6 +415,10 @@ iteration_count = 0
 train_size = int(len(dates) * 0.8)
 
 hora_de_inicio = datetime.now()
+
+# Crear listas para almacenar las métricas de train y test
+train_metrics = []
+test_metrics = []
 
 # Iterar sobre el 20% restante usando la ventana rodante
 for start in range(train_size, len(dates) - window_size):
@@ -426,42 +435,83 @@ for start in range(train_size, len(dates) - window_size):
     if len(X_train) == 0 or len(X_test) == 0:
         continue
 
-    model = RandomForestClassifier(n_estimators=100, random_state=42)
+    # Ajustar hiperparámetros del modelo si es necesario
+    model = RandomForestClassifier(n_estimators=100, random_state=42, max_depth=10, min_samples_split=10)
     model.fit(X_train, y_train)
 
-    y_pred = model.predict(X_test)
+    # Predicciones para test y train
+    y_pred_test = model.predict(X_test)
+    y_pred_train = model.predict(X_train)
 
-    # Acumular las predicciones y etiquetas verdaderas
-    all_y_true.extend(y_test)
-    all_y_pred.extend(y_pred)
+    # Acumular las predicciones y etiquetas verdaderas para test
+    all_y_true_test.extend(y_test)
+    all_y_pred_test.extend(y_pred_test)
+
+    # Acumular las predicciones y etiquetas verdaderas para train
+    all_y_true_train.extend(y_train)
+    all_y_pred_train.extend(y_pred_train)
+    
+    # Calcular métricas para test y train en esta iteración
+    test_accuracy = accuracy_score(y_test, y_pred_test)
+    test_precision = precision_score(y_test, y_pred_test, average='weighted')
+    test_recall = recall_score(y_test, y_pred_test, average='weighted')
+    test_f1 = f1_score(y_test, y_pred_test, average='weighted')
+    
+    train_accuracy = accuracy_score(y_train, y_pred_train)
+    train_precision = precision_score(y_train, y_pred_train, average='weighted')
+    train_recall = recall_score(y_train, y_pred_train, average='weighted')
+    train_f1 = f1_score(y_train, y_pred_train, average='weighted')
+
+    # Almacenar las métricas de la iteración en las listas
+    test_metrics.append([test_accuracy, test_precision, test_recall, test_f1])
+    train_metrics.append([train_accuracy, train_precision, train_recall, train_f1])
     
     # Incrementar el contador de iteraciones
     iteration_count += 1
 
 hora_de_fin = datetime.now()
 
-# Convertir las listas acumuladas a arrays de NumPy
-all_y_true = np.array(all_y_true)
-all_y_pred = np.array(all_y_pred)
+# Crear un DataFrame para las métricas de entrenamiento y prueba
+train_metrics_df = pd.DataFrame(train_metrics, columns=['Accuracy', 'Precision', 'Recall', 'F1'])
+test_metrics_df = pd.DataFrame(test_metrics, columns=['Accuracy', 'Precision', 'Recall', 'F1'])
 
-# Calcular las métricas globales
-overall_accuracy = accuracy_score(all_y_true, all_y_pred)
-overall_precision = precision_score(all_y_true, all_y_pred, average='weighted')
-overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
-overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
-overall_report = classification_report(all_y_true, all_y_pred, target_names=[str(cls) for cls in label_encoder.classes_])
+# Mostrar las primeras filas de las métricas de entrenamiento y prueba
+print("Métricas de entrenamiento (Train):")
+print(train_metrics_df.head())
 
-print(f"Precisión general del modelo: {overall_accuracy:.2f}")
-print(f"Precision global (ponderada): {overall_precision:.2f}")
-print(f"Recall global (ponderado): {overall_recall:.2f}")
-print(f"F1-score global (ponderado): {overall_f1:.2f}")
-print(f"Reporte de clasificación general:\n {overall_report}")
-print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
+print("\nMétricas de prueba (Test):")
+print(test_metrics_df.head())
+
+# Calcular las métricas globales finales para train y test
+overall_train_accuracy = accuracy_score(all_y_true_train, all_y_pred_train)
+overall_train_precision = precision_score(all_y_true_train, all_y_pred_train, average='weighted')
+overall_train_recall = recall_score(all_y_true_train, all_y_pred_train, average='weighted')
+overall_train_f1 = f1_score(all_y_true_train, all_y_pred_train, average='weighted')
+
+overall_test_accuracy = accuracy_score(all_y_true_test, all_y_pred_test)
+overall_test_precision = precision_score(all_y_true_test, all_y_pred_test, average='weighted')
+overall_test_recall = recall_score(all_y_true_test, all_y_pred_test, average='weighted')
+overall_test_f1 = f1_score(all_y_true_test, all_y_pred_test, average='weighted')
+
+# Mostrar las métricas globales finales para entrenamiento y prueba
+print(f"\nMétricas globales de entrenamiento (Train):")
+print(f"Precisión general: {overall_train_accuracy:.2f}")
+print(f"Precisión global (ponderada): {overall_train_precision:.2f}")
+print(f"Recall global (ponderado): {overall_train_recall:.2f}")
+print(f"F1-score global (ponderado): {overall_train_f1:.2f}")
+
+print(f"\nMétricas globales de prueba (Test):")
+print(f"Precisión general: {overall_test_accuracy:.2f}")
+print(f"Precisión global (ponderada): {overall_test_precision:.2f}")
+print(f"Recall global (ponderado): {overall_test_recall:.2f}")
+print(f"F1-score global (ponderado): {overall_test_f1:.2f}")
+
+print(f"\nTiempo de ejecución: {hora_de_fin - hora_de_inicio}")
 print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 #%%
 
-# Naive Bayes
+# Naive Bayes prueba
 
 # Selección de todas las características excepto 'Date' y 'Tendencia'
 features = [col for col in data_CCU_SN.columns if col not in ['Date', 'Tendencia']]
@@ -480,6 +530,7 @@ selector = SelectKBest(score_func=f_classif, k=5)
 X_selected = selector.fit_transform(X_scaled, y_encoded)
 selected_features = np.array(features)[selector.get_support()]
 print("Características seleccionadas:", selected_features)
+
 # Implementación de la ventana rodante con la columna 'Date'
 window_size = 3  # Ajusta el tamaño de la ventana según tus necesidades
 
@@ -487,8 +538,10 @@ dates = pd.to_datetime(data_CCU_SN['Date'])
 results = []
 
 # Acumular todas las predicciones y etiquetas verdaderas
-all_y_true = []
-all_y_pred = []
+all_y_true_train = []
+all_y_pred_train = []
+all_y_true_test = []
+all_y_pred_test = []
 
 # Contador de iteraciones
 iteration_count = 0
@@ -517,71 +570,83 @@ for start in range(train_size, len(dates) - window_size):
     model = GaussianNB()
     model.fit(X_train, y_train)
 
-    y_pred = model.predict(X_test)
-
-    # Acumular las predicciones y etiquetas verdaderas
-    all_y_true.extend(y_test)
-    all_y_pred.extend(y_pred)
+    # Predicciones para el conjunto de prueba
+    y_pred_test = model.predict(X_test)
+    all_y_true_test.extend(y_test)
+    all_y_pred_test.extend(y_pred_test)
     
+    # Predicciones para el conjunto de entrenamiento
+    y_pred_train = model.predict(X_train)
+    all_y_true_train.extend(y_train)
+    all_y_pred_train.extend(y_pred_train)
+
     # Incrementar el contador de iteraciones
     iteration_count += 1
 
 hora_de_fin = datetime.now()
 
 # Convertir las listas acumuladas a arrays de NumPy
-all_y_true = np.array(all_y_true)
-all_y_pred = np.array(all_y_pred)
+all_y_true_train = np.array(all_y_true_train)
+all_y_pred_train = np.array(all_y_pred_train)
+all_y_true_test = np.array(all_y_true_test)
+all_y_pred_test = np.array(all_y_pred_test)
 
-# Calcular las métricas globales
-overall_accuracy = accuracy_score(all_y_true, all_y_pred)
-overall_precision = precision_score(all_y_true, all_y_pred, average='weighted')
-overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
-overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
-overall_report = classification_report(all_y_true, all_y_pred, target_names=[str(cls) for cls in label_encoder.classes_])
+# Calcular las métricas para el conjunto de prueba (test)
+test_accuracy = accuracy_score(all_y_true_test, all_y_pred_test)
+test_precision = precision_score(all_y_true_test, all_y_pred_test, average='weighted')
+test_recall = recall_score(all_y_true_test, all_y_pred_test, average='weighted')
+test_f1 = f1_score(all_y_true_test, all_y_pred_test, average='weighted')
+test_report = classification_report(all_y_true_test, all_y_pred_test, target_names=[str(cls) for cls in label_encoder.classes_])
 
-print(f"Precisión general del modelo: {overall_accuracy:.2f}")
-print(f"Precision global (ponderada): {overall_precision:.2f}")
-print(f"Recall global (ponderado): {overall_recall:.2f}")
-print(f"F1-score global (ponderado): {overall_f1:.2f}")
-print(f"Reporte de clasificación general:\n {overall_report}")
+# Calcular las métricas para el conjunto de entrenamiento (train)
+train_accuracy = accuracy_score(all_y_true_train, all_y_pred_train)
+train_precision = precision_score(all_y_true_train, all_y_pred_train, average='weighted')
+train_recall = recall_score(all_y_true_train, all_y_pred_train, average='weighted')
+train_f1 = f1_score(all_y_true_train, all_y_pred_train, average='weighted')
+train_report = classification_report(all_y_true_train, all_y_pred_train, target_names=[str(cls) for cls in label_encoder.classes_])
+
+# Imprimir las métricas del conjunto de entrenamiento
+print(f"Precisión general del modelo (train): {train_accuracy:.2f}")
+print(f"Precision global (ponderada) (train): {train_precision:.2f}")
+print(f"Recall global (ponderado) (train): {train_recall:.2f}")
+print(f"F1-score global (ponderado) (train): {train_f1:.2f}")
+print(f"Reporte de clasificación (train):\n{train_report}")
+
+# Imprimir las métricas del conjunto de prueba
+print(f"Precisión general del modelo (test): {test_accuracy:.2f}")
+print(f"Precision global (ponderada) (test): {test_precision:.2f}")
+print(f"Recall global (ponderado) (test): {test_recall:.2f}")
+print(f"F1-score global (ponderado) (test): {test_f1:.2f}")
+print(f"Reporte de clasificación (test):\n{test_report}")
+
+# Tiempo de ejecución
 print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
 print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 #%%
 
-# MLP (Multi-Layer Perceptron)
-
-# Selección de todas las características excepto 'Date' y 'Tendencia'
-features = [col for col in data_CCU_SN.columns if col not in ['Date', 'Tendencia']]
-X = data_CCU_SN[features]
-y = data_CCU_SN['Tendencia']
+#MLP con RFE de randomforest
 
 # Codificación de las etiquetas
 label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
 
-# Normalización de los datos
-scaler = MinMaxScaler()
-X_scaled = scaler.fit_transform(X)
-
-selector = SelectKBest(score_func=f_classif, k=5)
+# Ajuste de RFE usando un RandomForestClassifier
+rf_model = RandomForestClassifier(random_state=42)
+selector = RFE(estimator=rf_model, n_features_to_select=5)  # Selecciona las 5 mejores características
 X_selected = selector.fit_transform(X_scaled, y_encoded)
 selected_features = np.array(features)[selector.get_support()]
 print("Características seleccionadas:", selected_features)
+
 # Implementación de la ventana rodante con la columna 'Date'
 window_size = 3  # Ajusta el tamaño de la ventana según tus necesidades
 
 dates = pd.to_datetime(data_CCU_SN['Date'])
-results = []
-
-# Acumular todas las predicciones y etiquetas verdaderas
 all_y_true = []
 all_y_pred = []
 
 # Contador de iteraciones
 iteration_count = 0
-
-# Calcular el índice para el 80% de los datos
 train_size = int(len(dates) * 0.8)
 
 hora_de_inicio = datetime.now()
@@ -605,12 +670,11 @@ for start in range(train_size, len(dates) - window_size):
     model = MLPClassifier(hidden_layer_sizes=(100, 50), max_iter=300, random_state=42)
     model.fit(X_train, y_train)
 
+    # Predicciones para el conjunto de prueba
     y_pred = model.predict(X_test)
-
-    # Acumular las predicciones y etiquetas verdaderas
     all_y_true.extend(y_test)
     all_y_pred.extend(y_pred)
-    
+
     # Incrementar el contador de iteraciones
     iteration_count += 1
 
@@ -620,18 +684,35 @@ hora_de_fin = datetime.now()
 all_y_true = np.array(all_y_true)
 all_y_pred = np.array(all_y_pred)
 
-# Calcular las métricas globales
-overall_accuracy = accuracy_score(all_y_true, all_y_pred)
-overall_precision = precision_score(all_y_true, all_y_pred, average='weighted')
-overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
-overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
-overall_report = classification_report(all_y_true, all_y_pred, target_names=[str(cls) for cls in label_encoder.classes_])
+# Calcular las métricas para el conjunto de prueba (test)
+test_accuracy = accuracy_score(all_y_true, all_y_pred)
+test_precision = precision_score(all_y_true, all_y_pred, average='weighted')
+test_recall = recall_score(all_y_true, all_y_pred, average='weighted')
+test_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
+test_report = classification_report(all_y_true, all_y_pred, target_names=[str(cls) for cls in label_encoder.classes_])
 
-print(f"Precisión general del modelo: {overall_accuracy:.2f}")
-print(f"Precision global (ponderada): {overall_precision:.2f}")
-print(f"Recall global (ponderado): {overall_recall:.2f}")
-print(f"F1-score global (ponderado): {overall_f1:.2f}")
-print(f"Reporte de clasificación general:\n {overall_report}")
+# Guardar los resultados en un archivo de texto
+output_file_path = r'.\..\output\MLP_CCU.txt'  # Cambia el nombre del archivo según sea necesario
+with open(output_file_path, 'w') as f:
+    f.write(f"Características seleccionadas por RFE: {np.array(features)[selector.support_]}\n\n")
+    f.write(f"Accuracy general del modelo (test): {test_accuracy:.2f}\n")
+    f.write(f"Precision global (ponderada) (test): {test_precision:.2f}\n")
+    f.write(f"Recall global (ponderado) (test): {test_recall:.2f}\n")
+    f.write(f"F1-score global (ponderado) (test): {test_f1:.2f}\n")
+    f.write(f"Reporte de clasificación general:\n{test_report}\n")
+    f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
+    f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
+
+# Imprimir las métricas del conjunto de prueba
+print("Resultados del modelo en el conjunto de prueba:")
+print(f"1. Accuracy general del modelo (test): {test_accuracy:.2f}")
+print(f"2. Precision global (ponderada) (test): {test_precision:.2f}")
+print(f"3. Recall global (ponderado) (test): {test_recall:.2f}")
+print(f"4. F1-score global (ponderado) (test): {test_f1:.2f}")
+print("5. Reporte de clasificación (test):")
+print(test_report)
+
+# Tiempo de ejecución
 print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
 print(f"Número total de iteraciones realizadas: {iteration_count}")
 
@@ -640,10 +721,6 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 # LSTM (Long Short-Term Memory)
 
-# Selección de características y etiqueta
-features = [col for col in data_CCU_SN.columns if col not in ['Date', 'Tendencia']]
-X = data_CCU_SN[features]
-y = data_CCU_SN['Tendencia']
 
 # Codificación de las etiquetas para un problema multicategoría
 label_encoder = LabelEncoder()

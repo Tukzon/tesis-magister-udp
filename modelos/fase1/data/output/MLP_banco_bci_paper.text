@@ -1,0 +1,18 @@
+Resultados para el MLP con random forest:
+Precisión general del modelo: 0.61
+Precision global (ponderada): 0.61
+Recall global (ponderado): 0.61
+F1-score global (ponderado): 0.61
+Reporte de clasificación general:
+              precision    recall  f1-score   support
+
+          -1       0.72      0.68      0.70       487
+           0       0.41      0.39      0.40       358
+           1       0.63      0.69      0.66       493
+
+    accuracy                           0.61      1338
+   macro avg       0.59      0.59      0.59      1338
+weighted avg       0.61      0.61      0.61      1338
+
+Tiempo de ejecución: 0:08:14.211261
+Número total de iteraciones realizadas: 446

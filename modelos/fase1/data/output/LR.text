@@ -1,0 +1,85 @@
+Resultados de Regresión Logística
+========================================
+Características seleccionadas por RFE: ['RSI_14' 'BBANDS_lower' 'Histogram' 'ATR_14' 'WILLR_14' 'TSI_13_25_13'
+ 'CMO']
+Probando C=0.01, Solver=lbfgs
+Resultados para C=0.01, Solver=lbfgs
+Accuracy general del modelo: 0.33
+Precision global (ponderada): 0.34
+Recall global (ponderado): 0.33
+F1-score global (ponderado): 0.23
+Número total de iteraciones realizadas: 446
+
+Probando C=0.01, Solver=liblinear
+Resultados para C=0.01, Solver=liblinear
+Accuracy general del modelo: 0.29
+Precision global (ponderada): 0.42
+Recall global (ponderado): 0.29
+F1-score global (ponderado): 0.14
+Número total de iteraciones realizadas: 446
+
+Probando C=0.1, Solver=lbfgs
+Resultados para C=0.1, Solver=lbfgs
+Accuracy general del modelo: 0.53
+Precision global (ponderada): 0.51
+Recall global (ponderado): 0.53
+F1-score global (ponderado): 0.51
+Número total de iteraciones realizadas: 446
+
+Probando C=0.1, Solver=liblinear
+Resultados para C=0.1, Solver=liblinear
+Accuracy general del modelo: 0.53
+Precision global (ponderada): 0.52
+Recall global (ponderado): 0.53
+F1-score global (ponderado): 0.52
+Número total de iteraciones realizadas: 446
+
+Probando C=1, Solver=lbfgs
+Resultados para C=1, Solver=lbfgs
+Accuracy general del modelo: 0.57
+Precision global (ponderada): 0.54
+Recall global (ponderado): 0.57
+F1-score global (ponderado): 0.53
+Número total de iteraciones realizadas: 446
+
+Probando C=1, Solver=liblinear
+Resultados para C=1, Solver=liblinear
+Accuracy general del modelo: 0.57
+Precision global (ponderada): 0.54
+Recall global (ponderado): 0.57
+F1-score global (ponderado): 0.53
+Número total de iteraciones realizadas: 446
+
+Probando C=10, Solver=lbfgs
+Resultados para C=10, Solver=lbfgs
+Accuracy general del modelo: 0.59
+Precision global (ponderada): 0.56
+Recall global (ponderado): 0.59
+F1-score global (ponderado): 0.56
+Número total de iteraciones realizadas: 446
+
+Probando C=10, Solver=liblinear
+Resultados para C=10, Solver=liblinear
+Accuracy general del modelo: 0.59
+Precision global (ponderada): 0.56
+Recall global (ponderado): 0.59
+F1-score global (ponderado): 0.56
+Número total de iteraciones realizadas: 446
+
+Probando C=100, Solver=lbfgs
+Resultados para C=100, Solver=lbfgs
+Accuracy general del modelo: 0.61
+Precision global (ponderada): 0.58
+Recall global (ponderado): 0.61
+F1-score global (ponderado): 0.57
+Número total de iteraciones realizadas: 446
+
+Probando C=100, Solver=liblinear
+Resultados para C=100, Solver=liblinear
+Accuracy general del modelo: 0.61
+Precision global (ponderada): 0.58
+Recall global (ponderado): 0.61
+F1-score global (ponderado): 0.57
+Número total de iteraciones realizadas: 446
+
+Tiempo de ejecución total: 0:02:29.562955
