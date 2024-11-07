@@ -60,10 +60,10 @@ train_size = int(len(dates) * 0.8)
 
 #%%
 
-#Regresión logistica
+# Regresión logística
 
 # Aplicar RFE para seleccionar las mejores características
-model_rfe = LogisticRegression(multi_class='ovr', max_iter=1000)
+model_rfe = LogisticRegression(multi_class='ovr', max_iter=1000, penalty='l2')  # Se agrega penalty='l2'
 rfe = RFE(model_rfe, n_features_to_select=7)
 
 X_rfe = rfe.fit_transform(X_ta_scaled, y)
@@ -103,7 +103,7 @@ for start in range(train_size, len(dates) - window_size):
     if len(np.unique(y_train)) < 2 or len(X_train) == 0 or len(X_test) == 0:
         continue
 
-    model = LogisticRegression(multi_class='ovr', max_iter=1000)
+    model = LogisticRegression(multi_class='ovr', max_iter=1000, penalty='l2')  # Se agrega penalty='l2'
     model.fit(X_train, y_train)
 
     y_pred = model.predict(X_test)
@@ -134,6 +134,22 @@ print(f"F1-score global (ponderado): {overall_f1:.2f}")
 print(f"Reporte de clasificación general:\n {overall_report}")
 print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
 print(f"Número total de iteraciones realizadas: {iteration_count}")
+
+
+#%%
+
+# Guardar los resultados en un archivo de texto
+output_file_path = r'.\..\output\LR_aguas_Hiperparametro_paper.txt'
+with open(output_file_path, 'w') as f:
+    f.write(f"Resultados para LR con Hiperparametros del paper:\n")
+    f.write(f"Accuracy general del modelo: {overall_accuracy:.2f}\n")
+    f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
+    f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
+    f.write(f"F1-score global (ponderado): {overall_f1:.2f}\n")
+    f.write(f"Reporte de clasificación general:\n{overall_report}\n")
+    f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
+    f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
+
 #%%
 
 # Regresión logística con C=100, se probo con varios valores de C, siento este el mejor y solver=lbfgs
@@ -198,8 +214,9 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 #%%
 # Guardar los resultados en un archivo de texto
-output_file_path = r'.\..\output\LR_aguas.txt'
+output_file_path = r'.\..\output\LR_Aguas_Ajuste.txt'
 with open(output_file_path, 'w') as f:
+    f.write(f"Resultados para LR con C = 100 y ajuster de solver y multiclase:\n")
     f.write(f"Accuracy general del modelo: {overall_accuracy:.2f}\n")
     f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
     f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
@@ -210,11 +227,12 @@ with open(output_file_path, 'w') as f:
 
 #%%
 
-# Árbol de decisión
+# Árbol de decisión segun paper con algoritmo cart. cabe destacar que el algoritmo cart es bueno para predecir
+# Problemas multiclase
 
 # Aplicar RFE para seleccionar las mejores características utilizando un Árbol de Decisión
 model_rfe = DecisionTreeClassifier(random_state=42)
-rfe = RFE(model_rfe, n_features_to_select=5)  # Ajusta n_features_to_select según lo desees
+rfe = RFE(model_rfe, n_features_to_select=7)  # Ajusta n_features_to_select según lo desees
 X_rfe = rfe.fit_transform(X_ta_scaled, y)
 selected_technical_features = np.array(ta_cols)[rfe.support_]
 
@@ -251,7 +269,7 @@ for start in range(train_size, len(dates) - window_size):
         continue
 
     # Crear y ajustar el modelo con limitación de profundidad para evitar sobreajuste
-    model = DecisionTreeClassifier(random_state=42, max_depth=5)
+    model = DecisionTreeClassifier(random_state=42, max_depth=10)
     model.fit(X_train, y_train)
 
     y_pred = model.predict(X_test)
@@ -276,7 +294,7 @@ overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
 overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
 overall_report = classification_report(all_y_true, all_y_pred)
 
-print(f"Accuracy general del modelo: {overall_accuracy:.2f}")
+print(f"Accuracy general del modelo DT: {overall_accuracy:.2f}")
 print(f"Precision global (ponderada): {overall_precision:.2f}")
 print(f"Recall global (ponderado): {overall_recall:.2f}")
 print(f"F1-score global (ponderado): {overall_f1:.2f}")
@@ -287,9 +305,9 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 #%%
 
 # Guardar resultados en archivo .text
-output_path = r'.\..\output\DT.txt'
+output_path = r'.\..\output\DT_Aguas_segun_paper.txt'
 with open(output_path, 'w') as f:
-    f.write(f"Resultados para el Árbol de Decisión:\n")
+    f.write(f"Resultados para el Árbol de Decisión segun el paper algoritmo Cart profundida 10, mejor que 5:\n")
     f.write(f"Accuracy general del modelo: {overall_accuracy:.2f}\n")
     f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
     f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
@@ -300,6 +318,106 @@ with open(output_path, 'w') as f:
 
 #%%
 
+
+#Arbol, dejamos como conclusión que se han estando ocupando más hiperparametros, siendo este el que mejora un pcoo mejor
+#logrando subajustar de menor manera la clase 0
+
+# Aplicar RFE para seleccionar las mejores características utilizando un Árbol de Decisión
+model_rfe = DecisionTreeClassifier(random_state=42)
+rfe = RFE(model_rfe, n_features_to_select=7)  # Ajusta n_features_to_select según lo desees
+X_rfe = rfe.fit_transform(X_ta_scaled, y)
+selected_technical_features = np.array(ta_cols)[rfe.support_]
+
+print("Indicadores técnicos seleccionados por RFE:", selected_technical_features)
+
+# Crear DataFrame con características seleccionadas y concatenar con columnas estáticas normalizadas
+X_rfe_df = pd.DataFrame(X_rfe, columns=selected_technical_features)
+
+X_final = pd.concat([X_rfe_df, X_static_df.reset_index(drop=True)], axis=1)
+
+results = []
+
+# Acumular todas las predicciones y etiquetas verdaderas
+all_y_true = []
+all_y_pred = []
+
+# Contador de iteraciones
+iteration_count = 0
+
+hora_de_inicio = datetime.now()
+
+# Iterar sobre el 20% restante usando la ventana rodante
+for start in range(train_size, len(dates) - window_size):
+    # Definir índices de entrenamiento y prueba correctamente
+    train_indices = (dates < dates.iloc[start])
+    test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
+
+    # Asegurar que no haya intersección entre los conjuntos de entrenamiento y prueba
+    X_train, X_test = X_final[train_indices], X_final[test_indices]
+    y_train, y_test = y[train_indices], y[test_indices]
+
+    # Verificar clases en el conjunto de entrenamiento
+    if len(np.unique(y_train)) < 2 or len(X_train) == 0 or len(X_test) == 0:
+        continue
+
+    # Crear y ajustar el modelo de Árbol de Decisión con nuevos hiperparámetros
+    model = DecisionTreeClassifier(
+        random_state=42,
+        max_depth=15,                  # Ajuste de profundidad
+        min_samples_split=20,          # Mínimo de muestras para dividir un nodo
+        min_samples_leaf=10,           # Mínimo de muestras por hoja
+        criterion='entropy'           # Usar 'entropy' en lugar de 'gini'
+    )
+    model.fit(X_train, y_train)
+
+    y_pred = model.predict(X_test)
+
+    # Acumular las predicciones y etiquetas verdaderas
+    all_y_true.extend(y_test)
+    all_y_pred.extend(y_pred)
+    
+    # Incrementar el contador de iteraciones
+    iteration_count += 1
+
+hora_de_fin = datetime.now()
+
+# Convertir las listas acumuladas a arrays de NumPy
+all_y_true = np.array(all_y_true)
+all_y_pred = np.array(all_y_pred)
+
+# Calcular las métricas globales
+overall_accuracy = accuracy_score(all_y_true, all_y_pred)
+overall_precision = precision_score(all_y_true, all_y_pred, average='weighted')
+overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
+overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
+overall_report = classification_report(all_y_true, all_y_pred)
+
+# Imprimir resultados en consola
+print(f"Accuracy general del modelo: {overall_accuracy:.2f}")
+print(f"Precision global (ponderada): {overall_precision:.2f}")
+print(f"Recall global (ponderado): {overall_recall:.2f}")
+print(f"F1-score global (ponderado): {overall_f1:.2f}")
+print(f"Reporte de clasificación general:\n {overall_report}")
+print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
+print(f"Número total de iteraciones realizadas: {iteration_count}")
+
+#%%
+# Guardar resultados en archivo .text
+output_path = r'.\..\output\DT_Aguas_con_ajuste.txt'
+with open(output_path, 'w') as f:
+    f.write(f"Resultados para el Árbol de Decisión con cambios de hiperparametros:\n")
+    f.write(f"Accuracy general del modelo: {overall_accuracy:.2f}\n")
+    f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
+    f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
+    f.write(f"F1-score global (ponderado): {overall_f1:.2f}\n")
+    f.write(f"Reporte de clasificación general:\n{overall_report}\n")
+    f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
+    f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
+
+
+
+
+#%%
 # XGBoost
 
 # Codificación de las etiquetas (transformación de [-1, 0, 1] a [0, 1, 2])
@@ -308,7 +426,7 @@ y_encoded = label_encoder.fit_transform(y)
 
 # Aplicar RFE para seleccionar las mejores características utilizando XGBoost
 model_rfe = XGBClassifier(use_label_encoder=False, eval_metric='mlogloss', random_state=42)
-rfe = RFE(model_rfe, n_features_to_select=5)  # Ajusta n_features_to_select según lo desees
+rfe = RFE(model_rfe, n_features_to_select=7)  # Ajusta n_features_to_select según lo desees
 #X_rfe = rfe.fit_transform(X_ta_scaled, y)
 X_rfe = rfe.fit_transform(X_ta_scaled, y_encoded)
 selected_technical_features = np.array(ta_cols)[rfe.support_]
@@ -369,7 +487,7 @@ overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
 overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
 overall_report = classification_report(all_y_true, all_y_pred, target_names=[str(cls) for cls in label_encoder.classes_])
 
-print(f"Precisión general del modelo: {overall_accuracy:.2f}")
+print(f"Precisión general del modelo XgBoost: {overall_accuracy:.2f}")
 print(f"Precision global (ponderada): {overall_precision:.2f}")
 print(f"Recall global (ponderado): {overall_recall:.2f}")
 print(f"F1-score global (ponderado): {overall_f1:.2f}")
@@ -379,9 +497,9 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 #%%
 # Guardar resultados en archivo .text
-output_path = r'.\..\output\XGBoost_base.txt'
+output_path = r'.\..\output\XGBoost_aguas_con_100_submodels.txt'
 with open(output_path, 'w') as f:
-    f.write(f"Resultados para el modelo XGBoost:\n")
+    f.write(f"Resultados para el modelo XGBoost con 100 submodelos en ves de 1000 como lo hace el paper:\n")
     f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
     f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
     f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
@@ -392,7 +510,24 @@ with open(output_path, 'w') as f:
 
 #%%
 
-#XGBoost segun paper
+#Xgboost Segun paper
+
+# Codificación de las etiquetas (transformación de [-1, 0, 1] a [0, 1, 2])
+label_encoder = LabelEncoder()
+y_encoded = label_encoder.fit_transform(y)
+
+# Aplicar RFE para seleccionar las mejores características utilizando XGBoost
+model_rfe = XGBClassifier(use_label_encoder=False, eval_metric='mlogloss', random_state=42, n_estimators=1000)  # 1000 submodelos
+rfe = RFE(model_rfe, n_features_to_select=7)  # Ajusta n_features_to_select según lo desees
+X_rfe = rfe.fit_transform(X_ta_scaled, y_encoded)
+selected_technical_features = np.array(ta_cols)[rfe.support_]
+
+print("Indicadores técnicos seleccionados por RFE:", selected_technical_features)
+
+# Crear DataFrame con características seleccionadas y concatenar con columnas estáticas normalizadas
+X_rfe_df = pd.DataFrame(X_rfe, columns=selected_technical_features)
+
+X_final = pd.concat([X_rfe_df, X_static_df.reset_index(drop=True)], axis=1)
 
 results = []
 
@@ -417,14 +552,8 @@ for start in range(train_size, len(dates) - window_size):
     if len(np.unique(y_train)) < 2 or len(X_train) == 0 or len(X_test) == 0:
         continue
 
-    model = XGBClassifier(
-        use_label_encoder=False,
-        eval_metric='mlogloss',
-        n_estimators=1000,  # Número de árboles
-        max_depth=5,        # Profundidad máxima
-        learning_rate=0.1,  # Tasa de aprendizaje
-        random_state=42
-    )
+    # Crear y ajustar el modelo XGBoost con 1000 submodelos
+    model = XGBClassifier(use_label_encoder=False, eval_metric='mlogloss', random_state=42, n_estimators=1000)
     model.fit(X_train, y_train)
 
     y_pred = model.predict(X_test)
@@ -432,7 +561,7 @@ for start in range(train_size, len(dates) - window_size):
     # Acumular las predicciones y etiquetas verdaderas
     all_y_true.extend(y_test)
     all_y_pred.extend(y_pred)
-
+    
     # Incrementar el contador de iteraciones
     iteration_count += 1
 
@@ -449,22 +578,19 @@ overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
 overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
 overall_report = classification_report(all_y_true, all_y_pred, target_names=[str(cls) for cls in label_encoder.classes_])
 
-# También imprimir los resultados en consola
-print(f"Resultados para el modelo XGBoost:\n")
-print(f"Precisión general del modelo: {overall_accuracy:.2f}")
+print(f"Precisión general del modelo XGBoost: {overall_accuracy:.2f}")
 print(f"Precision global (ponderada): {overall_precision:.2f}")
 print(f"Recall global (ponderado): {overall_recall:.2f}")
 print(f"F1-score global (ponderado): {overall_f1:.2f}")
-print(f"Reporte de clasificación general:\n{overall_report}")
+print(f"Reporte de clasificación general:\n {overall_report}")
 print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
 print(f"Número total de iteraciones realizadas: {iteration_count}")
 
-
 #%%
 # Guardar resultados en archivo .text
-output_path = r'.\..\output\XGBoost_aguas.txt'
+output_path = r'.\..\output\XGBoost_aguas_Segun_paper.txt'
 with open(output_path, 'w') as f:
-    f.write(f"Resultados para el modelo XGBoost:\n")
+    f.write(f"Resultados para el modelo XGBoost Segun el paper 1000 submodelos:\n")
     f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
     f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
     f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
@@ -472,9 +598,10 @@ with open(output_path, 'w') as f:
     f.write(f"Reporte de clasificación general:\n{overall_report}\n")
     f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
     f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
+
 #%%
 
-# Random Forest
+# Random Forest segun el paper
 
 # Codificación de las etiquetas
 label_encoder = LabelEncoder()
@@ -482,7 +609,7 @@ y_encoded = label_encoder.fit_transform(y)
 
 # Aplicar RFE para seleccionar las mejores características utilizando Random Forest
 model_rfe = RandomForestClassifier(n_estimators=100, random_state=42)
-rfe = RFE(model_rfe, n_features_to_select=5)
+rfe = RFE(model_rfe, n_features_to_select=7)
 X_rfe = rfe.fit_transform(X_ta_scaled, y_encoded)
 selected_technical_features = np.array(ta_cols)[rfe.support_]
 
@@ -551,9 +678,9 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 #%%
 # Guardar resultados en archivo .text
-output_path = r'.\..\output\RF_base.txt'
+output_path = r'.\..\output\RF_aguas_Segun_paper.txt'
 with open(output_path, 'w') as f:
-    f.write(f"Resultados para el modelo de Random Forest:\n")
+    f.write(f"Resultados para el modelo de Random Forest Segun el paper con 100 submodelos:\n")
     f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
     f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
     f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
@@ -563,7 +690,12 @@ with open(output_path, 'w') as f:
     f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
     
 #%%
-#Random forest con hiperparametros del paper
+#Random forest con más hiperparametros para ver su rendimiento, se aumenta de 100 a 1000 submodelos y la profundidad
+# de la hoja aumenta de 5 a 10, dado que anteriormente en arbol de decisión obtuvimos mejor rendimiento
+# aumentando este parametro
+
+#No esta corriendo, se demora demasiado, el anterior se demora,15 minutos y este no lanza ni siquiera las caracteristicas
+
 
 # Codificación de las etiquetas
 label_encoder = LabelEncoder()
@@ -592,7 +724,7 @@ for start in range(train_size, len(dates) - window_size):
     if len(np.unique(y_train)) < 2 or len(X_train) == 0 or len(X_test) == 0:
         continue
 
-    model = RandomForestClassifier(n_estimators=100, max_depth=5, min_samples_split=2,
+    model = RandomForestClassifier(n_estimators=1000, max_depth=10, min_samples_split=2,
                                    min_samples_leaf=1, max_features='sqrt', criterion='gini',
                                    n_jobs=-1, random_state=42)
     model.fit(X_train, y_train)
@@ -631,7 +763,7 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 #%%
 # Guardar resultados en archivo .text
-output_path = r'.\..\output\RF_paper.txt'
+output_path = r'.\..\output\RF_aguas_ajustado.txt'
 with open(output_path, 'w') as f:
     f.write(f"Resultados para el modelo de Random Forest:\n")
     f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
@@ -650,7 +782,7 @@ with open(output_path, 'w') as f:
 label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
 
-selector = SelectKBest(score_func=f_classif, k=5)
+selector = SelectKBest(score_func=f_classif, k=7) #K = 7 igual que RFE = 7
 X_selected = selector.fit_transform(X_scaled, y_encoded)
 selected_features = np.array(features)[selector.get_support()]
 print("Características seleccionadas:", selected_features)
@@ -715,7 +847,7 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 #%%
 # Guardar resultados en archivo .text
-output_path = r'.\..\output\NB_SelectKBest.txt'
+output_path = r'.\..\output\NB_aguas_SelectKBest.txt'
 with open(output_path, 'w') as f:
     f.write(f"Resultados para el Naive Bayes:\n")
     f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
@@ -728,15 +860,16 @@ with open(output_path, 'w') as f:
 
 #%%
 
-# Naive Bayes con random forest
+# Naive Bayes con random forest, aqui tengamos ojo, dado que estamos entrenando el naive bayes también con hiperparametros
+# del algoritmo random forest, o los hiperaprametros son para calcular el RFE?, duda aquí.....!!!!
 
 # Codificación de las etiquetas
 label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
 
 # Aplicar RFE utilizando Random Forest para seleccionar las mejores características
-model_rfe = RandomForestClassifier(n_estimators=100, random_state=42)
-rfe = RFE(model_rfe, n_features_to_select=5)  # Ajusta n_features_to_select según lo desees
+model_rfe = RandomForestClassifier(n_estimators=1000, random_state=42)
+rfe = RFE(model_rfe, n_features_to_select=7)  # Ajusta n_features_to_select según lo desees
 X_rfe = rfe.fit_transform(X_ta_scaled, y_encoded)
 selected_technical_features = np.array(ta_cols)[rfe.support_]
 
@@ -808,9 +941,9 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 #%%
 # Guardar resultados en archivo .text
-output_path = r'.\..\output\NB_randomforest.txt'
+output_path = r'.\..\output\NB_aguas_randomforest.txt'
 with open(output_path, 'w') as f:
-    f.write(f"Resultados para el Naive Bayes:\n")
+    f.write(f"Resultados para el Naive Bayes son 100submodelos para random forest:\n")
     f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
     f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
     f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
@@ -906,7 +1039,7 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 #%%
 # Guardar resultados en archivo .text
-output_path = r'.\..\output\MLP_results_no_paper.text'
+output_path = r'.\..\output\MLP_aguas_basico_no_paper.text'
 with open(output_path, 'w') as f:
     f.write(f"Resultados para el MLP:\n")
     f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
@@ -921,6 +1054,8 @@ with open(output_path, 'w') as f:
 
 
 #MLP con random Forest e hiperaparametros del paper
+
+#Verificar esto
 
 # Codificación de las etiquetas
 label_encoder = LabelEncoder()
@@ -989,9 +1124,9 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 #%%
 # Guardar resultados en archivo .text
-output_path = r'.\..\output\MLP_results.text'
+output_path = r'.\..\output\MLP_aguas_según_paper.text'
 with open(output_path, 'w') as f:
-    f.write(f"Resultados para el MLP:\n")
+    f.write(f"Resultados para el MLP con hiperparametros del paper 3 capas y 30 neuronas de capa oculta, y utilizamos 1000 submodelos:\n")
     f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
     f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
     f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
@@ -1073,7 +1208,7 @@ print("Reporte de clasificación para LSTM:\n", report)
 print("Matriz de confusión:\n", conf_matrix)
 
 #%%
-#LSTM prueba 
+#LSTM se acerca al paper, pero no en su totalidad "Este es el bueno", el de arriba es el que era raro.
 
 # Codificación de las etiquetas
 label_encoder = LabelEncoder()
@@ -1153,9 +1288,9 @@ all_y_pred = np.array(all_y_pred)
 # Evaluación del modelo
 accuracy = accuracy_score(all_y_true, all_y_pred)
 report = classification_report(all_y_true, all_y_pred, target_names=[str(cls) for cls in label_encoder.classes_])
-
+#%%
 # Guardar resultados en un archivo de texto
-with open('./output/LSTM_results.txt', 'w') as f:
+with open('./output/LSTM_aguas.txt', 'w') as f:
     f.write(f"Precisión del modelo: {accuracy:.2f}\n")
     f.write("Reporte de clasificación para LSTM:\n" + report)
 

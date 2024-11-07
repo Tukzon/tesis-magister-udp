@@ -1,0 +1,18 @@
+Resultados para el Árbol de Decisión segun el paper algoritmo Cart profundida 10, mejor que 5:
+Accuracy general del modelo: 0.49
+Precision global (ponderada): 0.48
+Recall global (ponderado): 0.49
+F1-score global (ponderado): 0.48
+Reporte de clasificación general:
+              precision    recall  f1-score   support
+
+          -1       0.54      0.50      0.52       466
+           0       0.36      0.35      0.35       368
+           1       0.52      0.58      0.55       504
+
+    accuracy                           0.49      1338
+   macro avg       0.47      0.47      0.47      1338
+weighted avg       0.48      0.49      0.48      1338
+
+Tiempo de ejecución: 0:00:15.406703
+Número total de iteraciones realizadas: 446
