@@ -39,13 +39,20 @@ print("columnas totales:", len(data_aguas_SNN.columns))
 #%%
 
 # Selección de carácterísticas
-features = [col for col in data_aguas_SNN.columns if col not in ['Date', 'Tendencia']]
+static_cols = ['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume']
+ta_cols = [col for col in data_aguas_SNN.columns if col not in static_cols + ['Date', 'Tendencia']]
+features = static_cols + ta_cols
+
 X = data_aguas_SNN[features]
 y = data_aguas_SNN['Tendencia']
 
 # Normalización de los datos
 scaler = MinMaxScaler()
 X_scaled = scaler.fit_transform(X)
+
+X_ta_scaled = X_scaled[:, [X.columns.get_loc(col) for col in ta_cols]]
+X_static_scaled = X_scaled[:, [X.columns.get_loc(col) for col in static_cols]]
+X_static_df = pd.DataFrame(X_static_scaled, columns=static_cols)
 
 window_size = 3
 dates = pd.to_datetime(data_aguas_SNN['Date'])
@@ -58,9 +65,18 @@ train_size = int(len(dates) * 0.8)
 # Aplicar RFE para seleccionar las mejores características
 model_rfe = LogisticRegression(multi_class='ovr', max_iter=1000)
 rfe = RFE(model_rfe, n_features_to_select=7)
-X_rfe = rfe.fit_transform(X_scaled, y)
 
-print("Características seleccionadas por RFE:", np.array(features)[rfe.support_])
+X_rfe = rfe.fit_transform(X_ta_scaled, y)
+selected_technical_features = np.array(ta_cols)[rfe.support_]
+
+print("Indicadores técnicos seleccionados por RFE:", selected_technical_features)
+
+# Crear DataFrame con características seleccionadas y concatenar con columnas estáticas normalizadas
+X_rfe_df = pd.DataFrame(X_rfe, columns=selected_technical_features)
+
+X_final = pd.concat([X_rfe_df, X_static_df.reset_index(drop=True)], axis=1)
+
+print("Columnas finales para el modelo:", X_final.columns)
 
 results = []
 
@@ -70,10 +86,6 @@ all_y_pred = []
 
 hora_de_inicio = datetime.now()
 
-# Usar el 80% inicial como conjunto de entrenamiento
-X_train_initial = X_rfe[:train_size]
-y_train_initial = y[:train_size]
-
 # Contador de iteraciones
 iteration_count = 0
 
@@ -82,16 +94,13 @@ for start in range(train_size, len(dates) - window_size):
     test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
     train_indices = dates < dates.iloc[start]
 
-    X_train = X_rfe[train_indices]
+    X_train = X_final[train_indices]
     y_train = y[train_indices]
-    X_test = X_rfe[test_indices]
+    X_test = X_final[test_indices]
     y_test = y[test_indices]
 
-    # Verificar que haya suficientes clases en el conjunto de entrenamiento
-    if len(np.unique(y_train)) < 2:
-        continue  # Si solo hay una clase, pasa a la siguiente iteración
-
-    if len(X_train) == 0 or len(X_test) == 0:
+    # Verificar clases en el conjunto de entrenamiento
+    if len(np.unique(y_train)) < 2 or len(X_train) == 0 or len(X_test) == 0:
         continue
 
     model = LogisticRegression(multi_class='ovr', max_iter=1000)
@@ -127,17 +136,7 @@ print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
 print(f"Número total de iteraciones realizadas: {iteration_count}")
 #%%
 
-
-
-
 # Regresión logística con C=100, se probo con varios valores de C, siento este el mejor y solver=lbfgs
-
-# Aplicar RFE para seleccionar las mejores características
-model_rfe = LogisticRegression(multi_class='ovr', C=100, solver='lbfgs', max_iter=1000)
-rfe = RFE(model_rfe, n_features_to_select=7)
-X_rfe = rfe.fit_transform(X_scaled, y)
-
-print("Características seleccionadas por RFE:", np.array(features)[rfe.support_])
 
 results = []
 
@@ -147,10 +146,6 @@ all_y_pred = []
 
 hora_de_inicio = datetime.now()
 
-# Usar el 80% inicial como conjunto de entrenamiento
-X_train_initial = X_rfe[:train_size]
-y_train_initial = y[:train_size]
-
 # Contador de iteraciones
 iteration_count = 0
 
@@ -159,16 +154,13 @@ for start in range(train_size, len(dates) - window_size):
     test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
     train_indices = dates < dates.iloc[start]
 
-    X_train = X_rfe[train_indices]
+    X_train = X_final[train_indices]
     y_train = y[train_indices]
-    X_test = X_rfe[test_indices]
+    X_test = X_final[test_indices]
     y_test = y[test_indices]
 
-    # Verificar que haya suficientes clases en el conjunto de entrenamiento
-    if len(np.unique(y_train)) < 2:
-        continue  # Si solo hay una clase, pasa a la siguiente iteración
-
-    if len(X_train) == 0 or len(X_test) == 0:
+    # Verificar clases en el conjunto de entrenamiento
+    if len(np.unique(y_train)) < 2 or len(X_train) == 0 or len(X_test) == 0:
         continue
 
     model = LogisticRegression(multi_class='ovr', C=100, solver='lbfgs', max_iter=1000)
@@ -195,20 +187,7 @@ overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
 overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
 overall_report = classification_report(all_y_true, all_y_pred)
 
-# Guardar los resultados en un archivo de texto
-output_file_path = r'.\..\output\LR_aguas.txt'
-with open(output_file_path, 'w') as f:
-    f.write(f"Características seleccionadas por RFE: {np.array(features)[rfe.support_]}\n\n")
-    f.write(f"Accuracy general del modelo: {overall_accuracy:.2f}\n")
-    f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
-    f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
-    f.write(f"F1-score global (ponderado): {overall_f1:.2f}\n")
-    f.write(f"Reporte de clasificación general:\n{overall_report}\n")
-    f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
-    f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
-
 # Imprimir resultados en consola (opcional)
-print(f"Características seleccionadas por RFE: {np.array(features)[rfe.support_]}")
 print(f"Accuracy general del modelo: {overall_accuracy:.2f}")
 print(f"Precision global (ponderada): {overall_precision:.2f}")
 print(f"Recall global (ponderado): {overall_recall:.2f}")
@@ -216,6 +195,18 @@ print(f"F1-score global (ponderado): {overall_f1:.2f}")
 print(f"Reporte de clasificación general:\n {overall_report}")
 print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
 print(f"Número total de iteraciones realizadas: {iteration_count}")
+
+#%%
+# Guardar los resultados en un archivo de texto
+output_file_path = r'.\..\output\LR_aguas.txt'
+with open(output_file_path, 'w') as f:
+    f.write(f"Accuracy general del modelo: {overall_accuracy:.2f}\n")
+    f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
+    f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
+    f.write(f"F1-score global (ponderado): {overall_f1:.2f}\n")
+    f.write(f"Reporte de clasificación general:\n{overall_report}\n")
+    f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
+    f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
 
 #%%
 
@@ -224,9 +215,15 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 # Aplicar RFE para seleccionar las mejores características utilizando un Árbol de Decisión
 model_rfe = DecisionTreeClassifier(random_state=42)
 rfe = RFE(model_rfe, n_features_to_select=5)  # Ajusta n_features_to_select según lo desees
-X_rfe = rfe.fit_transform(X_scaled, y)
+X_rfe = rfe.fit_transform(X_ta_scaled, y)
+selected_technical_features = np.array(ta_cols)[rfe.support_]
 
-print("Características seleccionadas por RFE:", np.array(features)[rfe.support_])
+print("Indicadores técnicos seleccionados por RFE:", selected_technical_features)
+
+# Crear DataFrame con características seleccionadas y concatenar con columnas estáticas normalizadas
+X_rfe_df = pd.DataFrame(X_rfe, columns=selected_technical_features)
+
+X_final = pd.concat([X_rfe_df, X_static_df.reset_index(drop=True)], axis=1)
 
 results = []
 
@@ -246,14 +243,11 @@ for start in range(train_size, len(dates) - window_size):
     test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
 
     # Asegurar que no haya intersección entre los conjuntos de entrenamiento y prueba
-    X_train, X_test = X_rfe[train_indices], X_rfe[test_indices]
+    X_train, X_test = X_final[train_indices], X_final[test_indices]
     y_train, y_test = y[train_indices], y[test_indices]
 
-    # Verificar que haya suficientes clases en el conjunto de entrenamiento
-    if len(np.unique(y_train)) < 2:
-        continue  # Si solo hay una clase, pasa a la siguiente iteración
-
-    if len(X_train) == 0 or len(X_test) == 0:
+    # Verificar clases en el conjunto de entrenamiento
+    if len(np.unique(y_train)) < 2 or len(X_train) == 0 or len(X_test) == 0:
         continue
 
     # Crear y ajustar el modelo con limitación de profundidad para evitar sobreajuste
@@ -292,71 +286,8 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 #%%
 
-# Árbol de decisión
-
-# Aplicar RFE para seleccionar las mejores características utilizando un Árbol de Decisión
-model_rfe = DecisionTreeClassifier(random_state=42)
-rfe = RFE(model_rfe, n_features_to_select=7)  # Ajusta n_features_to_select según lo desees
-X_rfe = rfe.fit_transform(X_scaled, y)
-
-print("Características seleccionadas por RFE:", np.array(features)[rfe.support_])
-
-results = []
-
-# Acumular todas las predicciones y etiquetas verdaderas
-all_y_true = []
-all_y_pred = []
-
-# Contador de iteraciones
-iteration_count = 0
-
-hora_de_inicio = datetime.now()
-
-# Iterar sobre el 20% restante usando la ventana rodante
-for start in range(train_size, len(dates) - window_size):
-    # Definir índices de entrenamiento y prueba correctamente
-    train_indices = (dates < dates.iloc[start])
-    test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
-
-    # Asegurar que no haya intersección entre los conjuntos de entrenamiento y prueba
-    X_train, X_test = X_rfe[train_indices], X_rfe[test_indices]
-    y_train, y_test = y[train_indices], y[test_indices]
-
-    # Verificar que haya suficientes clases en el conjunto de entrenamiento
-    if len(np.unique(y_train)) < 2:
-        continue  # Si solo hay una clase, pasa a la siguiente iteración
-
-    if len(X_train) == 0 or len(X_test) == 0:
-        continue
-
-    # Crear y ajustar el modelo con limitación de profundidad para evitar sobreajuste
-    model = DecisionTreeClassifier(random_state=42, max_depth=5)
-    model.fit(X_train, y_train)
-
-    y_pred = model.predict(X_test)
-
-    # Acumular las predicciones y etiquetas verdaderas
-    all_y_true.extend(y_test)
-    all_y_pred.extend(y_pred)
-    
-    # Incrementar el contador de iteraciones
-    iteration_count += 1
-
-hora_de_fin = datetime.now()
-
-# Convertir las listas acumuladas a arrays de NumPy
-all_y_true = np.array(all_y_true)
-all_y_pred = np.array(all_y_pred)
-
-# Calcular las métricas globales
-overall_accuracy = accuracy_score(all_y_true, all_y_pred)
-overall_precision = precision_score(all_y_true, all_y_pred, average='weighted')
-overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
-overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
-overall_report = classification_report(all_y_true, all_y_pred)
-
 # Guardar resultados en archivo .text
-output_path = r'.\..\output\DT.text'
+output_path = r'.\..\output\DT.txt'
 with open(output_path, 'w') as f:
     f.write(f"Resultados para el Árbol de Decisión:\n")
     f.write(f"Accuracy general del modelo: {overall_accuracy:.2f}\n")
@@ -367,107 +298,7 @@ with open(output_path, 'w') as f:
     f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
     f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
 
-# También imprimir los resultados en consola
-print(f"Resultados para el Árbol de Decisión:\n")
-print(f"Accuracy general del modelo: {overall_accuracy:.2f}")
-print(f"Precision global (ponderada): {overall_precision:.2f}")
-print(f"Recall global (ponderado): {overall_recall:.2f}")
-print(f"F1-score global (ponderado): {overall_f1:.2f}")
-print(f"Reporte de clasificación general:\n{overall_report}")
-print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
-print(f"Número total de iteraciones realizadas: {iteration_count}")
-
 #%%
-
-# Arbol segun paper
-# Aplicar RFE para seleccionar las mejores características utilizando un Árbol de Decisión
-model_rfe = DecisionTreeClassifier(random_state=42)
-rfe = RFE(model_rfe, n_features_to_select=7)  # Ajusta n_features_to_select según lo desees
-X_rfe = rfe.fit_transform(X_scaled, y)
-
-print("Características seleccionadas por RFE:", np.array(features)[rfe.support_])
-
-results = []
-
-# Acumular todas las predicciones y etiquetas verdaderas
-all_y_true = []
-all_y_pred = []
-
-# Contador de iteraciones
-iteration_count = 0
-
-hora_de_inicio = datetime.now()
-
-# Iterar sobre el 20% restante usando la ventana rodante
-for start in range(train_size, len(dates) - window_size):
-    # Definir índices de entrenamiento y prueba correctamente
-    train_indices = (dates < dates.iloc[start])
-    test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
-
-    # Asegurar que no haya intersección entre los conjuntos de entrenamiento y prueba
-    X_train, X_test = X_rfe[train_indices], X_rfe[test_indices]
-    y_train, y_test = y[train_indices], y[test_indices]
-
-    # Verificar que haya suficientes clases en el conjunto de entrenamiento
-    if len(np.unique(y_train)) < 2:
-        continue  # Si solo hay una clase, pasa a la siguiente iteración
-
-    if len(X_train) == 0 or len(X_test) == 0:
-        continue
-
-    # Crear y ajustar el modelo con los hiperparámetros especificados en el paper
-    model = DecisionTreeClassifier(random_state=42)  # Hiperparámetros no especificados, puedes añadirlos si es necesario
-    model.fit(X_train, y_train)
-
-    y_pred = model.predict(X_test)
-
-    # Acumular las predicciones y etiquetas verdaderas
-    all_y_true.extend(y_test)
-    all_y_pred.extend(y_pred)
-    
-    # Incrementar el contador de iteraciones
-    iteration_count += 1
-
-hora_de_fin = datetime.now()
-
-# Convertir las listas acumuladas a arrays de NumPy
-all_y_true = np.array(all_y_true)
-all_y_pred = np.array(all_y_pred)
-
-# Calcular las métricas globales
-overall_accuracy = accuracy_score(all_y_true, all_y_pred)
-overall_precision = precision_score(all_y_true, all_y_pred, average='weighted')
-overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
-overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
-overall_report = classification_report(all_y_true, all_y_pred)
-confusion_mat = confusion_matrix(all_y_true, all_y_pred)
-
-# Guardar resultados en archivo .text
-output_path = r'.\..\output\DT_paper.text'
-with open(output_path, 'w') as f:
-    f.write(f"Resultados para el Árbol de Decisión:\n")
-    f.write(f"Accuracy general del modelo: {overall_accuracy:.2f}\n")
-    f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
-    f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
-    f.write(f"F1-score global (ponderado): {overall_f1:.2f}\n")
-    f.write(f"Reporte de clasificación general:\n{overall_report}\n")
-    f.write(f"Matriz de confusión:\n{confusion_mat}\n")
-    f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
-    f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
-
-# También imprimir los resultados en consola
-print(f"Resultados para el Árbol de Decisión:\n")
-print(f"Accuracy general del modelo: {overall_accuracy:.2f}")
-print(f"Precision global (ponderada): {overall_precision:.2f}")
-print(f"Recall global (ponderado): {overall_recall:.2f}")
-print(f"F1-score global (ponderado): {overall_f1:.2f}")
-print(f"Reporte de clasificación general:\n{overall_report}")
-print(f"Matriz de confusión:\n{confusion_mat}")
-print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
-print(f"Número total de iteraciones realizadas: {iteration_count}")
-
-#%%
-
 
 # XGBoost
 
@@ -478,9 +309,17 @@ y_encoded = label_encoder.fit_transform(y)
 # Aplicar RFE para seleccionar las mejores características utilizando XGBoost
 model_rfe = XGBClassifier(use_label_encoder=False, eval_metric='mlogloss', random_state=42)
 rfe = RFE(model_rfe, n_features_to_select=5)  # Ajusta n_features_to_select según lo desees
-X_rfe = rfe.fit_transform(X_scaled, y_encoded)
+#X_rfe = rfe.fit_transform(X_ta_scaled, y)
+X_rfe = rfe.fit_transform(X_ta_scaled, y_encoded)
+selected_technical_features = np.array(ta_cols)[rfe.support_]
 
-print("Características seleccionadas por RFE:", np.array(features)[rfe.support_])
+print("Indicadores técnicos seleccionados por RFE:", selected_technical_features)
+
+# Crear DataFrame con características seleccionadas y concatenar con columnas estáticas normalizadas
+X_rfe_df = pd.DataFrame(X_rfe, columns=selected_technical_features)
+
+X_final = pd.concat([X_rfe_df, X_static_df.reset_index(drop=True)], axis=1)
+selected_technical_features = np.array(ta_cols)[rfe.support_]
 
 results = []
 
@@ -498,14 +337,11 @@ for start in range(train_size, len(dates) - window_size):
     test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
     train_indices = dates < dates.iloc[start]
 
-    X_train, X_test = X_rfe[train_indices], X_rfe[test_indices]
+    X_train, X_test = X_final[train_indices], X_final[test_indices]
     y_train, y_test = y_encoded[train_indices], y_encoded[test_indices]
 
-    # Verificar que haya suficientes clases en el conjunto de entrenamiento
-    if len(np.unique(y_train)) < 2:
-        continue  # Si solo hay una clase, pasa a la siguiente iteración
-
-    if len(X_train) == 0 or len(X_test) == 0:
+    # Verificar clases en el conjunto de entrenamiento
+    if len(np.unique(y_train)) < 2 or len(X_train) == 0 or len(X_test) == 0:
         continue
 
     model = XGBClassifier(use_label_encoder=False, eval_metric='mlogloss', random_state=42)
@@ -532,18 +368,7 @@ overall_precision = precision_score(all_y_true, all_y_pred, average='weighted')
 overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
 overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
 overall_report = classification_report(all_y_true, all_y_pred, target_names=[str(cls) for cls in label_encoder.classes_])
-# Guardar resultados en archivo .text
-output_path = r'.\..\output\XGBoost_base.text'
-with open(output_path, 'w') as f:
-    f.write(f"Resultados para el modelo XGBoost:\n")
-    f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
-    f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
-    f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
-    f.write(f"F1-score global (ponderado): {overall_f1:.2f}\n")
-    f.write(f"Reporte de clasificación general:\n{overall_report}\n")
-    f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
-    f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
-    
+
 print(f"Precisión general del modelo: {overall_accuracy:.2f}")
 print(f"Precision global (ponderada): {overall_precision:.2f}")
 print(f"Recall global (ponderado): {overall_recall:.2f}")
@@ -553,27 +378,21 @@ print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
 print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 #%%
+# Guardar resultados en archivo .text
+output_path = r'.\..\output\XGBoost_base.txt'
+with open(output_path, 'w') as f:
+    f.write(f"Resultados para el modelo XGBoost:\n")
+    f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
+    f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
+    f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
+    f.write(f"F1-score global (ponderado): {overall_f1:.2f}\n")
+    f.write(f"Reporte de clasificación general:\n{overall_report}\n")
+    f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
+    f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
+
+#%%
 
 #XGBoost segun paper
-
-
-# Codificación de las etiquetas (transformación de [-1, 0, 1] a [0, 1, 2])
-label_encoder = LabelEncoder()
-y_encoded = label_encoder.fit_transform(y)
-
-# Aplicar RFE para seleccionar las mejores características utilizando XGBoost
-model_rfe = XGBClassifier(
-    use_label_encoder=False,
-    eval_metric='mlogloss',
-    n_estimators=1000,  # Número de árboles (submodelos)
-    max_depth=5,        # Profundidad máxima de los árboles
-    learning_rate=0.1,  # Tasa de aprendizaje
-    random_state=42
-)
-rfe = RFE(model_rfe, n_features_to_select=7)  # Ajusta n_features_to_select según lo desees
-X_rfe = rfe.fit_transform(X_scaled, y_encoded)
-
-print("Características seleccionadas por RFE:", np.array(features)[rfe.support_])
 
 results = []
 
@@ -591,14 +410,11 @@ for start in range(train_size, len(dates) - window_size):
     test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
     train_indices = dates < dates.iloc[start]
 
-    X_train, X_test = X_rfe[train_indices], X_rfe[test_indices]
+    X_train, X_test = X_final[train_indices], X_final[test_indices]
     y_train, y_test = y_encoded[train_indices], y_encoded[test_indices]
 
-    # Verificar que haya suficientes clases en el conjunto de entrenamiento
-    if len(np.unique(y_train)) < 2:
-        continue  # Si solo hay una clase, pasa a la siguiente iteración
-
-    if len(X_train) == 0 or len(X_test) == 0:
+    # Verificar clases en el conjunto de entrenamiento
+    if len(np.unique(y_train)) < 2 or len(X_train) == 0 or len(X_test) == 0:
         continue
 
     model = XGBClassifier(
@@ -633,18 +449,6 @@ overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
 overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
 overall_report = classification_report(all_y_true, all_y_pred, target_names=[str(cls) for cls in label_encoder.classes_])
 
-# Guardar resultados en archivo .text
-output_path = r'.\..\output\XGBoost_aguas.text'
-with open(output_path, 'w') as f:
-    f.write(f"Resultados para el modelo XGBoost:\n")
-    f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
-    f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
-    f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
-    f.write(f"F1-score global (ponderado): {overall_f1:.2f}\n")
-    f.write(f"Reporte de clasificación general:\n{overall_report}\n")
-    f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
-    f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
-
 # También imprimir los resultados en consola
 print(f"Resultados para el modelo XGBoost:\n")
 print(f"Precisión general del modelo: {overall_accuracy:.2f}")
@@ -655,8 +459,20 @@ print(f"Reporte de clasificación general:\n{overall_report}")
 print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
 print(f"Número total de iteraciones realizadas: {iteration_count}")
 
-#%%
 
+#%%
+# Guardar resultados en archivo .text
+output_path = r'.\..\output\XGBoost_aguas.txt'
+with open(output_path, 'w') as f:
+    f.write(f"Resultados para el modelo XGBoost:\n")
+    f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
+    f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
+    f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
+    f.write(f"F1-score global (ponderado): {overall_f1:.2f}\n")
+    f.write(f"Reporte de clasificación general:\n{overall_report}\n")
+    f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
+    f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
+#%%
 
 # Random Forest
 
@@ -666,10 +482,16 @@ y_encoded = label_encoder.fit_transform(y)
 
 # Aplicar RFE para seleccionar las mejores características utilizando Random Forest
 model_rfe = RandomForestClassifier(n_estimators=100, random_state=42)
-rfe = RFE(model_rfe, n_features_to_select=5)  # Ajusta n_features_to_select según lo desees
-X_rfe = rfe.fit_transform(X_scaled, y_encoded)
+rfe = RFE(model_rfe, n_features_to_select=5)
+X_rfe = rfe.fit_transform(X_ta_scaled, y_encoded)
+selected_technical_features = np.array(ta_cols)[rfe.support_]
 
-print("Características seleccionadas por RFE:", np.array(features)[rfe.support_])
+print("Indicadores técnicos seleccionados por RFE:", selected_technical_features)
+
+# Crear DataFrame con características seleccionadas y concatenar con columnas estáticas normalizadas
+X_rfe_df = pd.DataFrame(X_rfe, columns=selected_technical_features)
+
+X_final = pd.concat([X_rfe_df, X_static_df.reset_index(drop=True)], axis=1)
 
 results = []
 
@@ -687,14 +509,11 @@ for start in range(train_size, len(dates) - window_size):
     test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
     train_indices = dates < dates.iloc[start]
 
-    X_train, X_test = X_rfe[train_indices], X_rfe[test_indices]
+    X_train, X_test = X_final[train_indices], X_final[test_indices]
     y_train, y_test = y_encoded[train_indices], y_encoded[test_indices]
 
-    # Verificar que haya suficientes clases en el conjunto de entrenamiento
-    if len(np.unique(y_train)) < 2:
-        continue  # Si solo hay una clase, pasa a la siguiente iteración
-
-    if len(X_train) == 0 or len(X_test) == 0:
+    # Verificar clases en el conjunto de entrenamiento
+    if len(np.unique(y_train)) < 2 or len(X_train) == 0 or len(X_test) == 0:
         continue
 
     model = RandomForestClassifier(n_estimators=100, random_state=42)
@@ -722,8 +541,17 @@ overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
 overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
 overall_report = classification_report(all_y_true, all_y_pred, target_names=[str(cls) for cls in label_encoder.classes_])
 
+print(f"Precisión general del modelo random forest: {overall_accuracy:.2f}")
+print(f"Precision global (ponderada): {overall_precision:.2f}")
+print(f"Recall global (ponderado): {overall_recall:.2f}")
+print(f"F1-score global (ponderado): {overall_f1:.2f}")
+print(f"Reporte de clasificación general:\n {overall_report}")
+print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
+print(f"Número total de iteraciones realizadas: {iteration_count}")
+
+#%%
 # Guardar resultados en archivo .text
-output_path = r'.\..\output\RF_base.text'
+output_path = r'.\..\output\RF_base.txt'
 with open(output_path, 'w') as f:
     f.write(f"Resultados para el modelo de Random Forest:\n")
     f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
@@ -734,32 +562,12 @@ with open(output_path, 'w') as f:
     f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
     f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
     
-print(f"Precisión general del modelo random forest: {overall_accuracy:.2f}")
-print(f"Precision global (ponderada): {overall_precision:.2f}")
-print(f"Recall global (ponderado): {overall_recall:.2f}")
-print(f"F1-score global (ponderado): {overall_f1:.2f}")
-print(f"Reporte de clasificación general:\n {overall_report}")
-print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
-print(f"Número total de iteraciones realizadas: {iteration_count}")
-
-
 #%%
 #Random forest con hiperparametros del paper
 
 # Codificación de las etiquetas
 label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
-
-# Aplicar RFE para seleccionar las mejores características utilizando Random Forest
-# Ajusta los hiperparámetros según el paper
-model_rfe = RandomForestClassifier(n_estimators=100, max_depth=5, min_samples_split=2,
-                                   min_samples_leaf=1, max_features='sqrt', criterion='gini',
-                                   n_jobs=-1, random_state=42)
-
-rfe = RFE(model_rfe, n_features_to_select=5)  # Ajusta n_features_to_select según lo desees
-X_rfe = rfe.fit_transform(X_scaled, y_encoded)
-
-print("Características seleccionadas por RFE:", np.array(features)[rfe.support_])
 
 results = []
 
@@ -777,14 +585,11 @@ for start in range(train_size, len(dates) - window_size):
     test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
     train_indices = dates < dates.iloc[start]
 
-    X_train, X_test = X_rfe[train_indices], X_rfe[test_indices]
+    X_train, X_test = X_final[train_indices], X_final[test_indices]
     y_train, y_test = y_encoded[train_indices], y_encoded[test_indices]
 
-    # Verificar que haya suficientes clases en el conjunto de entrenamiento
-    if len(np.unique(y_train)) < 2:
-        continue  # Si solo hay una clase, pasa a la siguiente iteración
-
-    if len(X_train) == 0 or len(X_test) == 0:
+    # Verificar clases en el conjunto de entrenamiento
+    if len(np.unique(y_train)) < 2 or len(X_train) == 0 or len(X_test) == 0:
         continue
 
     model = RandomForestClassifier(n_estimators=100, max_depth=5, min_samples_split=2,
@@ -814,18 +619,6 @@ overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
 overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
 overall_report = classification_report(all_y_true, all_y_pred, target_names=[str(cls) for cls in label_encoder.classes_])
 
-# Guardar resultados en archivo .text
-output_path = r'.\..\output\RF_paper.text'
-with open(output_path, 'w') as f:
-    f.write(f"Resultados para el modelo de Random Forest:\n")
-    f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
-    f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
-    f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
-    f.write(f"F1-score global (ponderado): {overall_f1:.2f}\n")
-    f.write(f"Reporte de clasificación general:\n{overall_report}\n")
-    f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
-    f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
-
 # También imprimir los resultados en consola
 print(f"Resultados para el modelo de Random Forest:\n")
 print(f"Precisión general del modelo: {overall_accuracy:.2f}")
@@ -835,6 +628,19 @@ print(f"F1-score global (ponderado): {overall_f1:.2f}")
 print(f"Reporte de clasificación general:\n {overall_report}")
 print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
 print(f"Número total de iteraciones realizadas: {iteration_count}")
+
+#%%
+# Guardar resultados en archivo .text
+output_path = r'.\..\output\RF_paper.txt'
+with open(output_path, 'w') as f:
+    f.write(f"Resultados para el modelo de Random Forest:\n")
+    f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
+    f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
+    f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
+    f.write(f"F1-score global (ponderado): {overall_f1:.2f}\n")
+    f.write(f"Reporte de clasificación general:\n{overall_report}\n")
+    f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
+    f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
 
 #%%
 
@@ -869,11 +675,8 @@ for start in range(train_size, len(dates) - window_size):
     X_train, X_test = X_selected[train_indices], X_selected[test_indices]
     y_train, y_test = y_encoded[train_indices], y_encoded[test_indices]
 
-    # Verificar que haya suficientes clases en el conjunto de entrenamiento
-    if len(np.unique(y_train)) < 2:
-        continue  # Si solo hay una clase, pasa a la siguiente iteración
-
-    if len(X_train) == 0 or len(X_test) == 0:
+    # Verificar clases en el conjunto de entrenamiento
+    if len(np.unique(y_train)) < 2 or len(X_train) == 0 or len(X_test) == 0:
         continue
 
     # Ahora usamos Naive Bayes para el entrenamiento y predicción
@@ -902,8 +705,17 @@ overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
 overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
 overall_report = classification_report(all_y_true, all_y_pred, target_names=[str(cls) for cls in label_encoder.classes_])
 
+print(f"Precisión general del modelo naive bayes: {overall_accuracy:.2f}")
+print(f"Precision global (ponderada): {overall_precision:.2f}")
+print(f"Recall global (ponderado): {overall_recall:.2f}")
+print(f"F1-score global (ponderado): {overall_f1:.2f}")
+print(f"Reporte de clasificación general:\n {overall_report}")
+print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
+print(f"Número total de iteraciones realizadas: {iteration_count}")
+
+#%%
 # Guardar resultados en archivo .text
-output_path = r'.\..\output\NB_SelectKBest.text'
+output_path = r'.\..\output\NB_SelectKBest.txt'
 with open(output_path, 'w') as f:
     f.write(f"Resultados para el Naive Bayes:\n")
     f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
@@ -913,15 +725,6 @@ with open(output_path, 'w') as f:
     f.write(f"Reporte de clasificación general:\n{overall_report}\n")
     f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
     f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
-
-
-print(f"Precisión general del modelo naive bayes: {overall_accuracy:.2f}")
-print(f"Precision global (ponderada): {overall_precision:.2f}")
-print(f"Recall global (ponderado): {overall_recall:.2f}")
-print(f"F1-score global (ponderado): {overall_f1:.2f}")
-print(f"Reporte de clasificación general:\n {overall_report}")
-print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
-print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 #%%
 
@@ -934,9 +737,15 @@ y_encoded = label_encoder.fit_transform(y)
 # Aplicar RFE utilizando Random Forest para seleccionar las mejores características
 model_rfe = RandomForestClassifier(n_estimators=100, random_state=42)
 rfe = RFE(model_rfe, n_features_to_select=5)  # Ajusta n_features_to_select según lo desees
-X_rfe = rfe.fit_transform(X_scaled, y_encoded)
+X_rfe = rfe.fit_transform(X_ta_scaled, y_encoded)
+selected_technical_features = np.array(ta_cols)[rfe.support_]
 
-print("Características seleccionadas por RFE:", np.array(features)[rfe.support_])
+print("Indicadores técnicos seleccionados por RFE:", selected_technical_features)
+
+# Crear DataFrame con características seleccionadas y concatenar con columnas estáticas normalizadas
+X_rfe_df = pd.DataFrame(X_rfe, columns=selected_technical_features)
+
+X_final = pd.concat([X_rfe_df, X_static_df.reset_index(drop=True)], axis=1)
 
 results = []
 
@@ -954,14 +763,11 @@ for start in range(train_size, len(dates) - window_size):
     test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
     train_indices = dates < dates.iloc[start]
 
-    X_train, X_test = X_rfe[train_indices], X_rfe[test_indices]
+    X_train, X_test = X_final[train_indices], X_final[test_indices]
     y_train, y_test = y_encoded[train_indices], y_encoded[test_indices]
 
-    # Verificar que haya suficientes clases en el conjunto de entrenamiento
-    if len(np.unique(y_train)) < 2:
-        continue  # Si solo hay una clase, pasa a la siguiente iteración
-
-    if len(X_train) == 0 or len(X_test) == 0:
+    # Verificar clases en el conjunto de entrenamiento
+    if len(np.unique(y_train)) < 2 or len(X_train) == 0 or len(X_test) == 0:
         continue
 
     # Crear y ajustar el modelo Naive Bayes
@@ -990,18 +796,6 @@ overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
 overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
 overall_report = classification_report(all_y_true, all_y_pred, target_names=[str(cls) for cls in label_encoder.classes_])
 
-# Guardar resultados en archivo .text
-output_path = r'.\..\output\NB_randomforest.text'
-with open(output_path, 'w') as f:
-    f.write(f"Resultados para el Naive Bayes:\n")
-    f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
-    f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
-    f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
-    f.write(f"F1-score global (ponderado): {overall_f1:.2f}\n")
-    f.write(f"Reporte de clasificación general:\n{overall_report}\n")
-    f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
-    f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
-
 # También imprimir los resultados en consola
 print(f"Resultados para el Naive Bayes:\n")
 print(f"Precisión general del modelo: {overall_accuracy:.2f}")
@@ -1012,6 +806,18 @@ print(f"Reporte de clasificación general:\n{overall_report}")
 print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
 print(f"Número total de iteraciones realizadas: {iteration_count}")
 
+#%%
+# Guardar resultados en archivo .text
+output_path = r'.\..\output\NB_randomforest.txt'
+with open(output_path, 'w') as f:
+    f.write(f"Resultados para el Naive Bayes:\n")
+    f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
+    f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
+    f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
+    f.write(f"F1-score global (ponderado): {overall_f1:.2f}\n")
+    f.write(f"Reporte de clasificación general:\n{overall_report}\n")
+    f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
+    f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
 
 
 #%%
@@ -1025,9 +831,15 @@ y_encoded = label_encoder.fit_transform(y)
 # Aplicar RFE para seleccionar las mejores características utilizando Random Forest
 model_rfe = RandomForestClassifier(n_estimators=100, random_state=42)
 rfe = RFE(model_rfe, n_features_to_select=7)  # Ajusta n_features_to_select según lo desees
-X_rfe = rfe.fit_transform(X_scaled, y_encoded)
-selected_features = np.array(features)[rfe.support_]
-print("Características seleccionadas por RFE:", selected_features)
+X_rfe = rfe.fit_transform(X_ta_scaled, y_encoded)
+selected_technical_features = np.array(ta_cols)[rfe.support_]
+
+print("Indicadores técnicos seleccionados por RFE:", selected_technical_features)
+
+# Crear DataFrame con características seleccionadas y concatenar con columnas estáticas normalizadas
+X_rfe_df = pd.DataFrame(X_rfe, columns=selected_technical_features)
+
+X_final = pd.concat([X_rfe_df, X_static_df.reset_index(drop=True)], axis=1)
 
 results = []
 
@@ -1051,14 +863,11 @@ for start in range(train_size, len(dates) - window_size):
     test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
     train_indices = dates < dates.iloc[start]
 
-    X_train, X_test = X_selected[train_indices], X_selected[test_indices]
+    X_train, X_test = X_final[train_indices], X_final[test_indices]
     y_train, y_test = y_encoded[train_indices], y_encoded[test_indices]
 
-    # Verificar que haya suficientes clases en el conjunto de entrenamiento
-    if len(np.unique(y_train)) < 2:
-        continue  # Si solo hay una clase, pasa a la siguiente iteración
-
-    if len(X_train) == 0 or len(X_test) == 0:
+    # Verificar clases en el conjunto de entrenamiento
+    if len(np.unique(y_train)) < 2 or len(X_train) == 0 or len(X_test) == 0:
         continue
 
     # Ahora usamos MLP para el entrenamiento y predicción
@@ -1087,6 +896,15 @@ overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
 overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
 overall_report = classification_report(all_y_true, all_y_pred, target_names=[str(cls) for cls in label_encoder.classes_])
 
+print(f"Precisión general del modelo: {overall_accuracy:.2f}")
+print(f"Precision global (ponderada): {overall_precision:.2f}")
+print(f"Recall global (ponderado): {overall_recall:.2f}")
+print(f"F1-score global (ponderado): {overall_f1:.2f}")
+print(f"Reporte de clasificación general:\n {overall_report}")
+print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
+print(f"Número total de iteraciones realizadas: {iteration_count}")
+
+#%%
 # Guardar resultados en archivo .text
 output_path = r'.\..\output\MLP_results_no_paper.text'
 with open(output_path, 'w') as f:
@@ -1099,31 +917,14 @@ with open(output_path, 'w') as f:
     f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
     f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
 
-
-print(f"Precisión general del modelo: {overall_accuracy:.2f}")
-print(f"Precision global (ponderada): {overall_precision:.2f}")
-print(f"Recall global (ponderado): {overall_recall:.2f}")
-print(f"F1-score global (ponderado): {overall_f1:.2f}")
-print(f"Reporte de clasificación general:\n {overall_report}")
-print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
-print(f"Número total de iteraciones realizadas: {iteration_count}")
-
-
 #%%
 
 
-#MLP con random Forest y hiperaparametros del paper
+#MLP con random Forest e hiperaparametros del paper
 
 # Codificación de las etiquetas
 label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
-
-# Aplicar RFE para seleccionar las mejores características utilizando Random Forest
-model_rfe = RandomForestClassifier(n_estimators=100, random_state=42)
-rfe = RFE(model_rfe, n_features_to_select=7)  # Ajusta n_features_to_select según lo desees
-X_rfe = rfe.fit_transform(X_scaled, y_encoded)
-selected_features = np.array(features)[rfe.support_]
-print("Características seleccionadas por RFE:", selected_features)
 
 results = []
 
@@ -1144,14 +945,11 @@ for start in range(train_size, len(dates) - window_size):
     test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
     train_indices = dates < dates.iloc[start]
 
-    X_train, X_test = X_rfe[train_indices], X_rfe[test_indices]
+    X_train, X_test = X_final[train_indices], X_final[test_indices]
     y_train, y_test = y_encoded[train_indices], y_encoded[test_indices]
 
-    # Verificar que haya suficientes clases en el conjunto de entrenamiento
-    if len(np.unique(y_train)) < 2:
-        continue  # Si solo hay una clase, pasa a la siguiente iteración
-
-    if len(X_train) == 0 or len(X_test) == 0:
+    # Verificar clases en el conjunto de entrenamiento
+    if len(np.unique(y_train)) < 2 or len(X_train) == 0 or len(X_test) == 0:
         continue
 
     # Ahora usamos MLP para el entrenamiento y predicción
@@ -1180,6 +978,16 @@ overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
 overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
 overall_report = classification_report(all_y_true, all_y_pred, target_names=[str(cls) for cls in label_encoder.classes_])
 
+print(f"Resultados para el MLP:\n")
+print(f"Precisión general del modelo: {overall_accuracy:.2f}")
+print(f"Precision global (ponderada): {overall_precision:.2f}")
+print(f"Recall global (ponderado): {overall_recall:.2f}")
+print(f"F1-score global (ponderado): {overall_f1:.2f}")
+print(f"Reporte de clasificación general:\n{overall_report}")
+print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
+print(f"Número total de iteraciones realizadas: {iteration_count}")
+
+#%%
 # Guardar resultados en archivo .text
 output_path = r'.\..\output\MLP_results.text'
 with open(output_path, 'w') as f:
@@ -1191,16 +999,6 @@ with open(output_path, 'w') as f:
     f.write(f"Reporte de clasificación general:\n{overall_report}\n")
     f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
     f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
-
-# También imprimir los resultados en consola
-print(f"Resultados para el MLP:\n")
-print(f"Precisión general del modelo: {overall_accuracy:.2f}")
-print(f"Precision global (ponderada): {overall_precision:.2f}")
-print(f"Recall global (ponderado): {overall_recall:.2f}")
-print(f"F1-score global (ponderado): {overall_f1:.2f}")
-print(f"Reporte de clasificación general:\n{overall_report}")
-print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
-print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 #%%
 
