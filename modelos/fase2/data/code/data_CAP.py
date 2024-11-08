@@ -28,31 +28,30 @@ pd.set_option('display.float_format', lambda x: '%.2f' % x)
 # Cargar el archivo CSV
 ruta_archivo = r'.\..\Input\CAP.SN.csv'
 df = pd.read_csv(ruta_archivo)
-data_aguas_SNN = df.copy()
+data_CAP_SNN = df.copy()
 if 'Unnamed: 0' in df.columns:
-    data_aguas_SNN.drop(columns=['Unnamed: 0'], inplace=True)
-print("columnas totales:", len(data_aguas_SNN.columns))
+    data_CAP_SNN.drop(columns=['Unnamed: 0'], inplace=True)
+print("columnas totales:", len(data_CAP_SNN.columns))
 
 #%%
 
 # Selección de todas las características excepto 'Date' y 'Tendencia'
-features = [col for col in data_aguas_SNN.columns if col not in ['Date', 'Tendencia', 'Sentimiento Máximo', 'Sentimiento Mínimo']]
-X = data_aguas_SNN[features]
-y = data_aguas_SNN['Tendencia']
+features = [col for col in data_CAP_SNN.columns if col not in ['Date', 'Tendencia', 'Sentimiento Máximo', 'Sentimiento Mínimo',"Tendencia Sentimiento"]]
+X = data_CAP_SNN[features]
+y = data_CAP_SNN['Tendencia']
 
 # Normalización de los datos
 scaler = MinMaxScaler()
 X_scaled = scaler.fit_transform(X)
 
 window_size = 3
-dates = pd.to_datetime(data_aguas_SNN['Date'])
+dates = pd.to_datetime(data_CAP_SNN['Date'])
 train_size = int(len(dates) * 0.8)
 
 #%%
 
 #Regresión logistica
 
-model = LogisticRegression(multi_class='ovr', max_iter=1000)
 
 results = []
 
@@ -86,7 +85,7 @@ for start in range(train_size, len(dates) - window_size):
     if len(X_train) == 0 or len(X_test) == 0:
         continue
 
-    model = LogisticRegression(multi_class='ovr', max_iter=1000)
+    model = LogisticRegression(multi_class='ovr', max_iter=1000, penalty='l2')
     model.fit(X_train, y_train)
 
     y_pred = model.predict(X_test)
@@ -110,7 +109,93 @@ overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
 overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
 overall_report = classification_report(all_y_true, all_y_pred)
 
-print(f"Accuracy general del modelo: {overall_accuracy:.2f}")
+print(f"Accuracy general del modelo Regresion logistica: {overall_accuracy:.2f}")
+print(f"Precision global (ponderada): {overall_precision:.2f}")
+print(f"Recall global (ponderado): {overall_recall:.2f}")
+print(f"F1-score global (ponderado): {overall_f1:.2f}")
+print(f"Reporte de clasificación general:\n {overall_report}")
+print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
+print(f"Número total de iteraciones realizadas: {iteration_count}")
+
+
+#%%
+
+# Guardar los resultados en un archivo de texto
+output_file_path = r'.\..\output\metricas_CAP\LR_segun_paper.txt'
+with open(output_file_path, 'w') as f:
+    f.write(f"Resultados para LR con Hiperparametros del paper:\n")
+    f.write(f"Accuracy general del modelo: {overall_accuracy:.2f}\n")
+    f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
+    f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
+    f.write(f"F1-score global (ponderado): {overall_f1:.2f}\n")
+    f.write(f"Reporte de clasificación general:\n{overall_report}\n")
+    f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
+    f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
+
+
+
+#%%
+
+#Regresión logistica
+
+
+results = []
+
+# Acumular todas las predicciones y etiquetas verdaderas
+all_y_true = []
+all_y_pred = []
+
+hora_de_inicio = datetime.now()
+
+# Usar el 80% inicial como conjunto de entrenamiento
+X_train_initial = X[:train_size]
+y_train_initial = y[:train_size]
+
+# Contador de iteraciones
+iteration_count = 0
+
+# Iterar sobre el 20% restante usando la ventana rodante
+for start in range(train_size, len(dates) - window_size):
+    test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
+    train_indices = dates < dates.iloc[start]
+
+    X_train = X[train_indices]
+    y_train = y[train_indices]
+    X_test = X[test_indices]
+    y_test = y[test_indices]
+
+    # Verificar que haya suficientes clases en el conjunto de entrenamiento
+    if len(np.unique(y_train)) < 2:
+        continue  # Si solo hay una clase, pasa a la siguiente iteración
+
+    if len(X_train) == 0 or len(X_test) == 0:
+        continue
+
+    model = LogisticRegression(multi_class='ovr', C=100, solver='lbfgs', max_iter=1000)
+    model.fit(X_train, y_train)
+
+    y_pred = model.predict(X_test)
+
+    # Acumular las predicciones y etiquetas verdaderas
+    all_y_true.extend(y_test)
+    all_y_pred.extend(y_pred)
+    
+    iteration_count += 1    
+
+hora_de_fin = datetime.now()
+
+# Convertir las listas acumuladas a arrays de NumPy
+all_y_true = np.array(all_y_true)
+all_y_pred = np.array(all_y_pred)
+
+# Calcular las métricas globales
+overall_accuracy = accuracy_score(all_y_true, all_y_pred)
+overall_precision = precision_score(all_y_true, all_y_pred, average='weighted')
+overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
+overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
+overall_report = classification_report(all_y_true, all_y_pred)
+
+print(f"Accuracy general del modelo Regresion logistica: {overall_accuracy:.2f}")
 print(f"Precision global (ponderada): {overall_precision:.2f}")
 print(f"Recall global (ponderado): {overall_recall:.2f}")
 print(f"F1-score global (ponderado): {overall_f1:.2f}")
@@ -120,12 +205,29 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 
 
+#%%
+
+
+# Guardar los resultados en un archivo de texto
+output_file_path = r'.\..\output\metricas_CAP\LR_ajustado.txt'
+with open(output_file_path, 'w') as f:
+    f.write(f"Resultados para LR con Hiperparametros del paper:\n")
+    f.write(f"Accuracy general del modelo: {overall_accuracy:.2f}\n")
+    f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
+    f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
+    f.write(f"F1-score global (ponderado): {overall_f1:.2f}\n")
+    f.write(f"Reporte de clasificación general:\n{overall_report}\n")
+    f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
+    f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
+
+
+
+
+
 
 #%%
 
 # Árbol de decisión
-
-model = DecisionTreeClassifier(random_state=42)
 
 results = []
 
@@ -156,7 +258,7 @@ for start in range(train_size, len(dates) - window_size):
         continue
 
     # Crear y ajustar el modelo con limitación de profundidad para evitar sobreajuste
-    model = DecisionTreeClassifier(random_state=42, max_depth=5)
+    model = DecisionTreeClassifier(random_state=42, max_depth=15) #Cambiando a 15 mejora las metricas #aplicar entropia
     model.fit(X_train, y_train)
 
     y_pred = model.predict(X_test)
@@ -181,7 +283,7 @@ overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
 overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
 overall_report = classification_report(all_y_true, all_y_pred)
 
-print(f"Accuracy general del modelo: {overall_accuracy:.2f}")
+print(f"Accuracy general del modelo Arbol de decisión: {overall_accuracy:.2f}")
 print(f"Precision global (ponderada): {overall_precision:.2f}")
 print(f"Recall global (ponderado): {overall_recall:.2f}")
 print(f"F1-score global (ponderado): {overall_f1:.2f}")
@@ -189,18 +291,124 @@ print(f"Reporte de clasificación general:\n {overall_report}")
 print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
 print(f"Número total de iteraciones realizadas: {iteration_count}")
 
+#%%
+
+
+
+# Guardar los resultados en un archivo de texto
+output_file_path = r'.\..\output\metricas_CAP\DT_paper.txt'
+with open(output_file_path, 'w') as f:
+    f.write(f"Resultados para el Árbol de Decisión segun el paper algoritmo Cart profundida 10, mejor que 5:\n")
+    f.write(f"Accuracy general del modelo: {overall_accuracy:.2f}\n")
+    f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
+    f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
+    f.write(f"F1-score global (ponderado): {overall_f1:.2f}\n")
+    f.write(f"Reporte de clasificación general:\n{overall_report}\n")
+    f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
+    f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
+
+
+#%%
+#Arbol ajustado
+
+
+
+# Lista para almacenar resultados
+results = []
+
+# Acumular todas las predicciones y etiquetas verdaderas
+all_y_true = []
+all_y_pred = []
+
+# Contador de iteraciones
+iteration_count = 0
+
+hora_de_inicio = datetime.now()
+
+# Iterar sobre el 20% restante usando la ventana rodante
+for start in range(train_size, len(dates) - window_size):
+    # Definir índices de entrenamiento y prueba correctamente
+    train_indices = (dates < dates.iloc[start])
+    test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
+
+    # Asegurar que no haya intersección entre los conjuntos de entrenamiento y prueba
+    X_train, X_test = X_scaled[train_indices], X_scaled[test_indices]
+    y_train, y_test = y[train_indices], y[test_indices]
+
+    # Verificar que haya suficientes clases en el conjunto de entrenamiento
+    if len(np.unique(y_train)) < 2:
+        continue  # Si solo hay una clase, pasa a la siguiente iteración
+
+    if len(X_train) == 0 or len(X_test) == 0:
+        continue
+
+    # Crear y ajustar el modelo con diferentes hiperparámetros
+    model = DecisionTreeClassifier(
+        random_state=42,
+        max_depth=20,  # Cambiar la profundidad máxima
+        min_samples_split=20,  # Número mínimo de muestras para dividir un nodo
+        min_samples_leaf=10,  # Número mínimo de muestras por hoja
+        criterion='entropy',  # Usar entropía
+    )
+    model.fit(X_train, y_train)
+
+    y_pred = model.predict(X_test)
+
+    # Acumular las predicciones y etiquetas verdaderas
+    all_y_true.extend(y_test)
+    all_y_pred.extend(y_pred)
+    
+    # Incrementar el contador de iteraciones
+    iteration_count += 1
+
+hora_de_fin = datetime.now()
+
+# Convertir las listas acumuladas a arrays de NumPy
+all_y_true = np.array(all_y_true)
+all_y_pred = np.array(all_y_pred)
+
+# Calcular las métricas globales
+overall_accuracy = accuracy_score(all_y_true, all_y_pred)
+overall_precision = precision_score(all_y_true, all_y_pred, average='weighted')
+overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
+overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
+overall_report = classification_report(all_y_true, all_y_pred)
+
+# Mostrar las métricas
+print(f"Accuracy general del modelo Árbol de Decisión: {overall_accuracy:.2f}")
+print(f"Precision global (ponderada): {overall_precision:.2f}")
+print(f"Recall global (ponderado): {overall_recall:.2f}")
+print(f"F1-score global (ponderado): {overall_f1:.2f}")
+print(f"Reporte de clasificación general:\n{overall_report}")
+print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
+print(f"Número total de iteraciones realizadas: {iteration_count}")
+
+#%%
+
+# Guardar los resultados en un archivo de texto
+output_file_path = r'.\..\output\metricas_CAP\DT_mas_ajustado.txt'
+with open(output_file_path, 'w') as f:
+    f.write(f"Resultados para el Árbol de Decisión ajustado:\n")
+    f.write(f"Accuracy general del modelo: {overall_accuracy:.2f}\n")
+    f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
+    f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
+    f.write(f"F1-score global (ponderado): {overall_f1:.2f}\n")
+    f.write(f"Reporte de clasificación general:\n{overall_report}\n")
+    f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
+    f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
+
+
+
 
 #%%
 
 
-# XGBoost
+# XGBoost Ajustado
 
 
 # Codificación de las etiquetas (transformación de [-1, 0, 1] a [0, 1, 2])
 label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
-
-model = XGBClassifier(use_label_encoder=False, eval_metric='mlogloss', random_state=42)
 
 results = []
 
@@ -253,7 +461,7 @@ overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
 overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
 overall_report = classification_report(all_y_true, all_y_pred, target_names=[str(cls) for cls in label_encoder.classes_])
 
-print(f"Precisión general del modelo: {overall_accuracy:.2f}")
+print(f"Precisión general del modelo Xgboost ajustado: {overall_accuracy:.2f}")
 print(f"Precision global (ponderada): {overall_precision:.2f}")
 print(f"Recall global (ponderado): {overall_recall:.2f}")
 print(f"F1-score global (ponderado): {overall_f1:.2f}")
@@ -262,17 +470,29 @@ print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
 print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 
+#%%
+# Guardar resultados en archivo .text
+output_path = r'.\..\output\metricas_CAP\XGboost_con_100_submodels.txt'
+with open(output_path, 'w') as f:
+    f.write(f"Resultados para el modelo XGBoost con 100 submodelos en ves de 1000 como lo hace el paper:\n")
+    f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
+    f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
+    f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
+    f.write(f"F1-score global (ponderado): {overall_f1:.2f}\n")
+    f.write(f"Reporte de clasificación general:\n{overall_report}\n")
+    f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
+    f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
 
 #%%
 
+#Xgboost segun paper con 1000 sub modelos
+# Codificación de las etiquetas (transformación de [-1, 0, 1] a [0, 1, 2])
 
-# Random Forest
 
-# Codificación de las etiquetas
+#18 min aprox
+
 label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
-
-model = RandomForestClassifier(n_estimators=100, random_state=42)
 
 results = []
 
@@ -283,8 +503,90 @@ all_y_pred = []
 # Contador de iteraciones
 iteration_count = 0
 
-# Calcular el índice para el 80% de los datos
-train_size = int(len(dates) * 0.8)
+hora_de_inicio = datetime.now()
+
+# Iterar sobre el 20% restante usando la ventana rodante
+for start in range(train_size, len(dates) - window_size):
+    test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
+    train_indices = dates < dates.iloc[start]
+
+    X_train, X_test = X_scaled[train_indices], X_scaled[test_indices]
+    y_train, y_test = y_encoded[train_indices], y_encoded[test_indices]
+
+    # Verificar que haya suficientes clases en el conjunto de entrenamiento
+    if len(np.unique(y_train)) < 2:
+        continue  # Si solo hay una clase, pasa a la siguiente iteración
+
+    if len(X_train) == 0 or len(X_test) == 0:
+        continue
+
+    model = XGBClassifier(use_label_encoder=False, eval_metric='mlogloss', random_state=42, n_estimators=1000)
+    model.fit(X_train, y_train)
+
+    y_pred = model.predict(X_test)
+
+    # Acumular las predicciones y etiquetas verdaderas
+    all_y_true.extend(y_test)
+    all_y_pred.extend(y_pred)
+    
+    # Incrementar el contador de iteraciones
+    iteration_count += 1
+
+hora_de_fin = datetime.now()
+
+# Convertir las listas acumuladas a arrays de NumPy
+all_y_true = np.array(all_y_true)
+all_y_pred = np.array(all_y_pred)
+
+# Calcular las métricas globales
+overall_accuracy = accuracy_score(all_y_true, all_y_pred)
+overall_precision = precision_score(all_y_true, all_y_pred, average='weighted')
+overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
+overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
+overall_report = classification_report(all_y_true, all_y_pred, target_names=[str(cls) for cls in label_encoder.classes_])
+
+print(f"Precisión general del modelo Xgboost segun paper: {overall_accuracy:.2f}")
+print(f"Precision global (ponderada): {overall_precision:.2f}")
+print(f"Recall global (ponderado): {overall_recall:.2f}")
+print(f"F1-score global (ponderado): {overall_f1:.2f}")
+print(f"Reporte de clasificación general:\n {overall_report}")
+print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
+print(f"Número total de iteraciones realizadas: {iteration_count}")
+
+#%%
+
+# Guardar resultados en archivo .text
+output_path = r'.\..\output\metricas_CAP\XGboost_segun_paper.txt'
+with open(output_path, 'w') as f:
+    f.write(f"Resultados para el modelo XGBoost con 1000 submodelos:\n")
+    f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
+    f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
+    f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
+    f.write(f"F1-score global (ponderado): {overall_f1:.2f}\n")
+    f.write(f"Reporte de clasificación general:\n{overall_report}\n")
+    f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
+    f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
+
+
+
+
+#%%
+
+# Random Forest segun el paper
+
+# 4 min aprox
+# Codificación de las etiquetas
+label_encoder = LabelEncoder()
+y_encoded = label_encoder.fit_transform(y)
+
+results = []
+
+# Acumular todas las predicciones y etiquetas verdaderas
+all_y_true = []
+all_y_pred = []
+
+# Contador de iteraciones
+iteration_count = 0
 
 hora_de_inicio = datetime.now()
 
@@ -328,7 +630,7 @@ overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
 overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
 overall_report = classification_report(all_y_true, all_y_pred, target_names=[str(cls) for cls in label_encoder.classes_])
 
-print(f"Precisión general del modelo: {overall_accuracy:.2f}")
+print(f"Precisión general del modelo Random forest paper: {overall_accuracy:.2f}")
 print(f"Precision global (ponderada): {overall_precision:.2f}")
 print(f"Recall global (ponderado): {overall_recall:.2f}")
 print(f"F1-score global (ponderado): {overall_f1:.2f}")
@@ -336,9 +638,118 @@ print(f"Reporte de clasificación general:\n {overall_report}")
 print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
 print(f"Número total de iteraciones realizadas: {iteration_count}")
 
+
+#%%
+
+# Guardar resultados en archivo .text
+output_path = r'.\..\output\metricas_CAP\RF_segun_paper.txt'
+with open(output_path, 'w') as f:
+    f.write(f"Resultados para el modelo RF con 100 submodelos segun paper:\n")
+    f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
+    f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
+    f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
+    f.write(f"F1-score global (ponderado): {overall_f1:.2f}\n")
+    f.write(f"Reporte de clasificación general:\n{overall_report}\n")
+    f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
+    f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
+
+#%%
+
+#Random forest con más hiperparametros para ver su rendimiento, se aumenta de 100 a 1000 submodelos y la profundidad
+# de la hoja aumenta de 5 a 10, dado que anteriormente en arbol de decisión obtuvimos mejor rendimiento
+# aumentando este parametro
+
+# 16 minutos aprox
+
+# Codificación de las etiquetas
+label_encoder = LabelEncoder()
+y_encoded = label_encoder.fit_transform(y)
+
+results = []
+
+# Acumular todas las predicciones y etiquetas verdaderas
+all_y_true = []
+all_y_pred = []
+
+# Contador de iteraciones
+iteration_count = 0
+
+hora_de_inicio = datetime.now()
+
+# Iterar sobre el 20% restante usando la ventana rodante
+for start in range(train_size, len(dates) - window_size):
+    test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
+    train_indices = dates < dates.iloc[start]
+
+    X_train, X_test = X_scaled[train_indices], X_scaled[test_indices]
+    y_train, y_test = y_encoded[train_indices], y_encoded[test_indices]
+
+    # Verificar que haya suficientes clases en el conjunto de entrenamiento
+    if len(np.unique(y_train)) < 2:
+        continue  # Si solo hay una clase, pasa a la siguiente iteración
+
+    if len(X_train) == 0 or len(X_test) == 0:
+        continue
+
+    model = RandomForestClassifier(n_estimators=1000, max_depth=10, min_samples_split=2,
+                                   min_samples_leaf=1, max_features='sqrt', criterion='entropy', # ver aplicando entropy
+                                   n_jobs=-1, random_state=42)
+    model.fit(X_train, y_train)
+
+    y_pred = model.predict(X_test)
+
+    # Acumular las predicciones y etiquetas verdaderas
+    all_y_true.extend(y_test)
+    all_y_pred.extend(y_pred)
+    
+    # Incrementar el contador de iteraciones
+    iteration_count += 1
+
+hora_de_fin = datetime.now()
+
+# Convertir las listas acumuladas a arrays de NumPy
+all_y_true = np.array(all_y_true)
+all_y_pred = np.array(all_y_pred)
+
+# Calcular las métricas globales
+overall_accuracy = accuracy_score(all_y_true, all_y_pred)
+overall_precision = precision_score(all_y_true, all_y_pred, average='weighted')
+overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
+overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
+overall_report = classification_report(all_y_true, all_y_pred, target_names=[str(cls) for cls in label_encoder.classes_])
+
+print(f"Precisión general del modelo Random forest ajustado: {overall_accuracy:.2f}")
+print(f"Precision global (ponderada): {overall_precision:.2f}")
+print(f"Recall global (ponderado): {overall_recall:.2f}")
+print(f"F1-score global (ponderado): {overall_f1:.2f}")
+print(f"Reporte de clasificación general:\n {overall_report}")
+print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
+print(f"Número total de iteraciones realizadas: {iteration_count}")
+
+
+#%%
+
+# Guardar resultados en archivo .text
+output_path = r'.\..\output\metricas_CAP\RF_ajustado.txt'
+with open(output_path, 'w') as f:
+    f.write(f"Resultados para el modelo RF ajustado con más hiperparametros:\n")
+    f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
+    f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
+    f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
+    f.write(f"F1-score global (ponderado): {overall_f1:.2f}\n")
+    f.write(f"Reporte de clasificación general:\n{overall_report}\n")
+    f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
+    f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
+
+
+
+
+
 #%%
 
 # Naive Bayes
+
+# nuevamente la clase 0 se va a abajo
 
 # Codificación de las etiquetas
 label_encoder = LabelEncoder()
@@ -396,13 +807,32 @@ overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
 overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
 overall_report = classification_report(all_y_true, all_y_pred, target_names=[str(cls) for cls in label_encoder.classes_])
 
-print(f"Precisión general del modelo: {overall_accuracy:.2f}")
+print(f"Precisión general del modelo Naive bayes: {overall_accuracy:.2f}")
 print(f"Precision global (ponderada): {overall_precision:.2f}")
 print(f"Recall global (ponderado): {overall_recall:.2f}")
 print(f"F1-score global (ponderado): {overall_f1:.2f}")
 print(f"Reporte de clasificación general:\n {overall_report}")
 print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
 print(f"Número total de iteraciones realizadas: {iteration_count}")
+
+
+#%%
+
+# Guardar resultados en archivo .text
+output_path = r'.\..\output\metricas_CAP\NB_basico.txt'
+with open(output_path, 'w') as f:
+    f.write(f"Resultados para el modelo NB :\n")
+    f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
+    f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
+    f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
+    f.write(f"F1-score global (ponderado): {overall_f1:.2f}\n")
+    f.write(f"Reporte de clasificación general:\n{overall_report}\n")
+    f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
+    f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
+
+
+
+
 
 #%%
 
@@ -472,6 +902,107 @@ print(f"F1-score global (ponderado): {overall_f1:.2f}")
 print(f"Reporte de clasificación general:\n {overall_report}")
 print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
 print(f"Número total de iteraciones realizadas: {iteration_count}")
+
+#%%
+
+# Guardar resultados en archivo .text
+output_path = r'.\..\output\metricas_CAP\MLP_basico.txt'
+with open(output_path, 'w') as f:
+    f.write(f"Resultados para el modelo MLP ajustado :\n")
+    f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
+    f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
+    f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
+    f.write(f"F1-score global (ponderado): {overall_f1:.2f}\n")
+    f.write(f"Reporte de clasificación general:\n{overall_report}\n")
+    f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
+    f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
+
+#%%
+
+
+# MLP (Multi-Layer Perceptron) segun paper
+
+
+# Codificación de las etiquetas
+label_encoder = LabelEncoder()
+y_encoded = label_encoder.fit_transform(y)
+
+results = []
+
+# Acumular todas las predicciones y etiquetas verdaderas
+all_y_true = []
+all_y_pred = []
+
+# Contador de iteraciones
+iteration_count = 0
+
+hora_de_inicio = datetime.now()
+
+# Iterar sobre el 20% restante usando la ventana rodante
+for start in range(train_size, len(dates) - window_size):
+    test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + window_size])
+    train_indices = dates < dates.iloc[start]
+
+    X_train, X_test = X_scaled[train_indices], X_scaled[test_indices]
+    y_train, y_test = y_encoded[train_indices], y_encoded[test_indices]
+
+    # Verificar que haya suficientes clases en el conjunto de entrenamiento
+    if len(np.unique(y_train)) < 2:
+        continue  # Si solo hay una clase, pasa a la siguiente iteración
+
+    if len(X_train) == 0 or len(X_test) == 0:
+        continue
+
+    # Ahora usamos MLP para el entrenamiento y predicción
+    model = MLPClassifier(hidden_layer_sizes=(30,), max_iter=300, random_state=42)  # Tamaño de la capa oculta de 30 segun paper
+    model.fit(X_train, y_train)
+
+    y_pred = model.predict(X_test)
+
+    # Acumular las predicciones y etiquetas verdaderas
+    all_y_true.extend(y_test)
+    all_y_pred.extend(y_pred)
+    
+    # Incrementar el contador de iteraciones
+    iteration_count += 1
+
+hora_de_fin = datetime.now()
+
+# Convertir las listas acumuladas a arrays de NumPy
+all_y_true = np.array(all_y_true)
+all_y_pred = np.array(all_y_pred)
+
+# Calcular las métricas globales
+overall_accuracy = accuracy_score(all_y_true, all_y_pred)
+overall_precision = precision_score(all_y_true, all_y_pred, average='weighted')
+overall_recall = recall_score(all_y_true, all_y_pred, average='weighted')
+overall_f1 = f1_score(all_y_true, all_y_pred, average='weighted')
+overall_report = classification_report(all_y_true, all_y_pred, target_names=[str(cls) for cls in label_encoder.classes_])
+
+print(f"Precisión general del modelo: {overall_accuracy:.2f}")
+print(f"Precision global (ponderada): {overall_precision:.2f}")
+print(f"Recall global (ponderado): {overall_recall:.2f}")
+print(f"F1-score global (ponderado): {overall_f1:.2f}")
+print(f"Reporte de clasificación general:\n {overall_report}")
+print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
+print(f"Número total de iteraciones realizadas: {iteration_count}")
+#%%
+
+# Guardar resultados en archivo .text
+output_path = r'.\..\output\metricas_CAP\MLP_segun_paper.txt'
+with open(output_path, 'w') as f:
+    f.write(f"Resultados para el modelo MLP segun paper con capa oculta 30 :\n")
+    f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
+    f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
+    f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
+    f.write(f"F1-score global (ponderado): {overall_f1:.2f}\n")
+    f.write(f"Reporte de clasificación general:\n{overall_report}\n")
+    f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
+    f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
+
+
+
+
 
 
 #%%
@@ -546,3 +1077,16 @@ print("Reporte de clasificación para LSTM:\n", report)
 print("Matriz de confusión:\n", conf_matrix)
 
 # %%
+
+# Definir la ruta de salida para el archivo .txt
+output_path_lstm = r'.\..\output\metricas_CAP\LSTM_resultados.txt'
+
+# Crear los directorios si no existen
+
+# Abrir el archivo y guardar los resultados
+with open(output_path_lstm, 'w') as f:
+    f.write(f"Resultados para el modelo LSTM:\n")
+    f.write(f"Precisión del modelo: {accuracy:.2f}\n")
+    f.write(f"Reporte de clasificación:\n{report}\n")
+    f.write(f"Matriz de confusión:\n{conf_matrix}\n")
+

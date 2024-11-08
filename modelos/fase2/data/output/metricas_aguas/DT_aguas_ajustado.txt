@@ -1,0 +1,18 @@
+Resultados para el Árbol de Decisión ajustado:
+Accuracy general del modelo: 0.43
+Precision global (ponderada): 0.42
+Recall global (ponderado): 0.43
+F1-score global (ponderado): 0.42
+Reporte de clasificación general:
+              precision    recall  f1-score   support
+
+          -1       0.45      0.46      0.45       466
+           0       0.34      0.24      0.28       368
+           1       0.46      0.55      0.50       504
+
+    accuracy                           0.43      1338
+   macro avg       0.41      0.41      0.41      1338
+weighted avg       0.42      0.43      0.42      1338
+
+Tiempo de ejecución: 0:00:15.992999
+Número total de iteraciones realizadas: 446
