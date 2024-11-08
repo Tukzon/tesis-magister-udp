@@ -1,0 +1,18 @@
+Resultados para el Naive Bayes son 100submodelos para random forest:
+Precisión general del modelo: 0.47
+Precision global (ponderada): 0.46
+Recall global (ponderado): 0.47
+F1-score global (ponderado): 0.46
+Reporte de clasificación general:
+              precision    recall  f1-score   support
+
+          -1       0.43      0.43      0.43       442
+           0       0.42      0.30      0.35       405
+           1       0.52      0.65      0.58       491
+
+    accuracy                           0.47      1338
+   macro avg       0.46      0.46      0.45      1338
+weighted avg       0.46      0.47      0.46      1338
+
+Tiempo de ejecución: 0:00:01.174953
+Número total de iteraciones realizadas: 446

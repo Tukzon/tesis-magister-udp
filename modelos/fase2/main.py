@@ -54,12 +54,6 @@ def calculate_sentiment(analyzer, text):
     '''
     return analyzer.predict(preprocess_tweet(text, lang='es'))
 
-def data_to_df(data):
-    '''
-    TODO: Convierte la fuente de datos de las noticias (cuando se tengan a futuro) a un DataFrame de Pandas.
-    '''
-    return pd.DataFrame(data)
-
 def calculate_sentiment_df(df, analyzer):
     '''
     Calcula el sentimiento de un DataFrame de Pandas utilizando un analizador de sentimientos.
@@ -132,6 +126,7 @@ if __name__ == "__main__":
         print("Tendencia calculada")
         print("Uniendo dataframes")
         '''
+        DONE en merger.py
         TODO: Hacer función que maneje el merge de los DataFrames de sentimientos. sin errores.
         Esto debería fallar si no hay coincidencias en las fechas, pero no se maneja el error.
         df = df.merge(sentimiento_promedio, on='date', how='left')

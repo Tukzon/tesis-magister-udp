@@ -526,19 +526,6 @@ with open(output_path, 'w') as f:
 label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
 
-# Aplicar RFE para seleccionar las mejores características utilizando XGBoost
-model_rfe = XGBClassifier(use_label_encoder=False, eval_metric='mlogloss', random_state=42, n_estimators=1000)  # 1000 submodelos
-rfe = RFE(model_rfe, n_features_to_select=7)  # Ajusta n_features_to_select según lo desees
-X_rfe = rfe.fit_transform(X_ta_scaled, y_encoded)
-selected_technical_features = np.array(ta_cols)[rfe.support_]
-
-print("Indicadores técnicos seleccionados por RFE:", selected_technical_features)
-
-# Crear DataFrame con características seleccionadas y concatenar con columnas estáticas normalizadas
-X_rfe_df = pd.DataFrame(X_rfe, columns=selected_technical_features)
-
-X_final = pd.concat([X_rfe_df, X_static_df.reset_index(drop=True)], axis=1)
-
 results = []
 
 # Acumular todas las predicciones y etiquetas verdaderas
@@ -882,19 +869,6 @@ with open(output_path, 'w') as f:
 label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
 
-# Aplicar RFE utilizando Random Forest para seleccionar las mejores características
-model_rfe = RandomForestClassifier(n_estimators=100, random_state=42)
-rfe = RFE(model_rfe, n_features_to_select=7)  # Ajusta n_features_to_select según lo desees
-X_rfe = rfe.fit_transform(X_ta_scaled, y_encoded)
-selected_technical_features = np.array(ta_cols)[rfe.support_]
-
-print("Indicadores técnicos seleccionados por RFE:", selected_technical_features)
-
-# Crear DataFrame con características seleccionadas y concatenar con columnas estáticas normalizadas
-X_rfe_df = pd.DataFrame(X_rfe, columns=selected_technical_features)
-
-X_final = pd.concat([X_rfe_df, X_static_df.reset_index(drop=True)], axis=1)
-
 results = []
 
 # Acumular todas las predicciones y etiquetas verdaderas
@@ -1140,7 +1114,7 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 #%%
 # Guardar resultados en archivo .text
-output_path = r'.\..\output\MLP_CENCOSUD_según_paper.text'
+output_path = r'.\..\output\MLP_CENCOSUD_segun_paper.txt'
 with open(output_path, 'w') as f:
     f.write(f"Resultados para el MLP con hiperparametros del paper 3 capas y 30 neuronas de capa oculta, y utilizamos 1000 submodelos:\n")
     f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
@@ -1162,12 +1136,18 @@ with open(output_path, 'w') as f:
 label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
 
-# Ajusta n_features_to_select según lo desees
+# Aplicar RFE para seleccionar las mejores características utilizando Random Forest
 model_rfe = RandomForestClassifier(n_estimators=100, random_state=42)
-rfe = RFE(model_rfe, n_features_to_select=5)
-X_rfe = rfe.fit_transform(X_scaled, y_encoded)
+rfe = RFE(model_rfe, n_features_to_select=7)
+X_rfe = rfe.fit_transform(X_ta_scaled, y_encoded)
+selected_technical_features = np.array(ta_cols)[rfe.support_]
 
-print("Características seleccionadas por RFE:", np.array(features)[rfe.support_])
+print("Indicadores técnicos seleccionados por RFE:", selected_technical_features)
+
+# Crear DataFrame con características seleccionadas y concatenar con columnas estáticas normalizadas
+X_rfe_df = pd.DataFrame(X_rfe, columns=selected_technical_features)
+
+X_final = pd.concat([X_rfe_df, X_static_df.reset_index(drop=True)], axis=1)
 
 # Acumular todas las predicciones y etiquetas verdaderas
 all_y_true = []
@@ -1178,15 +1158,15 @@ iteration_count = 0
 
 # Definir parámetros para la ventana deslizante
 n_input = 20  # Pasos de tiempo
-n_features = X_rfe.shape[1]
+n_features = X_final.shape[1]  # Asegurarse de que n_features refleje el número de características en X_final
 
 # Iterar sobre el 20% restante usando la ventana deslizante
 for start in range(train_size, len(dates) - n_input):
-    # Definir índices de entrenamiento y prueba
-    test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + n_input])
+    # Definir índices de entrenamiento y prueba, ajustando el rango de prueba para tener al menos n_input elementos
+    test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + n_input + 1])
     train_indices = dates < dates.iloc[start]
 
-    X_train, X_test = X_rfe[train_indices], X_rfe[test_indices]
+    X_train, X_test = X_final[train_indices], X_final[test_indices]
     y_train, y_test = y_encoded[train_indices], y_encoded[test_indices]
 
     # Verificar que haya suficientes clases en el conjunto de entrenamiento
@@ -1209,10 +1189,11 @@ for start in range(train_size, len(dates) - n_input):
     # Entrenamiento del modelo
     model.fit(train_generator, epochs=50, verbose=0)
 
-    # Crear el generador de secuencias para la prueba
-    if len(X_test) < n_input:
+    # Verificar que haya suficientes datos en X_test para el generador de prueba
+    if len(X_test) <= n_input:
         continue  # Asegurarse de que hay suficientes datos para crear el generador de prueba
 
+    # Crear el generador de secuencias para la prueba
     test_generator = TimeseriesGenerator(X_test, y_test, length=n_input, batch_size=1)
 
     # Predicción
