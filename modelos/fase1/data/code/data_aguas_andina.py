@@ -694,7 +694,7 @@ with open(output_path, 'w') as f:
 # de la hoja aumenta de 5 a 10, dado que anteriormente en arbol de decisión obtuvimos mejor rendimiento
 # aumentando este parametro
 
-#No esta corriendo, se demora demasiado, el anterior se demora,15 minutos y este no lanza ni siquiera las caracteristicas
+#26 min aprox
 
 
 # Codificación de las etiquetas

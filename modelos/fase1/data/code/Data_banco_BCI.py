@@ -515,8 +515,7 @@ with open(output_path, 'w') as f:
 
 #%%
 
-#Xgboost Segun paper
-
+#Xgboost Segun paper No esta corriendo este ccodigo 
 # Codificación de las etiquetas (transformación de [-1, 0, 1] a [0, 1, 2])
 label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)

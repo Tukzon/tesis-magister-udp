@@ -14,5 +14,5 @@ Reporte de clasificación general:
    macro avg       0.47      0.45      0.46      1338
 weighted avg       0.48      0.46      0.47      1338
 
-Tiempo de ejecución: 0:00:00.645324
+Tiempo de ejecución: 0:00:00.617147
 Número total de iteraciones realizadas: 446
