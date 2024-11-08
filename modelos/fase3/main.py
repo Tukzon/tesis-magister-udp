@@ -53,9 +53,49 @@ def attach_indicators(df_f1, df_empresa_modelo, indicators_list):
     return df_empresa_modelo
 
 if __name__ == "__main__":
+    
+    #VERIFICAR CON LOS OUTPUTS DE LA FASE 1, varios estaban de 5 y complementé
+    indicadores_agua = {
+        "LR": ['RSI_14','BBANDS_lower','Histogram','ATR_14','WILLR_14','TSI_13_25_13','CMO'],
+        "DT": ['BBANDS_lower','Histogram','CCI_14','WILLR_14','COPP','CMO','RSI_14'],
+        "XGB": ['CCI_14','WILLR_14','TSI_13_25_13','CMO','COPP','ATR_14','RSI_14'],
+        "RF": ['BBANDS_lower','CCI_14','OBV','WILLR_14','COPP','CMO','RSI_14'],
+        "NB": ['BBANDS_lower','CCI_14','OBV','WILLR_14','COPP','CMO','RSI_14'],
+        "MLP": ['BBANDS_lower','CCI_14','OBV','WILLR_14','CMO','COPP','STCmacd_10_12_26_0.5'],
+        "LSTM": []
+    }
+    indicadores_bci = {
+        "LR": ['RSI_14','BBANDS_lower','Histogram','ATR_14','WILLR_14','TSI_13_25_13','CMO'],
+        "DT": ['BBANDS_lower','Histogram','CCI_14','WILLR_14','COPP','CMO','RSI_14'],
+        "XGB": ['CCI_14','WILLR_14','TSI_13_25_13','CMO','COPP','ATR_14','RSI_14'],
+        "RF": ['BBANDS_lower','CCI_14','OBV','WILLR_14','COPP','CMO','RSI_14'],
+        "NB": ['BBANDS_lower','CCI_14','OBV','WILLR_14','COPP','CMO','RSI_14'],
+        "MLP": ['BBANDS_lower','CCI_14','OBV','WILLR_14','CMO','COPP','STCmacd_10_12_26_0.5'],
+        "LSTM": []
+    }
+    indicadores_cap = {
+        "LR": ['RSI_14','BBANDS_lower','Histogram','ATR_14','WILLR_14','TSI_13_25_13','CMO'],
+        "DT": ['BBANDS_lower','Histogram','CCI_14','WILLR_14','COPP','CMO','RSI_14'],
+        "XGB": ['CCI_14','WILLR_14','TSI_13_25_13','CMO','COPP','ATR_14','RSI_14'],
+        "RF": ['BBANDS_lower','CCI_14','OBV','WILLR_14','COPP','CMO','RSI_14'],
+        "NB": ['BBANDS_lower','CCI_14','OBV','WILLR_14','COPP','CMO','RSI_14'],
+        "MLP": ['BBANDS_lower','CCI_14','OBV','WILLR_14','CMO','COPP','STCmacd_10_12_26_0.5'],
+        "LSTM": []
+    }
+    indicadores_ccu = {
+        "LR": ['RSI_14','BBANDS_lower','Histogram','ATR_14','WILLR_14','TSI_13_25_13','CMO'],
+        "DT": ['BBANDS_lower','Histogram','CCI_14','WILLR_14','COPP','CMO','RSI_14'],
+        "XGB": ['CCI_14','WILLR_14','TSI_13_25_13','CMO','COPP','ATR_14','RSI_14'],
+        "RF": ['BBANDS_lower','CCI_14','OBV','WILLR_14','COPP','CMO','RSI_14'],
+        "NB": ['BBANDS_lower','CCI_14','OBV','WILLR_14','COPP','CMO','RSI_14'],
+        "MLP": ['BBANDS_lower','CCI_14','OBV','WILLR_14','CMO','COPP','STCmacd_10_12_26_0.5'],
+        "LSTM": []
+    }
+    
     print("*" * 40)
     print("Cargando data")
     for empresa in empresas:
+        df_fase1 = load_data(f"../fase1/data/Input/{empresa}.csv")
         df = load_data(f"../../scraper/data/{empresa}.csv")
         print("Data cargada - "+empresa)
         print("-" * 40)
@@ -66,6 +106,7 @@ if __name__ == "__main__":
         df = calculate_trend(df, delta=0.005)  
         print("Tendencia calculada")
         print("-" * 40)
+        print("Aplicando indicadores técnicos")
         print("-" * 40)
         print("Limpiando data")
         df.replace([np.inf, -np.inf], np.nan, inplace=True)
