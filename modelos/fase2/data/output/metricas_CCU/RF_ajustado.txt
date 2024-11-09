@@ -1,0 +1,18 @@
+Resultados para el modelo RF ajustado con más hiperparametros:
+Precisión general del modelo: 0.45
+Precision global (ponderada): 0.45
+Recall global (ponderado): 0.45
+F1-score global (ponderado): 0.42
+Reporte de clasificación general:
+              precision    recall  f1-score   support
+
+          -1       0.47      0.40      0.43       473
+           0       0.43      0.16      0.23       363
+           1       0.44      0.70      0.54       502
+
+    accuracy                           0.45      1338
+   macro avg       0.45      0.42      0.40      1338
+weighted avg       0.45      0.45      0.42      1338
+
+Tiempo de ejecución: 0:16:34.713136
+Número total de iteraciones realizadas: 446

@@ -1,0 +1,18 @@
+Resultados para LR con Hiperparametros del paper:
+Accuracy general del modelo: 0.63
+Precision global (ponderada): 0.63
+Recall global (ponderado): 0.63
+F1-score global (ponderado): 0.59
+Reporte de clasificación general:
+              precision    recall  f1-score   support
+
+          -1       0.60      0.80      0.68       473
+           0       0.60      0.19      0.29       363
+           1       0.67      0.78      0.72       502
+
+    accuracy                           0.63      1338
+   macro avg       0.62      0.59      0.57      1338
+weighted avg       0.63      0.63      0.59      1338
+
+Tiempo de ejecución: 0:00:46.533432
+Número total de iteraciones realizadas: 446
