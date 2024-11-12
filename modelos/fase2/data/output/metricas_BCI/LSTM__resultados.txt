@@ -1,0 +1,17 @@
+Resultados para el modelo LSTM:
+Precisión del modelo: 0.37
+Reporte de clasificación:
+              precision    recall  f1-score   support
+
+          -1       0.41      0.24      0.30       754
+           0       0.41      0.24      0.30       701
+           1       0.35      0.63      0.45       766
+
+    accuracy                           0.37      2221
+   macro avg       0.39      0.37      0.35      2221
+weighted avg       0.39      0.37      0.35      2221
+
+Matriz de confusión:
+[[180 117 457]
+ [ 91 166 444]
+ [163 122 481]]
