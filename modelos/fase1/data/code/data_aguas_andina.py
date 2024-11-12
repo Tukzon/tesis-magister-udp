@@ -1216,7 +1216,7 @@ y_encoded = label_encoder.fit_transform(y)
 
 # Ajusta n_features_to_select según lo desees
 model_rfe = RandomForestClassifier(n_estimators=100, random_state=42)
-rfe = RFE(model_rfe, n_features_to_select=5)
+rfe = RFE(model_rfe, n_features_to_select=7)
 X_rfe = rfe.fit_transform(X_scaled, y_encoded)
 
 print("Características seleccionadas por RFE:", np.array(features)[rfe.support_])
