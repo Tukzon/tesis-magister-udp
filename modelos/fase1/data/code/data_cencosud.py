@@ -137,7 +137,7 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 #%%
 
 # Guardar los resultados en un archivo de texto
-output_file_path = r'.\..\output\LR_CENCOSUD_Hiperparametro_paper.txt'
+output_file_path = r'.\..\output\metricas_CENCOSUD\LR_segun_paper.txt'
 with open(output_file_path, 'w') as f:
     f.write(f"Resultados para LR con Hiperparametros del paper:\n")
     f.write(f"Accuracy general del modelo: {overall_accuracy:.2f}\n")
@@ -147,11 +147,6 @@ with open(output_file_path, 'w') as f:
     f.write(f"Reporte de clasificación general:\n{overall_report}\n")
     f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
     f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
-
-
-
-
-
 
 
 #%%
@@ -312,10 +307,10 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 #%%
 
-# Guardar resultados en archivo .text
-output_path = r'.\..\output\DT_CENCOSUD_segun_paper.txt'
-with open(output_path, 'w') as f:
-    f.write(f"Resultados para el Árbol de Decisión segun el paper algoritmo Cart profundida 10, mejor que 5:\n")
+# Guardar los resultados en un archivo de texto
+output_file_path = r'.\..\output\metricas_CENCOSUD\LR_ajustado.txt'
+with open(output_file_path, 'w') as f:
+    f.write(f"Resultados para LR con Hiperparametros del paper:\n")
     f.write(f"Accuracy general del modelo: {overall_accuracy:.2f}\n")
     f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
     f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
@@ -323,6 +318,7 @@ with open(output_path, 'w') as f:
     f.write(f"Reporte de clasificación general:\n{overall_report}\n")
     f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
     f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
+
 
 
 
@@ -412,10 +408,10 @@ print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
 print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 #%%
-# Guardar resultados en archivo .text
-output_path = r'.\..\output\DT_CENCOSUD_con_ajuste.txt'
-with open(output_path, 'w') as f:
-    f.write(f"Resultados para el Árbol de Decisión con cambios de hiperparametros:\n")
+# Guardar los resultados en un archivo de texto
+output_file_path = r'.\..\output\metricas_CENCOSUD\DT_mas_ajustado.txt'
+with open(output_file_path, 'w') as f:
+    f.write(f"Resultados para el Árbol de Decisión ajustado:\n")
     f.write(f"Accuracy general del modelo: {overall_accuracy:.2f}\n")
     f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
     f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
@@ -423,7 +419,6 @@ with open(output_path, 'w') as f:
     f.write(f"Reporte de clasificación general:\n{overall_report}\n")
     f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
     f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
-
 
 
 #%%
@@ -507,7 +502,7 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 #%%
 # Guardar resultados en archivo .text
-output_path = r'.\..\output\XGBoost_CENCOSUD_con_100_submodels.txt'
+output_path = r'.\..\output\metricas_CENCOSUD\XGboost_con_100_submodels.txt'
 with open(output_path, 'w') as f:
     f.write(f"Resultados para el modelo XGBoost con 100 submodelos en ves de 1000 como lo hace el paper:\n")
     f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
@@ -517,6 +512,7 @@ with open(output_path, 'w') as f:
     f.write(f"Reporte de clasificación general:\n{overall_report}\n")
     f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
     f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
+
 
 #%%
 
@@ -585,9 +581,9 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 #%%
 # Guardar resultados en archivo .text
-output_path = r'.\..\output\XGBoost_CENCOSUD_Segun_paper.txt'
+output_path = r'.\..\output\metricas_CENCOSUD\XGboost_segun_paper.txt'
 with open(output_path, 'w') as f:
-    f.write(f"Resultados para el modelo XGBoost Segun el paper 1000 submodelos:\n")
+    f.write(f"Resultados para el modelo XGBoost con 1000 submodelos:\n")
     f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
     f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
     f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
@@ -675,10 +671,11 @@ print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
 print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 #%%
+
 # Guardar resultados en archivo .text
-output_path = r'.\..\output\RF_CENCOSUD_Segun_paper.txt'
+output_path = r'.\..\output\metricas_CENCOSUD\RF_segun_paper.txt'
 with open(output_path, 'w') as f:
-    f.write(f"Resultados para el modelo de Random Forest Segun el paper con 100 submodelos:\n")
+    f.write(f"Resultados para el modelo RF con 100 submodelos segun paper:\n")
     f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
     f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
     f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
@@ -762,9 +759,9 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 #%%
 # Guardar resultados en archivo .text
-output_path = r'.\..\output\RF_CENCOSUD_ajustado.txt'
+output_path = r'.\..\output\metricas_CENCOSUD\RF_ajustado.txt'
 with open(output_path, 'w') as f:
-    f.write(f"Resultados para el modelo de Random Forest:\n")
+    f.write(f"Resultados para el modelo RF ajustado con más hiperparametros:\n")
     f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
     f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
     f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
@@ -847,10 +844,11 @@ print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
 print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 #%%
+
 # Guardar resultados en archivo .text
-output_path = r'.\..\output\NB_CENCOSUD_SelectKBest.txt'
+output_path = r'.\..\output\metricas_CENCOSUD\NB_basico.txt'
 with open(output_path, 'w') as f:
-    f.write(f"Resultados para el Naive Bayes:\n")
+    f.write(f"Resultados para el modelo NB :\n")
     f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
     f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
     f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
@@ -858,7 +856,7 @@ with open(output_path, 'w') as f:
     f.write(f"Reporte de clasificación general:\n{overall_report}\n")
     f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
     f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
-    
+
     
 #%%
 
@@ -868,6 +866,18 @@ with open(output_path, 'w') as f:
 # Codificación de las etiquetas
 label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
+
+# Codificación de las etiquetas
+label_encoder = LabelEncoder()
+y_encoded = label_encoder.fit_transform(y)
+
+# Aplicar RFE utilizando Random Forest para seleccionar las mejores características
+model_rfe = RandomForestClassifier(n_estimators=100, random_state=42)
+rfe = RFE(model_rfe, n_features_to_select=7)  # Ajusta n_features_to_select según lo desees
+X_rfe = rfe.fit_transform(X_ta_scaled, y_encoded)
+selected_technical_features = np.array(ta_cols)[rfe.support_]
+
+print("Indicadores técnicos seleccionados por RFE:", selected_technical_features)
 
 results = []
 
@@ -929,10 +939,12 @@ print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
 print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 #%%
+
+
 # Guardar resultados en archivo .text
-output_path = r'.\..\output\NB_CENCOSUD_randomforest.txt'
+output_path = r'.\..\output\metricas_CENCOSUD\NB_random_forest.txt'
 with open(output_path, 'w') as f:
-    f.write(f"Resultados para el Naive Bayes son 100submodelos para random forest:\n")
+    f.write(f"Resultados para el modelo NB :\n")
     f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
     f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
     f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
@@ -940,6 +952,7 @@ with open(output_path, 'w') as f:
     f.write(f"Reporte de clasificación general:\n{overall_report}\n")
     f.write(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}\n")
     f.write(f"Número total de iteraciones realizadas: {iteration_count}\n")
+
 
 
 
@@ -974,12 +987,6 @@ all_y_pred = []
 
 # Contador de iteraciones
 iteration_count = 0
-
-# Calcular el índice para el 80% de los datos
-train_size = int(len(dates) * 0.8)
-
-hora_de_inicio = datetime.now()
-
 
 #ojo con esto, esta bien esto que hacemos?, esta iterando para obtener las predicciones?, oh esta aplicando ventana
 #sobre el 20% y no el 80 %? 
@@ -1031,9 +1038,9 @@ print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 #%%
 # Guardar resultados en archivo .text
-output_path = r'.\..\output\MLP_CENCOSUD_basico_no_paper.text'
+output_path = r'.\..\output\metricas_CENCOSUD\MLP_basico.txt'
 with open(output_path, 'w') as f:
-    f.write(f"Resultados para el MLP:\n")
+    f.write(f"Resultados para el modelo MLP ajustado :\n")
     f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
     f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
     f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
@@ -1060,8 +1067,6 @@ all_y_pred = []
 # Contador de iteraciones
 iteration_count = 0
 
-# Calcular el índice para el 80% de los datos
-train_size = int(len(dates) * 0.8)
 
 hora_de_inicio = datetime.now()
 
@@ -1113,10 +1118,11 @@ print(f"Tiempo de ejecución: {hora_de_fin - hora_de_inicio}")
 print(f"Número total de iteraciones realizadas: {iteration_count}")
 
 #%%
+
 # Guardar resultados en archivo .text
-output_path = r'.\..\output\MLP_CENCOSUD_segun_paper.txt'
+output_path = r'.\..\output\metricas_CENCOSUD\MLP_segun_paper.txt'
 with open(output_path, 'w') as f:
-    f.write(f"Resultados para el MLP con hiperparametros del paper 3 capas y 30 neuronas de capa oculta, y utilizamos 1000 submodelos:\n")
+    f.write(f"Resultados para el modelo MLP segun paper con capa oculta 30 :\n")
     f.write(f"Precisión general del modelo: {overall_accuracy:.2f}\n")
     f.write(f"Precision global (ponderada): {overall_precision:.2f}\n")
     f.write(f"Recall global (ponderado): {overall_recall:.2f}\n")
@@ -1130,104 +1136,99 @@ with open(output_path, 'w') as f:
 
 #%%
 
-#LSTM se acerca al paper, pero no en su totalidad
+#LSTM CORRIENDO con random forest para seleccionar caracteristicas, deberiamos probar con otras y dejalo guardado
 
-# Codificación de las etiquetas
+# Codificación de las etiquetas para un problema multicategoría
 label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
+y_encoded = np.eye(len(label_encoder.classes_))[y_encoded]  # One-hot encoding
 
-# Aplicar RFE para seleccionar las mejores características utilizando Random Forest
+print("Clases originales:", label_encoder.classes_)
+print("Valores codificados:", list(label_encoder.transform(label_encoder.classes_)))
+print("Distribución de clases en el conjunto de entrenamiento:", Counter(np.argmax(y_encoded, axis=1)))
+
+# Aplicación de RFE para selección de características
 model_rfe = RandomForestClassifier(n_estimators=100, random_state=42)
-rfe = RFE(model_rfe, n_features_to_select=7)
-X_rfe = rfe.fit_transform(X_ta_scaled, y_encoded)
-selected_technical_features = np.array(ta_cols)[rfe.support_]
+rfe = RFE(estimator=model_rfe, n_features_to_select=10)  # Selecciona las 10 mejores características
+X_rfe = rfe.fit_transform(X, y_encoded)  # Aplicamos RFE sobre los datos de entrada X
 
-print("Indicadores técnicos seleccionados por RFE:", selected_technical_features)
+# Obtener las características seleccionadas
+selected_features = np.array(features)[rfe.support_]
+print("Características seleccionadas por RFE:", selected_features)
 
-# Crear DataFrame con características seleccionadas y concatenar con columnas estáticas normalizadas
-X_rfe_df = pd.DataFrame(X_rfe, columns=selected_technical_features)
+# Conversión de datos a formato secuencial para LSTM
+n_input = 20  # Aumentamos los pasos de tiempo a 20
+n_features = X_rfe.shape[1]  # El número de características después de RFE
 
-X_final = pd.concat([X_rfe_df, X_static_df.reset_index(drop=True)], axis=1)
+# Crear el generador de secuencias para el entrenamiento
+train_generator = TimeseriesGenerator(X_rfe, y_encoded, length=n_input, batch_size=32)
 
-# Acumular todas las predicciones y etiquetas verdaderas
-all_y_true = []
-all_y_pred = []
+# Construcción del modelo LSTM
+model = Sequential()
+model.add(LSTM(150, activation='tanh', return_sequences=True, input_shape=(n_input, n_features)))
+model.add(Dropout(0.3))
+model.add(LSTM(100, activation='tanh'))
+model.add(Dropout(0.3))
+model.add(Dense(100, activation='relu'))
+model.add(Dense(len(label_encoder.classes_), activation='softmax'))
+model.compile(optimizer=Adam(learning_rate=0.001), loss='categorical_crossentropy', metrics=['accuracy'])
 
-# Contador de iteraciones
-iteration_count = 0
+# Entrenamiento del modelo
+model.fit(train_generator, epochs=50)
 
-# Definir parámetros para la ventana deslizante
-n_input = 20  # Pasos de tiempo
-n_features = X_final.shape[1]  # Asegurarse de que n_features refleje el número de características en X_final
+# Crear el generador de secuencias para la prueba
+test_generator = TimeseriesGenerator(X_rfe[-(len(X_rfe) + n_input):], y_encoded[-(len(X_rfe) + n_input):], length=n_input, batch_size=1)
 
-# Iterar sobre el 20% restante usando la ventana deslizante
-for start in range(train_size, len(dates) - n_input):
-    # Definir índices de entrenamiento y prueba, ajustando el rango de prueba para tener al menos n_input elementos
-    test_indices = (dates >= dates.iloc[start]) & (dates < dates.iloc[start + n_input + 1])
-    train_indices = dates < dates.iloc[start]
+# Predicción
+y_pred = model.predict(test_generator)
 
-    X_train, X_test = X_final[train_indices], X_final[test_indices]
-    y_train, y_test = y_encoded[train_indices], y_encoded[test_indices]
+# Convertir las predicciones a clases
+y_pred_classes = np.argmax(y_pred, axis=1)
+y_test_aligned = np.argmax(y_encoded[-len(y_pred_classes):], axis=1)
 
-    # Verificar que haya suficientes clases en el conjunto de entrenamiento
-    if len(np.unique(y_train)) < 2 or len(X_train) < n_input:
-        continue  # Si solo hay una clase o no hay suficientes datos, pasa a la siguiente iteración
+# Decodificar las predicciones para interpretarlas en términos de las clases originales
+y_pred_classes_decoded = label_encoder.inverse_transform(y_pred_classes)
+y_test_aligned_decoded = label_encoder.inverse_transform(y_test_aligned)
 
-    # Crear el generador de secuencias para el entrenamiento
-    train_generator = TimeseriesGenerator(X_train, y_train, length=n_input, batch_size=32)
+print("Clases decodificadas en las predicciones:", np.unique(y_pred_classes_decoded))
+print("Clases decodificadas en y_test_aligned:", np.unique(y_test_aligned_decoded))
 
-    # Construcción del modelo LSTM
-    model = Sequential()
-    model.add(LSTM(150, activation='tanh', return_sequences=True, input_shape=(n_input, n_features)))
-    model.add(Dropout(0.3))
-    model.add(LSTM(100, activation='tanh'))
-    model.add(Dropout(0.3))
-    model.add(Dense(100, activation='relu'))
-    model.add(Dense(len(label_encoder.classes_), activation='softmax'))
-    model.compile(optimizer=Adam(learning_rate=0.001), loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+# Verificar las clases únicas en las predicciones
+unique_pred_classes = np.unique(y_pred_classes_decoded)
+print("Clases únicas en las predicciones:", unique_pred_classes)
 
-    # Entrenamiento del modelo
-    model.fit(train_generator, epochs=50, verbose=0)
+# Verificar las clases únicas en y_test_aligned
+unique_test_classes = np.unique(y_test_aligned_decoded)
+print("Clases únicas en y_test_aligned:", unique_test_classes)
 
-    # Verificar que haya suficientes datos en X_test para el generador de prueba
-    if len(X_test) <= n_input:
-        continue  # Asegurarse de que hay suficientes datos para crear el generador de prueba
+# Convertir las clases a strings
+target_names = [str(cls) for cls in label_encoder.classes_]
 
-    # Crear el generador de secuencias para la prueba
-    test_generator = TimeseriesGenerator(X_test, y_test, length=n_input, batch_size=1)
+# Evaluación del modelo: calcula las métricas por separado
+accuracy = accuracy_score(y_test_aligned_decoded, y_pred_classes_decoded)
+precision = precision_score(y_test_aligned_decoded, y_pred_classes_decoded, average='weighted')
+f1 = f1_score(y_test_aligned_decoded, y_pred_classes_decoded, average='weighted')
 
-    # Predicción
-    y_pred = model.predict(test_generator)
+# Imprimir las métricas
+print(f"Precisión del modelo (Accuracy): {accuracy:.2f}")
+print(f"Precisión global (Weighted Precision): {precision:.2f}")
+print(f"F1-Score global (Weighted F1-Score): {f1:.2f}")
 
-    # Convertir las predicciones a clases
-    y_pred_classes = np.argmax(y_pred, axis=1)
-    y_test_aligned = y_test[n_input-1:]  # Ajustar y_test para alinear con y_pred
-
-    # Acumular las predicciones y etiquetas verdaderas
-    all_y_true.extend(y_test_aligned)
-    all_y_pred.extend(y_pred_classes)
-
-    # Incrementar el contador de iteraciones
-    iteration_count += 1
-
-# Convertir las listas acumuladas a arrays de NumPy
-all_y_true = np.array(all_y_true)
-all_y_pred = np.array(all_y_pred)
-
-# Evaluación del modelo
-accuracy = accuracy_score(all_y_true, all_y_pred)
-report = classification_report(all_y_true, all_y_pred, target_names=[str(cls) for cls in label_encoder.classes_])
-#%%
-# Guardar resultados en un archivo de texto
-with open('./output/LSTM_CENCOSUD.txt', 'w') as f:
-    f.write(f"Precisión del modelo: {accuracy:.2f}\n")
-    f.write("Reporte de clasificación para LSTM:\n" + report)
-
-print(f"Precisión del modelo: {accuracy:.2f}")
+# Reporte completo
+report = classification_report(y_test_aligned_decoded, y_pred_classes_decoded, target_names=target_names)
 print("Reporte de clasificación para LSTM:\n", report)
-print(f"Número total de iteraciones realizadas: {iteration_count}")
 
+
+#%%
+
+# Definir la ruta de salida para el archivo .txt
+output_path_lstm = r'.\..\output\metricas_CENCOSUD\LSTM_CAP_resultados.txt'
+
+with open(output_path_lstm, 'w') as f:
+    f.write(f"Resultados para el modelo LSTM:\n")
+    f.write(f"Precisión del modelo (Accuracy): {accuracy:.2f}\n")
+    f.write(f"Precisión global (Weighted Precision): {precision:.2f}\n")
+    f.write(f"F1-Score global (Weighted F1-Score): {f1:.2f}\n")
+    
+    
 # %%
-
-
-

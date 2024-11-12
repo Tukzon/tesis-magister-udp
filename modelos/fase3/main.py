@@ -17,51 +17,52 @@ from scraper.yahoo import empresas
 #VERIFICAR CON LOS OUTPUTS DE LA FASE 1, varios estaban de 5 y complementé
 indicadores = {
     "AGUAS-A.SN": {
-        "LR": ['RSI_14','BBANDS_lower','Histogram','ATR_14','WILLR_14','TSI_13_25_13','CMO'],
-        "DT": ['BBANDS_lower','Histogram','CCI_14','WILLR_14','COPP','CMO','RSI_14'],
-        "XGB": ['CCI_14','WILLR_14','TSI_13_25_13','CMO','COPP','ATR_14','RSI_14'],
-        "RF": ['BBANDS_lower','CCI_14','OBV','WILLR_14','COPP','CMO','RSI_14'],
-        "NB": ['BBANDS_lower','CCI_14','OBV','WILLR_14','COPP','CMO','RSI_14'],
-        "MLP": ['BBANDS_lower','CCI_14','OBV','WILLR_14','CMO','COPP','STCmacd_10_12_26_0.5'],
-        "LSTM": []
-        },
+        "LR": ['RSI_14', 'BBANDS_lower', 'Histogram', 'ATR_14', 'WILLR_14', 'TSI_13_25_13', 'CMO'],
+        "DT": ['RSI_14', 'BBANDS_lower', 'Histogram', 'ATR_14', 'CCI_14', 'WILLR_14', 'COPP'],
+        "XGB": ['RSI_14', 'BBANDS_lower', 'CCI_14', 'WILLR_14', 'TSI_13_25_13', 'CMO', 'COPP'],
+        "RF": ['BBANDS_lower', 'CCI_14', 'OBV', 'WILLR_14', 'CMO', 'COPP', 'STCmacd_10_12_26_0.5'],
+        "NB": ['RSI_14', 'MACD', 'Histogram', 'CCI_14', 'WILLR_14', 'TSI_13_25_13', 'CMO'],
+        "MLP": ['BBANDS_lower', 'CCI_14', 'OBV', 'WILLR_14', 'CMO', 'COPP', 'STCmacd_10_12_26_0.5'],
+        "LSTM": ['RSI_14', 'BBANDS_lower', 'Histogram', 'CCI_14', 'OBV', 'WILLR_14', 'COPP']
+    },
     "BCI.SN": {
-        "LR": ['RSI_14','BBANDS_lower','Histogram','ATR_14','WILLR_14','TSI_13_25_13','CMO'],
-        "DT": ['BBANDS_lower','Histogram','CCI_14','WILLR_14','COPP','CMO','RSI_14'],
-        "XGB": ['CCI_14','WILLR_14','TSI_13_25_13','CMO','COPP','ATR_14','RSI_14'],
-        "RF": ['BBANDS_lower','CCI_14','OBV','WILLR_14','COPP','CMO','RSI_14'],
-        "NB": ['BBANDS_lower','CCI_14','OBV','WILLR_14','COPP','CMO','RSI_14'],
-        "MLP": ['BBANDS_lower','CCI_14','OBV','WILLR_14','CMO','COPP','STCmacd_10_12_26_0.5'],
-        "LSTM": []
-        },
+        "LR": ['RSI_14', 'Histogram', 'ATR_14', 'WILLR_14', 'TSI_13_25_13', 'UO', 'CMO'],
+        "DT": ['BBANDS_upper', 'Histogram', 'CCI_14', 'WILLR_14', 'UO', 'CMO', 'STCmacd_10_12_26_0.5'],
+        "XGB": ['RSI_14', 'MACD', 'Histogram', 'CCI_14', 'WILLR_14', 'TSI_13_25_13', 'CMO'],
+        "RF": ['RSI_14', 'MACD', 'Histogram', 'CCI_14', 'WILLR_14', 'TSI_13_25_13', 'DPO'],
+        "NB": ['RSI_14', 'MACD', 'Histogram', 'CCI_14', 'WILLR_14', 'TSI_13_25_13', 'CMO'],
+        "MLP": ['RSI_14', 'MACD', 'Histogram', 'CCI_14', 'WILLR_14', 'TSI_13_25_13', 'DPO'],
+        "LSTM": ['RSI_14', 'MACD', 'Histogram', 'CCI_14', 'WILLR_14', 'TSI_13_25_13', 'DPO']
+    },
     "CAP.SN": {
-        "LR": ['RSI_14','BBANDS_lower','Histogram','ATR_14','WILLR_14','TSI_13_25_13','CMO'],
-        "DT": ['BBANDS_lower','Histogram','CCI_14','WILLR_14','COPP','CMO','RSI_14'],
-        "XGB": ['CCI_14','WILLR_14','TSI_13_25_13','CMO','COPP','ATR_14','RSI_14'],
-        "RF": ['BBANDS_lower','CCI_14','OBV','WILLR_14','COPP','CMO','RSI_14'],
-        "NB": ['BBANDS_lower','CCI_14','OBV','WILLR_14','COPP','CMO','RSI_14'],
-        "MLP": ['BBANDS_lower','CCI_14','OBV','WILLR_14','CMO','COPP','STCmacd_10_12_26_0.5'],
-        "LSTM": []
-        },
+        "LR": ['RSI_14', 'Histogram', 'CCI_14', 'WILLR_14', 'TSI_13_25_13', 'CMO', 'COPP'],
+        "DT": ['Histogram', 'CCI_14', 'WILLR_14', 'MFI_14', 'UO', 'TRIX_30_9', 'DPO'],
+        "XGB": ['RSI_14', 'MACD', 'Histogram', 'WILLR_14', 'TSI_13_25_13', 'CMO', 'STCstoch_10_12_26_0.5'],
+        "RF": ['RSI_14', 'Histogram', 'CCI_14', 'WILLR_14', 'ROC_10', 'TSI_13_25_13', 'UO'],
+        "NB": ['RSI_14', 'CCI_14', 'WILLR_14', 'ROC_10', 'UO', 'DPO', 'CMO'],
+        "MLP": ['RSI_14', 'Histogram', 'CCI_14', 'WILLR_14', 'ROC_10', 'TSI_13_25_13', 'UO'],
+        "LSTM": ['Histogram', 'CCI_14', 'WILLR_14', 'CMO', 'STCmacd_10_12_26_0.5']
+    },
     "CCU.SN": {
-        "LR": ['RSI_14','BBANDS_lower','Histogram','ATR_14','WILLR_14','TSI_13_25_13','CMO'],
-        "DT": ['BBANDS_lower','Histogram','CCI_14','WILLR_14','COPP','CMO','RSI_14'],
-        "XGB": ['CCI_14','WILLR_14','TSI_13_25_13','CMO','COPP','ATR_14','RSI_14'],
-        "RF": ['BBANDS_lower','CCI_14','OBV','WILLR_14','COPP','CMO','RSI_14'],
-        "NB": ['BBANDS_lower','CCI_14','OBV','WILLR_14','COPP','CMO','RSI_14'],
-        "MLP": ['BBANDS_lower','CCI_14','OBV','WILLR_14','CMO','COPP','STCmacd_10_12_26_0.5'],
-        "LSTM": []
-        },
+        "LR": ['RSI_14', 'BBANDS_lower', 'Histogram', 'ATR_14', 'WILLR_14', 'TSI_13_25_13', 'CMO'],
+        "DT": ['Histogram', 'CCI_14', 'WILLR_14', 'ROC_10', 'TSI_13_25_13', 'CMO', 'COPP'],
+        "XGB": ['RSI_14', 'MACD', 'Histogram', 'CCI_14', 'WILLR_14', 'TSI_13_25_13', 'CMO'],
+        "RF": ['RSI_14', 'MACD', 'Histogram', 'CCI_14', 'WILLR_14', 'TSI_13_25_13', 'CMO'],
+        "NB": ['RSI_14', 'MACD', 'Histogram', 'CCI_14', 'WILLR_14', 'TSI_13_25_13', 'CMO'],
+        "MLP": ['RSI_14', 'MACD', 'Histogram', 'CCI_14', 'WILLR_14', 'TSI_13_25_13', 'CMO'],
+        "LSTM": ['RSI_14', 'Histogram', 'CCI_14', 'WILLR_14', 'TSI_13_25_13', 'CMO', 'STCmacd_10_12_26_0.5']
+    },
     "CENCOSUD.SN": {
-        "LR": [],
-        "DT": [],
-        "XGB": [],
-        "RF": [],
-        "NB": [],
-        "MLP": [],
-        "LSTM": []
-        }
+        "LR": ['RSI_14', 'Histogram', 'ATR_14', 'WILLR_14', 'TSI_13_25_13', 'CMO', 'STCmacd_10_12_26_0.5'],
+        "DT": ['Histogram', 'ATR_14', 'WILLR_14', 'ROC_10', 'TSI_13_25_13', 'KAMA', 'DPO'],
+        "XGB": ['RSI_14', 'Histogram', 'CCI_14', 'WILLR_14', 'TSI_13_25_13', 'CMO', 'COPP'],
+        "RF": ['RSI_14', 'ATR_14', 'CCI_14', 'WILLR_14', 'ROC_10', 'TSI_13_25_13', 'COPP'],
+        "NB": ['RSI_14', 'ATR_14', 'CCI_14', 'WILLR_14', 'ROC_10', 'TSI_13_25_13', 'COPP'],
+        "MLP": ['RSI_14', 'ATR_14', 'CCI_14', 'WILLR_14', 'ROC_10', 'TSI_13_25_13', 'COPP'],
+        "LSTM": ['RSI_14', 'ATR_14', 'CCI_14', 'WILLR_14', 'ROC_10', 'TSI_13_25_13', 'COPP']
+    }
 }
+
 
 def load_data(csv_path):
     '''

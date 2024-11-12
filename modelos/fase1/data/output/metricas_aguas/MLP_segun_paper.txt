@@ -1,0 +1,18 @@
+Resultados para el modelo MLP segun paper con capa oculta 30 :
+Precisión general del modelo: 0.54
+Precision global (ponderada): 0.52
+Recall global (ponderado): 0.54
+F1-score global (ponderado): 0.48
+Reporte de clasificación general:
+              precision    recall  f1-score   support
+
+          -1       0.63      0.60      0.62       466
+           0       0.39      0.07      0.12       368
+           1       0.50      0.83      0.62       504
+
+    accuracy                           0.54      1338
+   macro avg       0.51      0.50      0.45      1338
+weighted avg       0.52      0.54      0.48      1338
+
+Tiempo de ejecución: 0:07:08.356010
+Número total de iteraciones realizadas: 446
