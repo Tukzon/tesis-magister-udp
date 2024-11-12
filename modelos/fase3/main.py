@@ -14,6 +14,55 @@ warnings.filterwarnings("ignore")
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
 from scraper.yahoo import empresas
 
+#VERIFICAR CON LOS OUTPUTS DE LA FASE 1, varios estaban de 5 y complementé
+indicadores = {
+    "AGUAS-A.SN": {
+        "LR": ['RSI_14','BBANDS_lower','Histogram','ATR_14','WILLR_14','TSI_13_25_13','CMO'],
+        "DT": ['BBANDS_lower','Histogram','CCI_14','WILLR_14','COPP','CMO','RSI_14'],
+        "XGB": ['CCI_14','WILLR_14','TSI_13_25_13','CMO','COPP','ATR_14','RSI_14'],
+        "RF": ['BBANDS_lower','CCI_14','OBV','WILLR_14','COPP','CMO','RSI_14'],
+        "NB": ['BBANDS_lower','CCI_14','OBV','WILLR_14','COPP','CMO','RSI_14'],
+        "MLP": ['BBANDS_lower','CCI_14','OBV','WILLR_14','CMO','COPP','STCmacd_10_12_26_0.5'],
+        "LSTM": []
+        },
+    "BCI.SN": {
+        "LR": ['RSI_14','BBANDS_lower','Histogram','ATR_14','WILLR_14','TSI_13_25_13','CMO'],
+        "DT": ['BBANDS_lower','Histogram','CCI_14','WILLR_14','COPP','CMO','RSI_14'],
+        "XGB": ['CCI_14','WILLR_14','TSI_13_25_13','CMO','COPP','ATR_14','RSI_14'],
+        "RF": ['BBANDS_lower','CCI_14','OBV','WILLR_14','COPP','CMO','RSI_14'],
+        "NB": ['BBANDS_lower','CCI_14','OBV','WILLR_14','COPP','CMO','RSI_14'],
+        "MLP": ['BBANDS_lower','CCI_14','OBV','WILLR_14','CMO','COPP','STCmacd_10_12_26_0.5'],
+        "LSTM": []
+        },
+    "CAP.SN": {
+        "LR": ['RSI_14','BBANDS_lower','Histogram','ATR_14','WILLR_14','TSI_13_25_13','CMO'],
+        "DT": ['BBANDS_lower','Histogram','CCI_14','WILLR_14','COPP','CMO','RSI_14'],
+        "XGB": ['CCI_14','WILLR_14','TSI_13_25_13','CMO','COPP','ATR_14','RSI_14'],
+        "RF": ['BBANDS_lower','CCI_14','OBV','WILLR_14','COPP','CMO','RSI_14'],
+        "NB": ['BBANDS_lower','CCI_14','OBV','WILLR_14','COPP','CMO','RSI_14'],
+        "MLP": ['BBANDS_lower','CCI_14','OBV','WILLR_14','CMO','COPP','STCmacd_10_12_26_0.5'],
+        "LSTM": []
+        },
+    "CCU.SN": {
+        "LR": ['RSI_14','BBANDS_lower','Histogram','ATR_14','WILLR_14','TSI_13_25_13','CMO'],
+        "DT": ['BBANDS_lower','Histogram','CCI_14','WILLR_14','COPP','CMO','RSI_14'],
+        "XGB": ['CCI_14','WILLR_14','TSI_13_25_13','CMO','COPP','ATR_14','RSI_14'],
+        "RF": ['BBANDS_lower','CCI_14','OBV','WILLR_14','COPP','CMO','RSI_14'],
+        "NB": ['BBANDS_lower','CCI_14','OBV','WILLR_14','COPP','CMO','RSI_14'],
+        "MLP": ['BBANDS_lower','CCI_14','OBV','WILLR_14','CMO','COPP','STCmacd_10_12_26_0.5'],
+        "LSTM": []
+        },
+    "CENCOSUD.SN": {
+        "LR": [],
+        "DT": [],
+        "XGB": [],
+        "RF": [],
+        "NB": [],
+        "MLP": [],
+        "LSTM": []
+        }
+}
+
 def load_data(csv_path):
     '''
     Carga los datos de un archivo CSV y los retorna en un DataFrame de Pandas.
@@ -53,66 +102,35 @@ def attach_indicators(df_f1, df_empresa_modelo, indicators_list):
     return df_empresa_modelo
 
 if __name__ == "__main__":
-    
-    #VERIFICAR CON LOS OUTPUTS DE LA FASE 1, varios estaban de 5 y complementé
-    indicadores_agua = {
-        "LR": ['RSI_14','BBANDS_lower','Histogram','ATR_14','WILLR_14','TSI_13_25_13','CMO'],
-        "DT": ['BBANDS_lower','Histogram','CCI_14','WILLR_14','COPP','CMO','RSI_14'],
-        "XGB": ['CCI_14','WILLR_14','TSI_13_25_13','CMO','COPP','ATR_14','RSI_14'],
-        "RF": ['BBANDS_lower','CCI_14','OBV','WILLR_14','COPP','CMO','RSI_14'],
-        "NB": ['BBANDS_lower','CCI_14','OBV','WILLR_14','COPP','CMO','RSI_14'],
-        "MLP": ['BBANDS_lower','CCI_14','OBV','WILLR_14','CMO','COPP','STCmacd_10_12_26_0.5'],
-        "LSTM": []
-    }
-    indicadores_bci = {
-        "LR": ['RSI_14','BBANDS_lower','Histogram','ATR_14','WILLR_14','TSI_13_25_13','CMO'],
-        "DT": ['BBANDS_lower','Histogram','CCI_14','WILLR_14','COPP','CMO','RSI_14'],
-        "XGB": ['CCI_14','WILLR_14','TSI_13_25_13','CMO','COPP','ATR_14','RSI_14'],
-        "RF": ['BBANDS_lower','CCI_14','OBV','WILLR_14','COPP','CMO','RSI_14'],
-        "NB": ['BBANDS_lower','CCI_14','OBV','WILLR_14','COPP','CMO','RSI_14'],
-        "MLP": ['BBANDS_lower','CCI_14','OBV','WILLR_14','CMO','COPP','STCmacd_10_12_26_0.5'],
-        "LSTM": []
-    }
-    indicadores_cap = {
-        "LR": ['RSI_14','BBANDS_lower','Histogram','ATR_14','WILLR_14','TSI_13_25_13','CMO'],
-        "DT": ['BBANDS_lower','Histogram','CCI_14','WILLR_14','COPP','CMO','RSI_14'],
-        "XGB": ['CCI_14','WILLR_14','TSI_13_25_13','CMO','COPP','ATR_14','RSI_14'],
-        "RF": ['BBANDS_lower','CCI_14','OBV','WILLR_14','COPP','CMO','RSI_14'],
-        "NB": ['BBANDS_lower','CCI_14','OBV','WILLR_14','COPP','CMO','RSI_14'],
-        "MLP": ['BBANDS_lower','CCI_14','OBV','WILLR_14','CMO','COPP','STCmacd_10_12_26_0.5'],
-        "LSTM": []
-    }
-    indicadores_ccu = {
-        "LR": ['RSI_14','BBANDS_lower','Histogram','ATR_14','WILLR_14','TSI_13_25_13','CMO'],
-        "DT": ['BBANDS_lower','Histogram','CCI_14','WILLR_14','COPP','CMO','RSI_14'],
-        "XGB": ['CCI_14','WILLR_14','TSI_13_25_13','CMO','COPP','ATR_14','RSI_14'],
-        "RF": ['BBANDS_lower','CCI_14','OBV','WILLR_14','COPP','CMO','RSI_14'],
-        "NB": ['BBANDS_lower','CCI_14','OBV','WILLR_14','COPP','CMO','RSI_14'],
-        "MLP": ['BBANDS_lower','CCI_14','OBV','WILLR_14','CMO','COPP','STCmacd_10_12_26_0.5'],
-        "LSTM": []
-    }
-    
     print("*" * 40)
-    print("Cargando data")
-    for empresa in empresas:
+    print("Iniciando procesamiento")
+
+    # Iterar sobre cada empresa y algoritmo
+    for empresa, algoritmos in indicadores.items():
         df_fase1 = load_data(f"../fase1/data/Input/{empresa}.csv")
+        df_fase2 = load_data(f"../fase2/data/input/{empresa}.csv")
         df = load_data(f"../../scraper/data/{empresa}.csv")
-        print("Data cargada - "+empresa)
-        print("-" * 40)
-        if 'Unnamed: 0' in df.columns:
-            print("Eliminando la columna 'Unnamed: 0'")
-            df.drop(columns=['Unnamed: 0'], inplace=True)
-        print("Calculando tendencia")
-        df = calculate_trend(df, delta=0.005)  
-        print("Tendencia calculada")
-        print("-" * 40)
-        print("Aplicando indicadores técnicos")
-        print("-" * 40)
-        print("Limpiando data")
-        df.replace([np.inf, -np.inf], np.nan, inplace=True)
-        df.fillna(0, inplace=True)
-        print("-" * 40)
-        print("Exportando data")
-        export_data(df, f"./data/input/{empresa}.csv")
-        print("Data exportada")
-        print("*" * 40)
+
+        # Procesar y exportar cada combinación de empresa y algoritmo
+        for algoritmo, indicadores_list in algoritmos.items():
+            print(f"Procesando {empresa} - {algoritmo}")
+
+            # F1 Calcular tendencia
+            df_trend = calculate_trend(df.copy(), delta=0.005)
+            df_final = attach_indicators(df_fase1, df_trend, indicadores_list)
+            
+            # F2 analisis de sentimiento
+            df_final = df_final.merge(df_fase2[['Date', 'Sentimiento Promedio', 'Sentimiento Máximo', 'Sentimiento Mínimo']],
+                                    on='Date', how='left')
+
+            # Limpiar data
+            df_final.replace([np.inf, -np.inf], np.nan, inplace=True)
+            df_final.fillna(0, inplace=True)
+
+            # Exportar data por empresa y algoritmo
+            output_path = f"./data/input/{empresa}_{algoritmo}.csv"
+            export_data(df_final, output_path)
+            print(f"Data exportada para {empresa} - {algoritmo} en {output_path}")
+
+    print("Proceso completado")
+    print("*" * 40)
