@@ -1,0 +1,18 @@
+Resultados para el modelo XGBoost con 100 submodelos en ves de 1000 como lo hace el paper:
+Precisión general del modelo: 0.61
+Precision global (ponderada): 0.60
+Recall global (ponderado): 0.61
+F1-score global (ponderado): 0.60
+Reporte de clasificación general:
+              precision    recall  f1-score   support
+
+          -1       0.66      0.69      0.68       473
+           0       0.47      0.38      0.42       363
+           1       0.64      0.70      0.67       502
+
+    accuracy                           0.61      1338
+   macro avg       0.59      0.59      0.59      1338
+weighted avg       0.60      0.61      0.60      1338
+
+Tiempo de ejecución: 0:03:46.530978
+Número total de iteraciones realizadas: 446

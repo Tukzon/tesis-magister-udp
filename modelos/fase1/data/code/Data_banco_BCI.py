@@ -1215,7 +1215,7 @@ print("Reporte de clasificación para LSTM:\n", report)
 
 #%%
 # Definir la ruta de salida para el archivo .txt
-output_path_lstm = r'.\..\output\metricas_CAP\LSTM_BCI_resultados.txt'
+output_path_lstm = r'.\..\output\metricas_BCI\LSTM_BCI_resultados.txt'
 
 # Abrir el archivo y guardar los resultados
 with open(output_path_lstm, 'w') as f:

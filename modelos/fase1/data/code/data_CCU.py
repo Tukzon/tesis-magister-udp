@@ -1248,7 +1248,7 @@ print("Reporte de clasificación para LSTM:\n", report)
 
 #%%
 # Definir la ruta de salida para el archivo .txt
-output_path_lstm = r'.\..\output\metricas_CCU\LSTM_CAP_resultados.txt'
+output_path_lstm = r'.\..\output\metricas_CCU\LSTM_CCU_resultados.txt'
 
 with open(output_path_lstm, 'w') as f:
     f.write(f"Resultados para el modelo LSTM:\n")

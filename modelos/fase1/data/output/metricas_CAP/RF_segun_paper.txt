@@ -1,0 +1,18 @@
+Resultados para el modelo RF con 100 submodelos segun paper:
+Precisión general del modelo: 0.61
+Precision global (ponderada): 0.57
+Recall global (ponderado): 0.61
+F1-score global (ponderado): 0.57
+Reporte de clasificación general:
+              precision    recall  f1-score   support
+
+          -1       0.61      0.76      0.68       576
+           0       0.37      0.05      0.08       235
+           1       0.63      0.71      0.67       527
+
+    accuracy                           0.61      1338
+   macro avg       0.54      0.50      0.47      1338
+weighted avg       0.57      0.61      0.57      1338
+
+Tiempo de ejecución: 0:11:15.393187
+Número total de iteraciones realizadas: 446

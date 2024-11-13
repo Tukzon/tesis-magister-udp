@@ -1,18 +1,18 @@
 Resultados para el modelo NB :
-Precisión general del modelo: 0.50
+Precisión general del modelo: 0.46
 Precision global (ponderada): 0.48
-Recall global (ponderado): 0.50
-F1-score global (ponderado): 0.46
+Recall global (ponderado): 0.46
+F1-score global (ponderado): 0.47
 Reporte de clasificación general:
               precision    recall  f1-score   support
 
-          -1       0.51      0.53      0.52       466
-           0       0.41      0.13      0.20       368
-           1       0.50      0.73      0.59       504
+          -1       0.58      0.49      0.53       487
+           0       0.30      0.41      0.35       358
+           1       0.52      0.46      0.49       493
 
-    accuracy                           0.50      1338
-   macro avg       0.47      0.46      0.44      1338
-weighted avg       0.48      0.50      0.46      1338
+    accuracy                           0.46      1338
+   macro avg       0.47      0.45      0.46      1338
+weighted avg       0.48      0.46      0.47      1338
 
-Tiempo de ejecución: 0:00:00.879749
+Tiempo de ejecución: 0:00:00.749343
 Número total de iteraciones realizadas: 446

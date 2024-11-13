@@ -1,0 +1,4 @@
+Resultados para el modelo LSTM:
+Precisión del modelo (Accuracy): 0.84
+Precisión global (Weighted Precision): 0.84
+F1-Score global (Weighted F1-Score): 0.84
