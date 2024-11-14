@@ -1,0 +1,16 @@
+Resultados para DT en BCI:
+Accuracy: 0.47
+Precision: 0.48
+Recall: 0.47
+F1-score: 0.48
+Reporte de clasificación:
+              precision    recall  f1-score   support
+
+           0       0.57      0.61      0.59       487
+           1       0.28      0.30      0.29       358
+           2       0.53      0.46      0.50       493
+
+    accuracy                           0.47      1338
+   macro avg       0.46      0.46      0.46      1338
+weighted avg       0.48      0.47      0.48      1338
+

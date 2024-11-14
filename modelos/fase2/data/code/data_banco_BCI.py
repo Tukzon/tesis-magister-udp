@@ -1073,10 +1073,15 @@ target_names = [str(cls) for cls in label_encoder.classes_]
 
 # Evaluación del modelo
 accuracy = accuracy_score(y_test_aligned_decoded, y_pred_classes_decoded)
+precision = precision_score(y_test_aligned_decoded, y_pred_classes_decoded, average='weighted')
+f1 = f1_score(y_test_aligned_decoded, y_pred_classes_decoded, average='weighted')
 report = classification_report(y_test_aligned_decoded, y_pred_classes_decoded, target_names=target_names)
 conf_matrix = confusion_matrix(y_test_aligned_decoded, y_pred_classes_decoded)
 
+# Imprimir resultados en consola
 print(f"Precisión del modelo: {accuracy:.2f}")
+print(f"Precisión global (Weighted Precision): {precision:.2f}")
+print(f"F1-Score global (Weighted F1-Score): {f1:.2f}")
 print("Reporte de clasificación para LSTM:\n", report)
 print("Matriz de confusión:\n", conf_matrix)
 
@@ -1085,12 +1090,14 @@ print("Matriz de confusión:\n", conf_matrix)
 # Definir la ruta de salida para el archivo .txt
 output_path_lstm = r'.\..\output\metricas_BCI\LSTM__resultados.txt'
 
-# Crear los directorios si no existen
-
-# Abrir el archivo y guardar los resultados
+# Guardar los resultados en el archivo
 with open(output_path_lstm, 'w') as f:
-    f.write(f"Resultados para el modelo LSTM:\n")
-    f.write(f"Precisión del modelo: {accuracy:.2f}\n")
-    f.write(f"Reporte de clasificación:\n{report}\n")
-    f.write(f"Matriz de confusión:\n{conf_matrix}\n")
+    f.write("Resultados para el modelo LSTM:\n")
+    f.write(f"Precisión del modelo (Accuracy): {accuracy:.2f}\n")
+    f.write(f"Precisión global (Weighted Precision): {precision:.2f}\n")
+    f.write(f"F1-Score global (Weighted F1-Score): {f1:.2f}\n")
+    f.write("\nReporte de clasificación:\n")
+    f.write(report)  # Guardar el reporte de clasificación completo
+    f.write("\nMatriz de confusión:\n")
+    f.write(str(conf_matrix))  # Convertir la matriz de confusión a string para guardarla
 

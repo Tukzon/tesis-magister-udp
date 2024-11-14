@@ -1,0 +1,16 @@
+Resultados para LR en BCI:
+Accuracy: 0.56
+Precision: 0.41
+Recall: 0.56
+F1-score: 0.47
+Reporte de clasificación:
+              precision    recall  f1-score   support
+
+           0       0.60      0.70      0.65       487
+           1       0.00      0.00      0.00       358
+           2       0.53      0.82      0.64       493
+
+    accuracy                           0.56      1338
+   macro avg       0.38      0.51      0.43      1338
+weighted avg       0.41      0.56      0.47      1338
+
