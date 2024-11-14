@@ -18,19 +18,14 @@ from datetime import datetime
 import warnings
 warnings.filterwarnings("ignore")
 
-
-# Definir ruta de entrada y salida
 ruta_input = "../input/"
 ruta_output = "../output/"
 
-# Lista de archivos en el directorio de entrada
 archivos = os.listdir(ruta_input)
 
-# Parámetros generales
 window_size = 3
 train_ratio = 0.8
 
-# Definición de modelos y sus configuraciones
 modelos = {
     "LR": LogisticRegression(max_iter=1000, penalty='l2'),
     "DT": DecisionTreeClassifier(random_state=42, max_depth=10),
@@ -42,7 +37,6 @@ modelos = {
 
 empresas_ejecutadas = ['AGUAS-A']
 
-# Procesamiento y entrenamiento de cada archivo
 for archivo in archivos:
     empresa = archivo.split(".")[0]
     if empresa in empresas_ejecutadas:
@@ -50,33 +44,26 @@ for archivo in archivos:
         
     ruta_archivo = os.path.join(ruta_input, archivo)
     
-    # Cargar el archivo CSV
     df = pd.read_csv(ruta_archivo)
     if 'Unnamed: 0' in df.columns:
         df.drop(columns=['Unnamed: 0'], inplace=True)
     
-    # Selección de etiquetas y características
     y = df['Tendencia']
     X = df.drop(columns=['Date', 'Tendencia'])
     
-    # Codificación de etiquetas
     label_encoder = LabelEncoder()
     y_encoded = label_encoder.fit_transform(y)
     
-    # Escalado de características
     scaler = MinMaxScaler()
     X_scaled = scaler.fit_transform(X)
     
-    # Separar conjuntos de entrenamiento y prueba
     dates = pd.to_datetime(df['Date'])
     train_size = int(len(dates) * train_ratio)
     
-    # Entrenar y evaluar modelos clásicos
     for nombre_modelo, modelo in modelos.items():
-        # Crear DataFrame con las características escaladas
+
         X_final = pd.DataFrame(X_scaled, columns=X.columns)
         
-        # Entrenar y evaluar el modelo con ventana rodante
         y_true, y_pred = [], []
         for start in range(train_size, len(dates) - window_size):
             train_indices = dates < dates.iloc[start]
@@ -92,14 +79,12 @@ for archivo in archivos:
             y_pred.extend(modelo.predict(X_test))
             y_true.extend(y_test)
         
-        # Calcular métricas de evaluación
         accuracy = accuracy_score(y_true, y_pred)
         precision = precision_score(y_true, y_pred, average='weighted')
         recall = recall_score(y_true, y_pred, average='weighted')
         f1 = f1_score(y_true, y_pred, average='weighted')
         report = classification_report(y_true, y_pred)
         
-        # Guardar resultados en archivo de texto
         output_file = f"{empresa}_{nombre_modelo}_metrics.txt"
         with open(os.path.join(ruta_output, output_file), 'w') as f:
             f.write(f"Resultados para {nombre_modelo} en {empresa}:\n")
@@ -113,13 +98,11 @@ for archivo in archivos:
     
     # Entrenamiento y evaluación del modelo LSTM
     print(f"Entrenando el modelo LSTM para {empresa}...")
-    n_input = 20  # Número de pasos de tiempo para el LSTM
+    n_input = 20
     n_features = X_scaled.shape[1]
     
-    # Convertir las etiquetas a one-hot encoding para el LSTM
     y_encoded_lstm = np.eye(len(np.unique(y_encoded)))[y_encoded]
     
-    # Generador de secuencias para entrenamiento
     train_generator = TimeseriesGenerator(X_scaled, y_encoded_lstm, length=n_input, batch_size=32)
     
     # Definir el modelo LSTM
@@ -132,27 +115,21 @@ for archivo in archivos:
     model_lstm.add(Dense(len(np.unique(y_encoded)), activation='softmax'))
     model_lstm.compile(optimizer=Adam(learning_rate=0.001), loss='categorical_crossentropy', metrics=['accuracy'])
     
-    # Entrenar el modelo LSTM
     model_lstm.fit(train_generator, epochs=50, verbose=1)
     
-    # Generador de secuencias para prueba
     test_generator = TimeseriesGenerator(X_scaled[-(len(X_scaled) + n_input):], y_encoded_lstm[-(len(X_scaled) + n_input):], length=n_input, batch_size=1)
     
-    # Predicción con el modelo LSTM
     y_pred_lstm = model_lstm.predict(test_generator)
     
-    # Convertir las predicciones y etiquetas verdaderas a clases
     y_pred_classes = np.argmax(y_pred_lstm, axis=1)
     y_test_aligned = np.argmax(y_encoded_lstm[-len(y_pred_classes):], axis=1)
-    
-    # Calcular métricas de evaluación para LSTM
+
     accuracy_lstm = accuracy_score(y_test_aligned, y_pred_classes)
     precision_lstm = precision_score(y_test_aligned, y_pred_classes, average='weighted')
     recall_lstm = recall_score(y_test_aligned, y_pred_classes, average='weighted')
     f1_lstm = f1_score(y_test_aligned, y_pred_classes, average='weighted')
     report_lstm = classification_report(y_test_aligned, y_pred_classes)
     
-    # Guardar resultados del LSTM
     output_file_lstm = f"{empresa}_LSTM_metrics.txt"
     with open(os.path.join(ruta_output, output_file_lstm), 'w') as f:
         f.write(f"Resultados para LSTM en {empresa}:\n")
