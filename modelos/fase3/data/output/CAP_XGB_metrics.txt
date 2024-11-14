@@ -1,0 +1,16 @@
+Resultados para XGB en CAP:
+Accuracy: 0.61
+Precision: 0.56
+Recall: 0.61
+F1-score: 0.58
+Reporte de clasificación:
+              precision    recall  f1-score   support
+
+           0       0.63      0.72      0.67       576
+           1       0.23      0.08      0.11       235
+           2       0.64      0.72      0.68       527
+
+    accuracy                           0.61      1338
+   macro avg       0.50      0.51      0.49      1338
+weighted avg       0.56      0.61      0.58      1338
+

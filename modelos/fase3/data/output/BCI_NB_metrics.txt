@@ -1,0 +1,16 @@
+Resultados para NB en BCI:
+Accuracy: 0.45
+Precision: 0.50
+Recall: 0.45
+F1-score: 0.45
+Reporte de clasificación:
+              precision    recall  f1-score   support
+
+           0       0.54      0.47      0.50       487
+           1       0.32      0.54      0.40       358
+           2       0.58      0.36      0.45       493
+
+    accuracy                           0.45      1338
+   macro avg       0.48      0.46      0.45      1338
+weighted avg       0.50      0.45      0.45      1338
+

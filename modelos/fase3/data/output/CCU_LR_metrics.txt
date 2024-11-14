@@ -1,0 +1,16 @@
+Resultados para LR en CCU:
+Accuracy: 0.57
+Precision: 0.69
+Recall: 0.57
+F1-score: 0.48
+Reporte de clasificación:
+              precision    recall  f1-score   support
+
+           0       0.60      0.74      0.66       473
+           1       1.00      0.01      0.02       363
+           2       0.54      0.82      0.65       502
+
+    accuracy                           0.57      1338
+   macro avg       0.71      0.52      0.44      1338
+weighted avg       0.69      0.57      0.48      1338
+

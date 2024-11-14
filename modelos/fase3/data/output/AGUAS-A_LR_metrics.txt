@@ -1,0 +1,16 @@
+Resultados para LR en AGUAS-A:
+Accuracy: 0.52
+Precision: 0.44
+Recall: 0.52
+F1-score: 0.44
+Reporte de clasificación:
+              precision    recall  f1-score   support
+
+           0       0.60      0.61      0.60       466
+           1       0.18      0.01      0.02       368
+           2       0.48      0.82      0.61       504
+
+    accuracy                           0.52      1338
+   macro avg       0.42      0.48      0.41      1338
+weighted avg       0.44      0.52      0.44      1338
+

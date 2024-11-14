@@ -1,0 +1,16 @@
+Resultados para DT en CAP:
+Accuracy: 0.53
+Precision: 0.51
+Recall: 0.53
+F1-score: 0.52
+Reporte de clasificación:
+              precision    recall  f1-score   support
+
+           0       0.56      0.66      0.61       576
+           1       0.24      0.16      0.19       235
+           2       0.58      0.56      0.57       527
+
+    accuracy                           0.53      1338
+   macro avg       0.46      0.46      0.46      1338
+weighted avg       0.51      0.53      0.52      1338
+

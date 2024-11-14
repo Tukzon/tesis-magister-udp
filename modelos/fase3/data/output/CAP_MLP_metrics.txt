@@ -1,0 +1,16 @@
+Resultados para MLP en CAP:
+Accuracy: 0.61
+Precision: 0.63
+Recall: 0.61
+F1-score: 0.56
+Reporte de clasificación:
+              precision    recall  f1-score   support
+
+           0       0.66      0.65      0.65       576
+           1       0.67      0.01      0.02       235
+           2       0.58      0.85      0.69       527
+
+    accuracy                           0.61      1338
+   macro avg       0.64      0.50      0.45      1338
+weighted avg       0.63      0.61      0.56      1338
+

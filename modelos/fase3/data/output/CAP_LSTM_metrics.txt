@@ -1,0 +1,16 @@
+Resultados para LSTM en CAP:
+Accuracy: 0.58
+Precision: 0.47
+Recall: 0.58
+F1-score: 0.52
+Reporte de clasificación:
+              precision    recall  f1-score   support
+
+           0       0.57      0.73      0.64       903
+           1       0.00      0.00      0.00       414
+           2       0.59      0.69      0.64       904
+
+    accuracy                           0.58      2221
+   macro avg       0.39      0.47      0.43      2221
+weighted avg       0.47      0.58      0.52      2221
+
