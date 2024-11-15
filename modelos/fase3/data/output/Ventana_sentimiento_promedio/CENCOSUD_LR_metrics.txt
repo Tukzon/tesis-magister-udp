@@ -1,0 +1,16 @@
+Resultados para LR en CENCOSUD:
+Accuracy: 0.64
+Precision: 0.65
+Recall: 0.64
+F1-score: 0.65
+Reporte de clasificación:
+              precision    recall  f1-score   support
+
+           0       0.70      0.61      0.65       442
+           1       0.50      0.58      0.54       405
+           2       0.74      0.73      0.73       491
+
+    accuracy                           0.64      1338
+   macro avg       0.65      0.64      0.64      1338
+weighted avg       0.65      0.64      0.65      1338
+

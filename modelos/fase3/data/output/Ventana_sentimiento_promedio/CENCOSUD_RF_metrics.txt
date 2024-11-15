@@ -1,0 +1,16 @@
+Resultados para RF en CENCOSUD:
+Accuracy: 0.54
+Precision: 0.52
+Recall: 0.54
+F1-score: 0.53
+Reporte de clasificación:
+              precision    recall  f1-score   support
+
+           0       0.55      0.64      0.59       442
+           1       0.42      0.29      0.34       405
+           2       0.59      0.66      0.62       491
+
+    accuracy                           0.54      1338
+   macro avg       0.52      0.53      0.52      1338
+weighted avg       0.52      0.54      0.53      1338
+

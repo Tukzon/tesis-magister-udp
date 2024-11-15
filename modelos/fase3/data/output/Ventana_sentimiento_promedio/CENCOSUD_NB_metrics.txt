@@ -1,0 +1,16 @@
+Resultados para NB en CENCOSUD:
+Accuracy: 0.45
+Precision: 0.46
+Recall: 0.45
+F1-score: 0.46
+Reporte de clasificación:
+              precision    recall  f1-score   support
+
+           0       0.42      0.40      0.41       442
+           1       0.38      0.42      0.40       405
+           2       0.56      0.53      0.55       491
+
+    accuracy                           0.45      1338
+   macro avg       0.45      0.45      0.45      1338
+weighted avg       0.46      0.45      0.46      1338
+

@@ -71,8 +71,8 @@ for archivo in archivos:
     # Separar características y etiquetas
     y = df['Tendencia']
     #X = df.drop(columns=['Date', 'Tendencia']) #aca considera todo
-    X = df.drop(columns=['Date', 'Tendencia', "Sentimiento Máximo","Sentimiento Mínimo"]) # Sentimiento promedio
-    #X = df.drop(columns=["Date", "Tendencia", "Sentimiento Mínimo","Sentimiento Promedio"])# Sentimiento maximo
+    #X = df.drop(columns=['Date', 'Tendencia', "Sentimiento Máximo","Sentimiento Mínimo"]) # Sentimiento promedio
+    X = df.drop(columns=["Date", "Tendencia", "Sentimiento Mínimo","Sentimiento Promedio"])# Sentimiento maximo
     #X = df.drop(columns=["Date", "Tendencia", "Sentimiento Máximo","Sentimiento Promedio"])# Sentimiento Minimo
     
     # Verificar si la columna 'Sentimiento Promedio' está en el archivo

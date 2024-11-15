@@ -1,0 +1,16 @@
+Resultados para LSTM en CENCOSUD:
+Accuracy: 0.55
+Precision: 0.56
+Recall: 0.55
+F1-score: 0.55
+Reporte de clasificación:
+              precision    recall  f1-score   support
+
+           0       0.55      0.65      0.60       788
+           1       0.48      0.48      0.48       656
+           2       0.64      0.52      0.57       777
+
+    accuracy                           0.55      2221
+   macro avg       0.56      0.55      0.55      2221
+weighted avg       0.56      0.55      0.55      2221
+

@@ -1,0 +1,16 @@
+Resultados para XGB en CCU:
+Accuracy: 0.59
+Precision: 0.58
+Recall: 0.59
+F1-score: 0.58
+Reporte de clasificación:
+              precision    recall  f1-score   support
+
+           0       0.64      0.70      0.67       473
+           1       0.40      0.32      0.36       363
+           2       0.64      0.68      0.66       502
+
+    accuracy                           0.59      1338
+   macro avg       0.56      0.57      0.56      1338
+weighted avg       0.58      0.59      0.58      1338
+
