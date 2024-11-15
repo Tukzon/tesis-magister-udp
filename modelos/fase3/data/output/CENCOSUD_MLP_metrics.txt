@@ -1,0 +1,16 @@
+Resultados para MLP en CENCOSUD:
+Accuracy: 0.57
+Precision: 0.58
+Recall: 0.57
+F1-score: 0.57
+Reporte de clasificación:
+              precision    recall  f1-score   support
+
+           0       0.62      0.53      0.57       442
+           1       0.43      0.52      0.47       405
+           2       0.68      0.65      0.66       491
+
+    accuracy                           0.57      1338
+   macro avg       0.58      0.57      0.57      1338
+weighted avg       0.58      0.57      0.57      1338
+

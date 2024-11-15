@@ -1,0 +1,16 @@
+Resultados para XGB en BCI:
+Accuracy: 0.62
+Precision: 0.60
+Recall: 0.62
+F1-score: 0.60
+Reporte de clasificación:
+              precision    recall  f1-score   support
+
+           0       0.69      0.74      0.71       487
+           1       0.43      0.29      0.35       358
+           2       0.63      0.73      0.67       493
+
+    accuracy                           0.62      1338
+   macro avg       0.58      0.59      0.58      1338
+weighted avg       0.60      0.62      0.60      1338
+

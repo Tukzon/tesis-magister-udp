@@ -1,0 +1,16 @@
+Resultados para XGB en CENCOSUD:
+Accuracy: 0.56
+Precision: 0.56
+Recall: 0.56
+F1-score: 0.56
+Reporte de clasificación:
+              precision    recall  f1-score   support
+
+           0       0.58      0.62      0.60       442
+           1       0.43      0.39      0.41       405
+           2       0.64      0.66      0.65       491
+
+    accuracy                           0.56      1338
+   macro avg       0.55      0.55      0.55      1338
+weighted avg       0.56      0.56      0.56      1338
+

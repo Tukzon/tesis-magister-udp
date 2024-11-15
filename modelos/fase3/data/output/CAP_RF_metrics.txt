@@ -1,0 +1,16 @@
+Resultados para RF en CAP:
+Accuracy: 0.60
+Precision: 0.51
+Recall: 0.60
+F1-score: 0.54
+Reporte de clasificación:
+              precision    recall  f1-score   support
+
+           0       0.60      0.74      0.66       576
+           1       0.07      0.00      0.01       235
+           2       0.61      0.71      0.66       527
+
+    accuracy                           0.60      1338
+   macro avg       0.43      0.48      0.44      1338
+weighted avg       0.51      0.60      0.54      1338
+

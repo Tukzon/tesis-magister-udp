@@ -1,0 +1,16 @@
+Resultados para MLP en BCI:
+Accuracy: 0.60
+Precision: 0.60
+Recall: 0.60
+F1-score: 0.53
+Reporte de clasificación:
+              precision    recall  f1-score   support
+
+           0       0.72      0.69      0.71       487
+           1       0.53      0.05      0.09       358
+           2       0.54      0.92      0.68       493
+
+    accuracy                           0.60      1338
+   macro avg       0.60      0.55      0.49      1338
+weighted avg       0.60      0.60      0.53      1338
+

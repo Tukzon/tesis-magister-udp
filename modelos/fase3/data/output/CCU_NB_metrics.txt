@@ -1,0 +1,16 @@
+Resultados para NB en CCU:
+Accuracy: 0.45
+Precision: 0.40
+Recall: 0.45
+F1-score: 0.39
+Reporte de clasificación:
+              precision    recall  f1-score   support
+
+           0       0.43      0.66      0.52       473
+           1       0.25      0.02      0.03       363
+           2       0.47      0.57      0.52       502
+
+    accuracy                           0.45      1338
+   macro avg       0.39      0.41      0.36      1338
+weighted avg       0.40      0.45      0.39      1338
+
