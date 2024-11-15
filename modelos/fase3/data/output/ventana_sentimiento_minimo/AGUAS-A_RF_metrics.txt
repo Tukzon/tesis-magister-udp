@@ -1,0 +1,17 @@
+Resultados para RF en AGUAS-A:
+Accuracy: 0.56
+Precision: 0.54
+Recall: 0.56
+F1-score: 0.54
+Reporte de clasificación:
+              precision    recall  f1-score   support
+
+           0       0.61      0.61      0.61       466
+           1       0.44      0.28      0.34       368
+           2       0.56      0.71      0.63       504
+
+    accuracy                           0.56      1338
+   macro avg       0.54      0.53      0.53      1338
+weighted avg       0.54      0.56      0.54      1338
+
+Tiempo de ejecución: 0:03:25.218724

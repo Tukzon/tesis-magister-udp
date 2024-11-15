@@ -1,0 +1,17 @@
+Resultados para RF en BCI:
+Accuracy: 0.59
+Precision: 0.57
+Recall: 0.59
+F1-score: 0.57
+Reporte de clasificación:
+              precision    recall  f1-score   support
+
+           0       0.63      0.75      0.68       487
+           1       0.46      0.21      0.29       358
+           2       0.60      0.73      0.66       493
+
+    accuracy                           0.59      1338
+   macro avg       0.56      0.56      0.54      1338
+weighted avg       0.57      0.59      0.57      1338
+
+Tiempo de ejecución: 0:03:32.589842

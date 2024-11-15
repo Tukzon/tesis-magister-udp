@@ -47,7 +47,7 @@ modelos = {
     "MLP": MLPClassifier(hidden_layer_sizes=(100, 50), max_iter=300, random_state=42)
 }
 
-empresas_ejecutadas = ['AGUAS-A']
+empresas_ejecutadas = []
 
 # Función para calcular el valor ponderado del sentimiento promedio
 def calcular_valores_ponderados(valores, window_size=3):
@@ -70,10 +70,12 @@ for archivo in archivos:
         df.drop(columns=['Unnamed: 0'], inplace=True)
     # Separar características y etiquetas
     y = df['Tendencia']
+    
+    # PARA LOS DIFERENTES EXPERIMENTOS, COMENTAR ESTAS LINEAS Y DESCOMENTAR LAS SIGUIENTES
     #X = df.drop(columns=['Date', 'Tendencia']) #aca considera todo
     #X = df.drop(columns=['Date', 'Tendencia', "Sentimiento Máximo","Sentimiento Mínimo"]) # Sentimiento promedio
-    X = df.drop(columns=["Date", "Tendencia", "Sentimiento Mínimo","Sentimiento Promedio"])# Sentimiento maximo
-    #X = df.drop(columns=["Date", "Tendencia", "Sentimiento Máximo","Sentimiento Promedio"])# Sentimiento Minimo
+    #X = df.drop(columns=["Date", "Tendencia", "Sentimiento Mínimo","Sentimiento Promedio"])# Sentimiento maximo
+    X = df.drop(columns=["Date", "Tendencia", "Sentimiento Máximo","Sentimiento Promedio"])# Sentimiento Minimo
     
     # Verificar si la columna 'Sentimiento Promedio' está en el archivo
     
@@ -91,7 +93,7 @@ for archivo in archivos:
     train_size = int(len(dates) * train_ratio)
     
     for nombre_modelo, modelo in modelos.items():
-        
+        inicio = datetime.now()
         X_final = pd.DataFrame(X_scaled, columns=X.columns)
         
         y_true, y_pred = [], []
@@ -115,6 +117,8 @@ for archivo in archivos:
         f1 = f1_score(y_true, y_pred, average='weighted')
         report = classification_report(y_true, y_pred)
         
+        fin = datetime.now()
+        
         output_file = f"{empresa}_{nombre_modelo}_metrics.txt"
         with open(os.path.join(ruta_output, output_file), 'w') as f:
             f.write(f"Resultados para {nombre_modelo} en {empresa}:\n")
@@ -123,11 +127,13 @@ for archivo in archivos:
             f.write(f"Recall: {recall:.2f}\n")
             f.write(f"F1-score: {f1:.2f}\n")
             f.write(f"Reporte de clasificación:\n{report}\n")
+            f.write(f"Tiempo de ejecución: {fin - inicio}\n")
         
         print(f"Guardado de resultados completado para {nombre_modelo} en {empresa}")
     
     # Entrenamiento y evaluación del modelo LSTM
     print(f"Entrenando el modelo LSTM para {empresa}...")
+    inicio_lstm = datetime.now()
     n_input = 20
     n_features = X_scaled.shape[1]
     
@@ -160,6 +166,8 @@ for archivo in archivos:
     f1_lstm = f1_score(y_test_aligned, y_pred_classes, average='weighted')
     report_lstm = classification_report(y_test_aligned, y_pred_classes)
     
+    fin_lstm = datetime.now()
+    
     output_file_lstm = f"{empresa}_LSTM_metrics.txt"
     with open(os.path.join(ruta_output, output_file_lstm), 'w') as f:
         f.write(f"Resultados para LSTM en {empresa}:\n")
@@ -168,6 +176,7 @@ for archivo in archivos:
         f.write(f"Recall: {recall_lstm:.2f}\n")
         f.write(f"F1-score: {f1_lstm:.2f}\n")
         f.write(f"Reporte de clasificación:\n{report_lstm}\n")
+        f.write(f"Tiempo de ejecución: {fin_lstm - inicio_lstm}\n")
     
     print(f"Guardado de resultados completado para LSTM en {empresa}")
     empresas_ejecutadas.append(empresa)

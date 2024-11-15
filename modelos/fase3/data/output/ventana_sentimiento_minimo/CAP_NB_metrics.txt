@@ -1,0 +1,17 @@
+Resultados para NB en CAP:
+Accuracy: 0.48
+Precision: 0.46
+Recall: 0.48
+F1-score: 0.47
+Reporte de clasificación:
+              precision    recall  f1-score   support
+
+           0       0.52      0.58      0.55       576
+           1       0.15      0.11      0.13       235
+           2       0.54      0.53      0.53       527
+
+    accuracy                           0.48      1338
+   macro avg       0.40      0.41      0.40      1338
+weighted avg       0.46      0.48      0.47      1338
+
+Tiempo de ejecución: 0:00:01.015053

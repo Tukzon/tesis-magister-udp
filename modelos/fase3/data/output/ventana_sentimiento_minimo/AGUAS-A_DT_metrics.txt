@@ -1,0 +1,17 @@
+Resultados para DT en AGUAS-A:
+Accuracy: 0.49
+Precision: 0.49
+Recall: 0.49
+F1-score: 0.49
+Reporte de clasificación:
+              precision    recall  f1-score   support
+
+           0       0.59      0.52      0.55       466
+           1       0.38      0.33      0.35       368
+           2       0.49      0.59      0.54       504
+
+    accuracy                           0.49      1338
+   macro avg       0.49      0.48      0.48      1338
+weighted avg       0.49      0.49      0.49      1338
+
+Tiempo de ejecución: 0:00:13.140164

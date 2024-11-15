@@ -1,0 +1,17 @@
+Resultados para LSTM en BCI:
+Accuracy: 0.40
+Precision: 0.42
+Recall: 0.40
+F1-score: 0.39
+Reporte de clasificación:
+              precision    recall  f1-score   support
+
+           0       0.38      0.59      0.47       754
+           1       0.41      0.42      0.42       701
+           2       0.46      0.20      0.28       766
+
+    accuracy                           0.40      2221
+   macro avg       0.42      0.41      0.39      2221
+weighted avg       0.42      0.40      0.39      2221
+
+Tiempo de ejecución: 0:00:49.941757

@@ -1,0 +1,17 @@
+Resultados para DT en CCU:
+Accuracy: 0.54
+Precision: 0.54
+Recall: 0.54
+F1-score: 0.54
+Reporte de clasificación:
+              precision    recall  f1-score   support
+
+           0       0.57      0.69      0.62       473
+           1       0.39      0.37      0.38       363
+           2       0.63      0.54      0.58       502
+
+    accuracy                           0.54      1338
+   macro avg       0.53      0.53      0.53      1338
+weighted avg       0.54      0.54      0.54      1338
+
+Tiempo de ejecución: 0:00:14.363765
