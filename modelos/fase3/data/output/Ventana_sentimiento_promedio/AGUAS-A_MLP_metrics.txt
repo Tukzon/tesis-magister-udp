@@ -1,0 +1,17 @@
+Resultados para MLP en AGUAS-A:
+Accuracy: 0.57
+Precision: 0.57
+Recall: 0.57
+F1-score: 0.55
+Reporte de clasificación:
+              precision    recall  f1-score   support
+
+           0       0.71      0.58      0.64       466
+           1       0.40      0.24      0.30       368
+           2       0.56      0.82      0.66       504
+
+    accuracy                           0.57      1338
+   macro avg       0.55      0.54      0.53      1338
+weighted avg       0.57      0.57      0.55      1338
+
+Tiempo de ejecución: 0:13:37.008611

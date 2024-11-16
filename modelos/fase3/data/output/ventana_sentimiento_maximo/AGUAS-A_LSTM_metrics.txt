@@ -1,0 +1,17 @@
+Resultados para LSTM en AGUAS-A:
+Accuracy: 0.48
+Precision: 0.46
+Recall: 0.48
+F1-score: 0.44
+Reporte de clasificación:
+              precision    recall  f1-score   support
+
+           0       0.44      0.26      0.33       662
+           1       0.50      0.79      0.62       885
+           2       0.42      0.28      0.34       674
+
+    accuracy                           0.48      2221
+   macro avg       0.46      0.44      0.43      2221
+weighted avg       0.46      0.48      0.44      2221
+
+Tiempo de ejecución: 0:00:47.350064
