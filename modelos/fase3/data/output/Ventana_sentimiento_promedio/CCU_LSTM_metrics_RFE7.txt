@@ -1,0 +1,17 @@
+Resultados para LSTM en CCU:
+Accuracy: 0.41
+Precision: 0.42
+Recall: 0.41
+F1-score: 0.40
+Reporte de clasificación:
+              precision    recall  f1-score   support
+
+           0       0.45      0.23      0.30       760
+           1       0.39      0.48      0.43       671
+           2       0.41      0.53      0.46       790
+
+    accuracy                           0.41      2221
+   macro avg       0.42      0.41      0.40      2221
+weighted avg       0.42      0.41      0.40      2221
+
+Tiempo de ejecución: 0:00:45.970159

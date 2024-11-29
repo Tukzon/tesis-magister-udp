@@ -32,7 +32,7 @@ indicadores = {
         "RF": ['RSI_14', 'MACD', 'Histogram', 'CCI_14', 'WILLR_14', 'TSI_13_25_13', 'DPO'],
         "NB": ['RSI_14', 'MACD', 'Histogram', 'CCI_14', 'WILLR_14', 'TSI_13_25_13', 'CMO'],
         "MLP": ['RSI_14', 'MACD', 'Histogram', 'CCI_14', 'WILLR_14', 'TSI_13_25_13', 'DPO'],
-        "LSTM": ['RSI_14', 'MACD', 'Histogram', 'CCI_14', 'WILLR_14', 'TSI_13_25_13', 'DPO']
+        "LSTM":  ['RSI_14', 'Histogram', 'CCI_14', 'WILLR_14', 'TSI_13_25_13', 'DPO', 'STCmacd_10_12_26_0.5']
     },
     "CAP.SN": {
         "LR": ['RSI_14', 'Histogram', 'CCI_14', 'WILLR_14', 'TSI_13_25_13', 'CMO', 'COPP'],
@@ -41,7 +41,7 @@ indicadores = {
         "RF": ['RSI_14', 'Histogram', 'CCI_14', 'WILLR_14', 'ROC_10', 'TSI_13_25_13', 'UO'],
         "NB": ['RSI_14', 'CCI_14', 'WILLR_14', 'ROC_10', 'UO', 'DPO', 'CMO'],
         "MLP": ['RSI_14', 'Histogram', 'CCI_14', 'WILLR_14', 'ROC_10', 'TSI_13_25_13', 'UO'],
-        "LSTM": ['Histogram', 'CCI_14', 'WILLR_14', 'CMO', 'STCmacd_10_12_26_0.5']
+        "LSTM": ['Histogram', 'CCI_14', 'WILLR_14', 'ROC_10', 'UO', 'CMO', 'STCmacd_10_12_26_0.5']
     },
     "CCU.SN": {
         "LR": ['RSI_14', 'BBANDS_lower', 'Histogram', 'ATR_14', 'WILLR_14', 'TSI_13_25_13', 'CMO'],
@@ -50,7 +50,7 @@ indicadores = {
         "RF": ['RSI_14', 'MACD', 'Histogram', 'CCI_14', 'WILLR_14', 'TSI_13_25_13', 'CMO'],
         "NB": ['RSI_14', 'MACD', 'Histogram', 'CCI_14', 'WILLR_14', 'TSI_13_25_13', 'CMO'],
         "MLP": ['RSI_14', 'MACD', 'Histogram', 'CCI_14', 'WILLR_14', 'TSI_13_25_13', 'CMO'],
-        "LSTM": ['RSI_14', 'Histogram', 'CCI_14', 'WILLR_14', 'TSI_13_25_13', 'CMO', 'STCmacd_10_12_26_0.5']
+        "LSTM": ['RSI_14', 'Histogram', 'CCI_14', 'WILLR_14', 'TSI_13_25_13','CMO', 'STCmacd_10_12_26_0.5']
     },
     "CENCOSUD.SN": {
         "LR": ['RSI_14', 'Histogram', 'ATR_14', 'WILLR_14', 'TSI_13_25_13', 'CMO', 'STCmacd_10_12_26_0.5'],
@@ -59,7 +59,7 @@ indicadores = {
         "RF": ['RSI_14', 'ATR_14', 'CCI_14', 'WILLR_14', 'ROC_10', 'TSI_13_25_13', 'COPP'],
         "NB": ['RSI_14', 'ATR_14', 'CCI_14', 'WILLR_14', 'ROC_10', 'TSI_13_25_13', 'COPP'],
         "MLP": ['RSI_14', 'ATR_14', 'CCI_14', 'WILLR_14', 'ROC_10', 'TSI_13_25_13', 'COPP'],
-        "LSTM": ['RSI_14', 'ATR_14', 'CCI_14', 'WILLR_14', 'ROC_10', 'TSI_13_25_13', 'COPP']
+        "LSTM": ['RSI_14', 'MACD', 'ATR_14', 'CCI_14', 'WILLR_14', 'ROC_10', 'COPP']
     }
 }
 
