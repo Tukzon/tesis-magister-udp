@@ -1,0 +1,13 @@
+Resultados para el modelo LSTM con capa numeros mayores de capa oculta 30,30,30:
+Precisión del modelo (Accuracy): 0.63
+Precisión global (Weighted Precision): 0.63
+F1-Score global (Weighted F1-Score): 0.63
+              precision    recall  f1-score   support
+
+          -1       0.64      0.67      0.65       788
+           0       0.60      0.51      0.55       656
+           1       0.64      0.69      0.66       777
+
+    accuracy                           0.63      2221
+   macro avg       0.63      0.62      0.62      2221
+weighted avg       0.63      0.63      0.63      2221

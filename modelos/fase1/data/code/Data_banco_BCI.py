@@ -1143,7 +1143,7 @@ print("Distribución de clases en el conjunto de entrenamiento:", Counter(np.arg
 
 # Aplicación de RFE para selección de características
 model_rfe = RandomForestClassifier(n_estimators=100, random_state=42)
-rfe = RFE(estimator=model_rfe, n_features_to_select=10)  # Selecciona las 10 mejores características
+rfe = RFE(estimator=model_rfe, n_features_to_select=7)  # Selecciona las 10 mejores características
 X_rfe = rfe.fit_transform(X, y_encoded)  # Aplicamos RFE sobre los datos de entrada X
 
 # Obtener las características seleccionadas
@@ -1215,7 +1215,7 @@ print("Reporte de clasificación para LSTM:\n", report)
 
 #%%
 # Definir la ruta de salida para el archivo .txt
-output_path_lstm = r'.\..\output\metricas_BCI\LSTM_BCI_resultados.txt'
+output_path_lstm = r'.\..\output\metricas_BCI\LSTM_BCI_resultados_rfe=7.txt'
 
 # Abrir el archivo y guardar los resultados
 with open(output_path_lstm, 'w') as f:
@@ -1223,6 +1223,7 @@ with open(output_path_lstm, 'w') as f:
     f.write(f"Precisión del modelo (Accuracy): {accuracy:.2f}\n")
     f.write(f"Precisión global (Weighted Precision): {precision:.2f}\n")
     f.write(f"F1-Score global (Weighted F1-Score): {f1:.2f}\n")
+    f.write(report)
     
     
 

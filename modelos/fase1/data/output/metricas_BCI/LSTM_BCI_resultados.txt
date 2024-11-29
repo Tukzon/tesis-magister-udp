@@ -1,4 +1,13 @@
 Resultados para el modelo LSTM:
 Precisión del modelo (Accuracy): 0.74
 Precisión global (Weighted Precision): 0.74
-F1-Score global (Weighted F1-Score): 0.74
+F1-Score global (Weighted F1-Score): 0.73
+              precision    recall  f1-score   support
+
+          -1       0.72      0.83      0.77       754
+           0       0.69      0.65      0.67       701
+           1       0.80      0.72      0.76       766
+
+    accuracy                           0.74      2221
+   macro avg       0.74      0.73      0.73      2221
+weighted avg       0.74      0.74      0.73      2221
